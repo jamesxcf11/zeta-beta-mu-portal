@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Admin Dashboard">
+  <title>Admin Dashboard | Zeta Beta Mu Fraternity</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme admin-page">
+  
+  <!-- ============================================
+       GOLD STARDUST BACKGROUND ANIMATION
+       ============================================ -->
+  <div class="stardust-container">
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+  </div>
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-gradient-to-br from-[#d4af37] to-[#b8941f] rounded-lg flex items-center justify-center text-[#064e3b] font-bold">
+        <i data-lucide="shield" class="w-5 h-5"></i>
+      </div>
+      <span class="font-serif text-lg font-semibold">Admin Panel</span>
+    </div>
+    <button id="hamburger-menu" class="hamburger" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Mobile Overlay -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar" class="sidebar">
+    
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <i data-lucide="shield"></i>
+        </div>
+        <div>
+          <div class="sidebar-logo-text">Admin Portal</div>
+          <div class="sidebar-logo-subtitle">Zeta Beta Mu</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navigation Links -->
+    <nav class="sidebar-nav">
+      <a href="index.html#feed" class="nav-link">
+        <i data-lucide="home"></i>
+        <span>Back to Portal</span>
+      </a>
+      <a href="#overview" class="nav-link active admin-tab" data-tab="overview">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Overview</span>
+      </a>
+      <a href="#members" class="nav-link admin-tab" data-tab="members">
+        <i data-lucide="users"></i>
+        <span>Member Management</span>
+      </a>
+      <a href="#content" class="nav-link admin-tab" data-tab="content">
+        <i data-lucide="upload"></i>
+        <span>Content Upload</span>
+      </a>
+      <a href="#moderation" class="nav-link admin-tab" data-tab="moderation">
+        <i data-lucide="shield-alert"></i>
+        <span>Moderation</span>
+      </a>
+    </nav>
+    
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      
+      <!-- User Card -->
+      <div class="user-card">
+        <img id="user-avatar" src="https://i.pravatar.cc/150?img=11" alt="User" class="user-avatar">
+        <div class="user-info">
+          <div id="user-name" class="user-name">Dr. James Anderson</div>
+          <div class="user-role">Administrator</div>
+        </div>
+        <button id="logout-btn" class="icon-btn" title="Logout">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </button>
+      </div>
+      
+    </div>
+    
+  </aside>
+
+  <!-- Main Content Area -->
+  <main id="main-content" class="main-content">
+    
+    <!-- Desktop Header -->
+    <header class="top-header">
+      <h1 class="header-title">Admin Dashboard</h1>
+      <div class="header-actions">
+        <button class="icon-btn" title="Notifications">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <button class="icon-btn" title="Settings">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================== OVERVIEW PANEL ==================== -->
+    <section id="panel-overview" class="admin-panel">
+      
+      <!-- Statistics Cards -->
+      <div id="admin-stats" class="admin-grid">
+        <!-- Stats rendered dynamically by admin.js -->
+      </div>
+
+      <!-- Pending Verifications -->
+      <div class="glass-card mt-8 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-[#d4af37] flex items-center gap-2">
+            <i data-lucide="user-plus" class="w-5 h-5"></i>
+            Pending Verifications
+          </h3>
+          <span id="pending-count" class="px-3 py-1 bg-[#d4af37]/20 text-[#d4af37] rounded-full text-sm font-medium">12 pending</span>
+        </div>
+        <div id="pending-members" class="widget-list">
+          <!-- Pending members rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <button class="glass-card p-6 text-center hover:bg-white/10 transition-all" onclick="AdminModule.switchTab('members')">
+          <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <i data-lucide="user-cog" class="w-7 h-7"></i>
+          </div>
+          <h4 class="font-semibold text-white mb-1 flex items-center justify-center gap-2">
+            Manage Members
+            <i data-lucide="arrow-right" class="w-4 h-4 opacity-50"></i>
+          </h4>
+          <p class="text-sm text-gray-400">View, edit, and moderate member accounts</p>
+        </button>
+        
+        <button class="glass-card p-6 text-center hover:bg-white/10 transition-all" onclick="AdminModule.switchTab('content')">
+          <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-[#d4af37]/20 flex items-center justify-center text-[#d4af37]">
+            <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+          </div>
+          <h4 class="font-semibold text-white mb-1 flex items-center justify-center gap-2">
+            Upload Content
+            <i data-lucide="arrow-right" class="w-4 h-4 opacity-50"></i>
+          </h4>
+          <p class="text-sm text-gray-400">Add magazines, photos, and documents</p>
+        </button>
+        
+        <button class="glass-card p-6 text-center hover:bg-white/10 transition-all" onclick="AdminModule.switchTab('moderation')">
+          <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-red-500/20 flex items-center justify-center text-red-400">
+            <i data-lucide="shield-alert" class="w-7 h-7"></i>
+          </div>
+          <h4 class="font-semibold text-white mb-1 flex items-center justify-center gap-2">
+            Moderation
+            <i data-lucide="arrow-right" class="w-4 h-4 opacity-50"></i>
+          </h4>
+          <p class="text-sm text-gray-400">Review reported posts and comments</p>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ==================== MEMBER MANAGEMENT PANEL ==================== -->
+    <section id="panel-members" class="admin-panel hidden">
+      
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-serif text-[#d4af37]">Member Management</h2>
+        <div class="flex gap-3">
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+            <input type="text" class="glass-input pl-10 pr-4 py-2 text-sm" placeholder="Search members...">
+          </div>
+          <button class="btn btn-emerald btn-sm">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Add Member
+          </button>
+        </div>
+      </div>
+
+      <!-- Members Table -->
+      <div class="glass-card admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="members-table-body">
+            <!-- Members rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex items-center justify-between mt-4">
+        <p class="text-sm text-gray-400">Showing 1-10 of 247 members</p>
+        <div class="flex gap-2">
+              <button class="btn btn-glass btn-sm flex items-center gap-1">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                Previous
+              </button>
+              <button class="btn btn-glass btn-sm flex items-center gap-1">
+                Next
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== CONTENT UPLOAD PANEL ==================== -->
+    <section id="panel-content" class="admin-panel hidden">
+      
+      <h2 class="text-2xl font-serif text-[#d4af37] mb-6">Content Upload</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Magazine Upload -->
+        <div class="glass-card p-6">
+          <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="book-open" class="w-5 h-5 text-[#d4af37]"></i>
+            Upload Magazine
+          </h3>
+          <form id="upload-form" class="space-y-4">
+            <div>
+              <label class="form-label">Year</label>
+              <select class="glass-input w-full">
+                <option value="">Select year</option>
+                <script>
+                  for (let year = 2026; year >= 1971; year--) {
+                    document.write(`<option value="${year}">${year}</option>`);
+                  }
+                </script>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Title</label>
+              <input type="text" class="glass-input w-full" placeholder="e.g., Traditions 2026">
+            </div>
+            <div>
+              <label class="form-label">Cover Image</label>
+              <div class="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
+                <i data-lucide="image-plus" class="w-10 h-10 mx-auto mb-2 text-gray-400"></i>
+                <p class="text-sm text-gray-400">Drag & drop or click to upload</p>
+                <p class="text-xs text-gray-500 mt-1">PNG, JPG up to 10MB</p>
+              </div>
+            </div>
+            <div>
+              <label class="form-label">PDF File</label>
+              <div class="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
+                <i data-lucide="file-up" class="w-10 h-10 mx-auto mb-2 text-gray-400"></i>
+                <p class="text-sm text-gray-400">Drag & drop or click to upload</p>
+                <p class="text-xs text-gray-500 mt-1">PDF up to 50MB</p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-gold w-full flex items-center justify-center gap-2">
+              <i data-lucide="upload" class="w-5 h-5"></i>
+              Upload Magazine
+            </button>
+          </form>
+        </div>
+
+        <!-- Gallery Upload -->
+        <div class="glass-card p-6">
+          <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="images" class="w-5 h-5 text-[#d4af37]"></i>
+            Upload to Vault
+          </h3>
+          <form class="space-y-4">
+            <div>
+              <label class="form-label">Year</label>
+              <select class="glass-input w-full">
+                <option value="">Select year</option>
+                <script>
+                  for (let year = 2026; year >= 1971; year--) {
+                    document.write(`<option value="${year}">${year}</option>`);
+                  }
+                </script>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Category</label>
+              <select class="glass-input w-full">
+                <option value="">Select category</option>
+                <option value="gala">Annual Gala</option>
+                <option value="induction">Induction Ceremony</option>
+                <option value="conference">Medical Conference</option>
+                <option value="reunion">Alumni Reunion</option>
+                <option value="mission">Charity Mission</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Caption</label>
+              <textarea class="glass-input w-full" rows="3" placeholder="Describe this photo or document..."></textarea>
+            </div>
+            <div>
+              <label class="form-label">Media Files</label>
+              <div class="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
+                <i data-lucide="images" class="w-10 h-10 mx-auto mb-2 text-gray-400"></i>
+                <p class="text-sm text-gray-400">Drag & drop files here</p>
+                <p class="text-xs text-gray-500 mt-1">Multiple files supported (PNG, JPG, PDF)</p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-emerald w-full flex items-center justify-center gap-2">
+              <i data-lucide="upload" class="w-5 h-5"></i>
+              Upload to Vault
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== MODERATION PANEL ==================== -->
+    <section id="panel-moderation" class="admin-panel hidden">
+      
+      <h2 class="text-2xl font-serif text-[#d4af37] mb-6">Content Moderation</h2>
+
+      <!-- Reported Posts -->
+      <div class="glass-card p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <i data-lucide="flag" class="w-5 h-5 text-red-400"></i>
+          Reported Posts <span class="text-sm text-gray-400">(3 pending)</span>
+        </h3>
+        <div class="space-y-4">
+          <div class="glass p-4 rounded-lg flex items-start justify-between">
+            <div class="flex gap-3">
+              <img src="https://i.pravatar.cc/150?img=20" alt="User" class="w-10 h-10 rounded-full border border-red-400/50">
+              <div>
+                <p class="text-sm font-medium text-white">Reported by Dr. Emily Roberts</p>
+                <p class="text-xs text-gray-400">Reason: Inappropriate content</p>
+                <p class="text-sm text-gray-300 mt-2 italic">"Original post content preview..."</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn btn-glass btn-sm flex items-center gap-1">
+                <i data-lucide="x-circle" class="w-4 h-4"></i>
+                Dismiss
+              </button>
+              <button class="btn btn-emerald btn-sm flex items-center gap-1">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                Remove Post
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flagged Comments -->
+      <div class="glass-card p-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <i data-lucide="message-square-warning" class="w-5 h-5 text-orange-400"></i>
+          Flagged Comments <span class="text-sm text-gray-400">(1 pending)</span>
+        </h3>
+        <div class="space-y-4">
+          <div class="glass p-4 rounded-lg flex items-start justify-between">
+            <div class="flex gap-3">
+              <img src="https://i.pravatar.cc/150?img=25" alt="User" class="w-10 h-10 rounded-full border border-orange-400/50">
+              <div>
+                <p class="text-sm font-medium text-white">Reported by Dr. Michael Chen</p>
+                <p class="text-xs text-gray-400">Reason: Harassment</p>
+                <p class="text-sm text-gray-300 mt-2 italic">"Comment content preview..."</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn btn-glass btn-sm flex items-center gap-1">
+                <i data-lucide="x-circle" class="w-4 h-4"></i>
+                Dismiss
+              </button>
+              <button class="btn btn-emerald btn-sm flex items-center gap-1">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                Remove Comment
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top">
+    <i data-lucide="chevron-up" class="w-6 h-6"></i>
+  </button>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/main.js"></script>
+  <script src="js/feed.js"></script>
+  <script src="js/admin.js"></script>
+  
+</body>
+</html>

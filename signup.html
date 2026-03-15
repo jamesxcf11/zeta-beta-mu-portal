@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Join Zeta Beta Mu Fraternity - Register for access to the elite medical professional network.">
+  <title>Register | Zeta Beta Mu Fraternity</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme auth-page">
+  
+  <!-- ============================================
+       GOLD STARDUST BACKGROUND ANIMATION
+       ============================================ -->
+  <div class="stardust-container">
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+  </div>
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- Authentication Container -->
+  <div class="auth-container min-h-screen py-8">
+    
+    <!-- Glassmorphism Registration Card -->
+    <div class="glass-heavy auth-card w-full max-w-lg">
+      
+      <!-- Logo -->
+      <div class="auth-logo">
+        <i data-lucide="user-plus"></i>
+      </div>
+      
+      <!-- Title & Subtitle -->
+      <h1 class="auth-title">Join the Brotherhood</h1>
+      <p class="auth-motto">Apply for membership in Zeta Beta Mu</p>
+      
+      <!-- Notice Box -->
+      <div class="glass p-4 mb-6 text-left">
+        <div class="flex items-start gap-3">
+          <i data-lucide="shield-check" class="w-5 h-5 text-[#d4af37] flex-shrink-0 mt-0.5"></i>
+          <div>
+            <p class="text-sm font-medium text-white mb-1">Verification Required</p>
+            <p class="text-xs text-gray-300">All registrations are reviewed by our administration team. You will receive an email notification once your account is verified.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Error Message Container -->
+      <div id="auth-error" class="hidden mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm"></div>
+      
+      <!-- Registration Form -->
+      <form id="signup-form" class="auth-form text-left">
+        
+        <!-- Personal Information Section -->
+        <div class="mb-6">
+          <h3 class="text-[#d4af37] font-semibold mb-4 flex items-center gap-2">
+            <i data-lucide="user" class="w-4 h-4"></i>
+            Personal Information
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Full Name -->
+            <div class="form-group">
+              <label for="full-name" class="form-label">Full Name *</label>
+              <div class="relative">
+                <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="full-name" 
+                  name="full-name"
+                  class="glass-input pl-10" 
+                  placeholder="Dr. John Smith"
+                  required
+                >
+              </div>
+            </div>
+            
+            <!-- Email -->
+            <div class="form-group">
+              <label for="email" class="form-label">Email Address *</label>
+              <div class="relative">
+                <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="email" 
+                  id="email" 
+                  name="email"
+                  class="glass-input pl-10" 
+                  placeholder="john@hospital.com"
+                  required
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Account Credentials Section -->
+        <div class="mb-6">
+          <h3 class="text-[#d4af37] font-semibold mb-4 flex items-center gap-2">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+            Account Credentials
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Username -->
+            <div class="form-group">
+              <label for="username" class="form-label">Username *</label>
+              <div class="relative">
+                <i data-lucide="at-sign" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="username" 
+                  name="username"
+                  class="glass-input pl-10" 
+                  placeholder="johnsmith"
+                  autocomplete="username"
+                  required
+                >
+              </div>
+            </div>
+            
+            <!-- Placeholder for grid alignment -->
+            <div class="hidden md:block"></div>
+            
+            <!-- Password -->
+            <div class="form-group">
+              <label for="password" class="form-label">Password *</label>
+              <div class="relative">
+                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="password" 
+                  id="password" 
+                  name="password"
+                  class="glass-input pl-10" 
+                  placeholder="Min. 6 characters"
+                  autocomplete="new-password"
+                  minlength="6"
+                  required
+                >
+              </div>
+            </div>
+            
+            <!-- Confirm Password -->
+            <div class="form-group">
+              <label for="confirm-password" class="form-label">Confirm Password *</label>
+              <div class="relative">
+                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="password" 
+                  id="confirm-password" 
+                  name="confirm-password"
+                  class="glass-input pl-10" 
+                  placeholder="Confirm password"
+                  autocomplete="new-password"
+                  required
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Professional Information Section -->
+        <div class="mb-6">
+          <h3 class="text-[#d4af37] font-semibold mb-4 flex items-center gap-2">
+            <i data-lucide="stethoscope" class="w-4 h-4"></i>
+            Professional Information
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Graduation Year -->
+            <div class="form-group">
+              <label for="graduation-year" class="form-label">Graduation Year *</label>
+              <div class="relative">
+                <i data-lucide="graduation-cap" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <select 
+                  id="graduation-year" 
+                  name="graduation-year"
+                  class="glass-input pl-10 appearance-none cursor-pointer"
+                  required
+                >
+                  <option value="">Select year</option>
+                  <script>
+                    for (let year = 2026; year >= 1971; year--) {
+                      document.write(`<option value="${year}">${year}</option>`);
+                    }
+                  </script>
+                </select>
+                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+              </div>
+            </div>
+            
+            <!-- Medical Field -->
+            <div class="form-group">
+              <label for="field" class="form-label">Field of Medicine *</label>
+              <div class="relative">
+                <i data-lucide="activity" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <select 
+                  id="field" 
+                  name="field"
+                  class="glass-input pl-10 appearance-none cursor-pointer"
+                  required
+                >
+                  <option value="">Select field</option>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Neurology">Neurology</option>
+                  <option value="Oncology">Oncology</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                  <option value="Orthopedics">Orthopedics</option>
+                  <option value="Dermatology">Dermatology</option>
+                  <option value="Psychiatry">Psychiatry</option>
+                  <option value="Surgery">Surgery</option>
+                  <option value="Internal Medicine">Internal Medicine</option>
+                  <option value="Emergency Medicine">Emergency Medicine</option>
+                  <option value="Radiology">Radiology</option>
+                  <option value="Pathology">Pathology</option>
+                  <option value="Anesthesiology">Anesthesiology</option>
+                  <option value="Obstetrics & Gynecology">Obstetrics & Gynecology</option>
+                  <option value="Other">Other</option>
+                </select>
+                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+              </div>
+            </div>
+            
+            <!-- Hospital/Institution -->
+            <div class="form-group md:col-span-2">
+              <label for="hospital" class="form-label">Hospital / Institution *</label>
+              <div class="relative">
+                <i data-lucide="building-2" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="hospital" 
+                  name="hospital"
+                  class="glass-input pl-10" 
+                  placeholder="e.g., St. Luke's Medical Center, Johns Hopkins Medicine"
+                  required
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Terms Agreement -->
+        <div class="mb-6">
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input 
+              type="checkbox" 
+              id="agree-terms" 
+              name="agree-terms"
+              class="w-5 h-5 rounded border-gray-500 bg-transparent text-[#d4af37] focus:ring-[#d4af37] mt-0.5"
+              required
+            >
+            <span class="text-sm text-gray-300">
+              I agree to the <a href="#" class="text-[#d4af37] hover:underline">Terms of Service</a> and 
+              <a href="#" class="text-[#d4af37] hover:underline">Privacy Policy</a>. 
+              I confirm that I am a member or alumni of Zeta Beta Mu Fraternity.
+            </span>
+          </label>
+        </div>
+        
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          class="btn btn-gold btn-lg w-full"
+          data-original-text="Submit Application"
+        >
+          <i data-lucide="send" class="w-5 h-5"></i>
+          Submit Application
+        </button>
+        
+      </form>
+      
+      <!-- Footer -->
+      <div class="auth-footer mt-8">
+        <p>Already have an account? <a href="login.html" class="font-semibold hover:underline">Login here</a></p>
+        <p class="mt-2 text-xs opacity-60">© 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+      </div>
+      
+    </div>
+    
+  </div>
+  
+  <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+  </script>
+  
+</body>
+</html>

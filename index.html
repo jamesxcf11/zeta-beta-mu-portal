@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Medical Excellence Blog & Magazine">
+  <title>Zeta Beta Mu Fraternity | Medical Excellence Blog</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- ============================================
+       GOLD STARDUST BACKGROUND ANIMATION
+       ============================================ -->
+  <div class="stardust-container">
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+  </div>
+  
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- ============================================
+       MOBILE HEADER
+       ============================================ -->
+  <header class="mobile-header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-gradient-to-br from-[#d4af37] to-[#b8941f] rounded-lg flex items-center justify-center text-[#064e3b] font-bold">
+        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+      </div>
+      <span class="font-serif text-lg font-semibold">Zeta Beta Mu</span>
+    </div>
+    <button id="hamburger-menu" class="hamburger" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Mobile Overlay -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <!-- Logo Section -->
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <i data-lucide="shield-plus" class="w-6 h-6"></i>
+      </div>
+      <div class="logo-text">
+        <h1 class="text-lg font-serif font-semibold">Zeta Beta Mu</h1>
+        <p class="text-xs opacity-70">Fraternity of Medical Excellence</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <a href="#feed" class="nav-link active">
+        <i data-lucide="home"></i>
+        <span>Feed</span>
+      </a>
+      <a href="#directory" class="nav-link">
+        <i data-lucide="stethoscope"></i>
+        <span>Directory</span>
+      </a>
+      <a href="#traditions" class="nav-link">
+        <i data-lucide="book-open"></i>
+        <span>Traditions</span>
+      </a>
+      <a href="#vault" class="nav-link">
+        <i data-lucide="archive"></i>
+        <span>Vault</span>
+      </a>
+      <a href="admin.html" class="nav-link">
+        <i data-lucide="shield"></i>
+        <span>Admin Panel</span>
+      </a>
+    </nav>
+    
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      
+      <!-- User Card -->
+      <div class="user-card">
+        <img id="user-avatar" src="https://i.pravatar.cc/150?img=11" alt="User" class="user-avatar">
+        <div class="user-info">
+          <div id="user-name" class="user-name">Dr. James Anderson</div>
+          <div class="user-role">Administrator</div>
+        </div>
+        <button id="logout-btn" class="icon-btn" title="Logout">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </button>
+      </div>
+      
+    </div>
+    
+  </aside>
+
+  <!-- ============================================
+       MAIN CONTENT - BLOG LAYOUT
+       ============================================ -->
+  <main id="main-content" class="main-content">
+
+    <!-- ==================== FEED SECTION ==================== -->
+    <section id="screen-feed" class="screen active">
+      
+      <!-- Header -->
+      <header class="top-header mb-8">
+        <h1 id="page-title" class="header-title flex items-center gap-3">
+          <i data-lucide="home" class="w-6 h-6 text-[#d4af37]"></i>
+          Feed
+        </h1>
+        <div class="header-actions">
+          <button class="icon-btn" title="Search">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </button>
+          <button class="icon-btn" title="Notifications">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-[#d4af37] rounded-full"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Feed Layout -->
+      <div class="feed-layout">
+        
+        <!-- Main Feed Column -->
+        <div class="feed-main">
+          
+          <!-- Post Composer -->
+          <div class="post-composer">
+            <div class="composer-header">
+              <img src="https://i.pravatar.cc/150?img=11" alt="User" class="composer-avatar">
+              <div class="composer-input-wrapper">
+                <textarea id="post-input" class="composer-input" placeholder="What's on your mind, Dr. Anderson?"></textarea>
+              </div>
+            </div>
+            <div class="composer-actions">
+              <div class="flex gap-2">
+                <button id="add-image-btn" class="composer-btn">
+                  <i data-lucide="image" class="w-4 h-4"></i>
+                  Photo
+                </button>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+              </div>
+              <button id="post-btn" class="btn btn-gold">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                Post
+              </button>
+            </div>
+            <div id="image-preview" class="composer-image-preview" style="display: none;">
+              <img id="preview-img" src="" alt="Preview">
+              <button id="remove-image" class="composer-image-remove">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Posts Container -->
+          <div id="posts-container"></div>
+
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="feed-sidebar">
+          
+          <!-- Birthdays Widget -->
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <i data-lucide="cake" class="w-5 h-5 text-[#d4af37]"></i>
+              <h3 class="sidebar-title">Birthdays</h3>
+            </div>
+            <div id="birthdays-list" class="widget-list">
+              <!-- Birthdays rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Announcements Widget -->
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <i data-lucide="megaphone" class="w-5 h-5 text-[#d4af37]"></i>
+              <h3 class="sidebar-title">Announcements</h3>
+            </div>
+            <div id="announcements-list" class="widget-list">
+              <!-- Announcements rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <i data-lucide="share-2" class="w-5 h-5 text-[#d4af37]"></i>
+              <h3 class="sidebar-title">Connect</h3>
+            </div>
+            <div class="social-links">
+              <a href="#" class="social-link facebook">
+                <i data-lucide="facebook" class="w-6 h-6"></i>
+                <div class="social-info">
+                  <span class="social-name">Facebook</span>
+                  <span class="social-handle">@ZetaBetaMu</span>
+                </div>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+              <a href="#" class="social-link instagram">
+                <i data-lucide="instagram" class="w-6 h-6"></i>
+                <div class="social-info">
+                  <span class="social-name">Instagram</span>
+                  <span class="social-handle">@zetabetamu</span>
+                </div>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== SCREEN 2: MEDICAL DIRECTORY ==================== -->
+    <section id="screen-directory" class="screen hidden">
+      
+      <header class="top-header">
+        <h1 class="header-title">Medical Directory</h1>
+      </header>
+      
+      <div class="search-container">
+        <i data-lucide="search" class="search-icon w-5 h-5"></i>
+        <input type="text" id="directory-search" class="glass-input search-input" 
+               placeholder="Search by name, hospital, or specialty...">
+      </div>
+      
+      <div class="filter-chips">
+        <button class="filter-chip active flex items-center gap-1"><i data-lucide="layout-grid" class="w-3 h-3"></i> All</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="heart-pulse" class="w-3 h-3"></i> Cardiology</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="brain" class="w-3 h-3"></i> Neurology</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="ribbon" class="w-3 h-3"></i> Oncology</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="baby" class="w-3 h-3"></i> Pediatrics</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="scissors" class="w-3 h-3"></i> Surgery</button>
+      </div>
+      
+      <div id="directory-grid" class="directory-grid">
+        <!-- Members loaded dynamically -->
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 3: TRADITIONS LIBRARY ==================== -->
+    <section id="screen-traditions" class="screen hidden">
+      <header class="top-header">
+        <h1 class="header-title">Traditions Library</h1>
+      </header>
+      
+      <div id="magazines-grid" class="magazines-grid">
+        <!-- Magazines loaded dynamically -->
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 4: HISTORICAL VAULT ==================== -->
+    <section id="screen-vault" class="screen hidden">
+      <header class="top-header">
+        <h1 class="header-title">Historical Vault</h1>
+      </header>
+
+      <!-- Vault Stats -->
+      <div id="vault-stats" class="vault-stats">
+        <!-- Stats rendered dynamically -->
+      </div>
+
+      <!-- Category Filter -->
+      <div id="vault-categories" class="vault-categories">
+        <!-- Categories rendered dynamically -->
+      </div>
+
+      <!-- Search & Timeline Row -->
+      <div class="flex flex-col lg:flex-row gap-4 mb-6">
+        <div class="vault-search-wrapper">
+          <i data-lucide="search" class="w-5 h-5"></i>
+          <input type="text" id="vault-search" class="glass-input" placeholder="Search photos by title, location, or description...">
+        </div>
+      </div>
+      
+      <!-- Year Timeline -->
+      <div id="vault-timeline" class="vault-timeline">
+        <!-- Timeline rendered dynamically -->
+      </div>
+      
+      <!-- Gallery Layout with Info Panel -->
+      <div class="vault-layout">
+        <div id="vault-gallery" class="vault-gallery">
+          <!-- Gallery items rendered dynamically -->
+        </div>
+        
+        <!-- Info Panel -->
+        <aside id="vault-info" class="vault-info">
+          <!-- Info panel rendered dynamically -->
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top">
+    <i data-lucide="chevron-up" class="w-6 h-6"></i>
+  </button>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/main.js"></script>
+  <script src="js/feed.js"></script>
+  <script src="js/directory.js"></script>
+  <script src="js/traditions.js"></script>
+  <script src="js/vault.js"></script>
+  
+</body>
+</html>

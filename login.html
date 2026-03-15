@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Elite Medical Professional Portal. Login to access the private social hub and professional network.">
+  <title>Login | Zeta Beta Mu Fraternity</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme auth-page">
+  
+  <!-- ============================================
+       GOLD STARDUST BACKGROUND ANIMATION
+       ============================================ -->
+  <div class="stardust-container">
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+  </div>
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- Authentication Container -->
+  <div class="auth-container">
+    
+    <!-- Glassmorphism Login Card -->
+    <div class="glass-heavy auth-card">
+      
+      <!-- Logo -->
+      <div class="auth-logo">
+        <i data-lucide="graduation-cap"></i>
+      </div>
+      
+      <!-- Title & Motto -->
+      <h1 class="auth-title">Zeta Beta Mu</h1>
+      <p class="auth-motto">"Zeal for Brotherhood among Medics"</p>
+      
+      <!-- Error Message Container -->
+      <div id="auth-error" class="hidden mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm"></div>
+      
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form">
+        
+        <!-- Username Field -->
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <div class="relative">
+            <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              class="glass-input pl-10" 
+              placeholder="Enter your username"
+              autocomplete="username"
+              required
+            >
+          </div>
+        </div>
+        
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="relative">
+            <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              class="glass-input pl-10" 
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+            <button 
+              type="button" 
+              id="toggle-password"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              onclick="togglePasswordVisibility()"
+            >
+              <i data-lucide="eye" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Form Options -->
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" id="remember-me" name="remember-me">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-password hover:text-[#d4af37] transition-colors">Forgot Password?</a>
+        </div>
+        
+        <!-- Login Button -->
+        <button 
+          type="submit" 
+          class="btn btn-gold btn-lg w-full"
+          data-original-text="Login"
+        >
+          <i data-lucide="log-in" class="w-5 h-5"></i>
+          Login
+        </button>
+        
+      </form>
+      
+      <!-- Divider -->
+      <div class="auth-divider">
+        <span>New to the fraternity?</span>
+      </div>
+      
+      <!-- Register Link -->
+      <a href="signup.html" class="btn btn-glass w-full">
+        <i data-lucide="user-plus" class="w-5 h-5"></i>
+        Create Account
+      </a>
+      
+      <!-- Footer -->
+      <div class="auth-footer">
+        <p>Protected portal for Zeta Beta Mu members only</p>
+        <p class="mt-2 text-xs opacity-60">© 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+      </div>
+      
+    </div>
+    
+  </div>
+  
+  <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authentication Scripts -->
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  
+  <script>
+    // Password visibility toggle
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.getElementById('toggle-password');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.innerHTML = '<i data-lucide="eye-off" class="w-5 h-5"></i>';
+      } else {
+        passwordInput.type = 'password';
+        toggleBtn.innerHTML = '<i data-lucide="eye" class="w-5 h-5"></i>';
+      }
+      
+      lucide.createIcons();
+    }
+    
+    // Initialize icons
+    lucide.createIcons();
+  </script>
+  
+</body>
+</html>
