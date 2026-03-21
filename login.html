@@ -77,6 +77,7 @@
         <a href="#about">About</a>
         <a href="#gallery">Gallery</a>
         <a href="#events">Events</a>
+        <a href="#merch">Merch</a>
         <a href="#contact">Contact</a>
       </div>
       <div class="landing-navbar-actions">
@@ -99,6 +100,7 @@
       <a href="#about">About</a>
       <a href="#gallery">Gallery</a>
       <a href="#events">Events</a>
+      <a href="#merch">Merch</a>
       <a href="#contact">Contact</a>
       <div class="flex gap-3 pt-2">
         <button onclick="document.getElementById('username').focus(); window.scrollTo({top:0,behavior:'smooth'})" class="btn btn-glass btn-sm flex-1">Login</button>
@@ -120,7 +122,7 @@
           EST. 1971
         </div>
         <h1 class="landing-hero-title">Zeta Beta Mu</h1>
-        <p class="landing-hero-motto">"Zeal for Brotherhood among Medics"</p>
+        <p class="landing-hero-motto">Scholarship. Service. Sociability. Sacrifice. Idealism.</p>
         <p class="landing-hero-desc">
           A distinguished fraternity of medical professionals united by a shared commitment to excellence, 
           brotherhood, and service. Join a network of physicians, surgeons, and specialists who are shaping 
@@ -152,7 +154,7 @@
           
           <!-- Logo -->
           <div class="auth-logo">
-            <img src="image/OG logo.png" alt="ZBM Logo" class="auth-logo-img">
+            <img src="image/logo1.png" alt="ZBM Logo" class="auth-logo-img">
           </div>
           
           <!-- Title -->
@@ -246,51 +248,138 @@
   </section>
 
   <!-- ============================================
-       ABOUT US SECTION
+       ABOUT US SECTION - REDESIGNED
        ============================================ -->
-  <section id="about" class="landing-section">
-    <div class="landing-section-inner">
-      <div class="landing-section-header">
-        <span class="landing-section-badge">
-          <i data-lucide="info" class="w-4 h-4"></i>
-          About Us
+  <section id="about" class="landing-section-about">
+    <div class="about-container">
+      
+      <!-- Header -->
+      <div class="about-header">
+        <span class="about-badge">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          DISCOVER OUR STORY
         </span>
-        <h2 class="landing-section-title">A Legacy of Medical Excellence</h2>
-        <p class="landing-section-subtitle">
-          Founded in 1971, Zeta Beta Mu has been a beacon of brotherhood and professional development for medical practitioners.
-        </p>
+        <h2 class="about-title">About Us</h2>
+        <div class="about-divider"></div>
       </div>
 
-      <div class="landing-about-grid">
-        <div class="landing-about-card glass-card">
-          <div class="landing-about-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
-            <i data-lucide="heart-pulse" class="w-8 h-8"></i>
+      <!-- Description -->
+      <p class="about-description">
+        The Zeta Beta Mu Fraternity is a brotherhood founded in 1971 at the University of Santo Tomas, rooted in a shared commitment to excellence, leadership, and service among future medical professionals. Guided by its five pillars—Scholarship, Service, Sociability, Sacrifice, and Idealism—the fraternity cultivates well-rounded individuals who strive for academic distinction, meaningful community engagement, strong bonds of brotherhood, selfless dedication, and principled living. Through generations, it has continued to uphold its legacy of shaping competent, compassionate physicians and leaders dedicated to making a lasting impact in society.
+      </p>
+
+      <!-- Image on Top -->
+      <div class="about-image-top-container" data-animate="center">
+        <div class="about-image-frame-top">
+          <img src="image/aboutus.jpg" alt="Zeta Beta Mu Fraternity" class="about-image-top">
+          <div class="about-image-overlay-top">
+            <a href="#gallery" class="about-portfolio-btn">
+              Our Heritage
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
           </div>
-          <h3>Medical Excellence</h3>
-          <p>Our members represent the pinnacle of medical practice across cardiology, neurology, oncology, surgery, and many more specialties.</p>
-        </div>
-        <div class="landing-about-card glass-card">
-          <div class="landing-about-icon" style="background: rgba(212, 175, 55, 0.15); color: #d4af37;">
-            <i data-lucide="users" class="w-8 h-8"></i>
-          </div>
-          <h3>Brotherhood</h3>
-          <p>A lifelong bond connecting medical professionals across generations, hospitals, and borders — supporting each other from residency to retirement.</p>
-        </div>
-        <div class="landing-about-card glass-card">
-          <div class="landing-about-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-            <i data-lucide="heart-handshake" class="w-8 h-8"></i>
-          </div>
-          <h3>Community Service</h3>
-          <p>Through charity missions, free clinics, and health fairs, we give back to the communities that need us the most.</p>
-        </div>
-        <div class="landing-about-card glass-card">
-          <div class="landing-about-icon" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
-            <i data-lucide="book-open" class="w-8 h-8"></i>
-          </div>
-          <h3>Rich Traditions</h3>
-          <p>Over five decades of traditions, ceremonies, and stories documented in our Traditions Library and Historical Vault.</p>
         </div>
       </div>
+
+      <!-- 2x3 Grid Layout -->
+      <div class="about-grid-2x3">
+        
+        <!-- Row 1 -->
+        <div class="about-service-card" data-animate="grid-1">
+          <div class="about-service-icon">
+            <i data-lucide="heart-pulse" class="w-6 h-6"></i>
+            <i data-lucide="sparkles" class="about-service-icon-accent"></i>
+          </div>
+          <h3 class="about-service-title">Medical Excellence</h3>
+          <p class="about-service-desc">Our members represent the pinnacle of medical practice across cardiology, neurology, oncology, surgery, and many more specialties.</p>
+        </div>
+        
+        <div class="about-service-card" data-animate="grid-2">
+          <div class="about-service-icon">
+            <i data-lucide="book-open" class="w-6 h-6"></i>
+            <i data-lucide="sparkles" class="about-service-icon-accent"></i>
+          </div>
+          <h3 class="about-service-title">Rich Traditions</h3>
+          <p class="about-service-desc">Over five decades of traditions, ceremonies, and stories documented in our Traditions Library and Historical Vault.</p>
+        </div>
+        
+        <div class="about-service-card" data-animate="grid-3">
+          <div class="about-service-icon">
+            <i data-lucide="users" class="w-6 h-6"></i>
+            <i data-lucide="check-circle" class="about-service-icon-accent"></i>
+          </div>
+          <h3 class="about-service-title">Brotherhood</h3>
+          <p class="about-service-desc">A lifelong bond connecting medical professionals across generations, hospitals, and borders — supporting each other from residency to retirement.</p>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="about-service-card" data-animate="grid-4">
+          <div class="about-service-icon">
+            <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+            <i data-lucide="check-circle" class="about-service-icon-accent"></i>
+          </div>
+          <h3 class="about-service-title">Scholarship</h3>
+          <p class="about-service-desc">Academic excellence and continuous learning are at the core of our fraternity values, fostering intellectual growth among members.</p>
+        </div>
+        
+        <div class="about-service-card" data-animate="grid-5">
+          <div class="about-service-icon">
+            <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+            <i data-lucide="star" class="about-service-icon-accent"></i>
+          </div>
+          <h3 class="about-service-title">Community Service</h3>
+          <p class="about-service-desc">Through charity missions, free clinics, and health fairs, we give back to the communities that need us the most.</p>
+        </div>
+        
+        <div class="about-service-card" data-animate="grid-6">
+          <div class="about-service-icon">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+            <i data-lucide="star" class="about-service-icon-accent"></i>
+          </div>
+          <h3 class="about-service-title">Idealism</h3>
+          <p class="about-service-desc">Upholding the highest ethical standards and ideals in medical practice, serving as role models for future generations.</p>
+        </div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="about-stats">
+        <div class="about-stat-card" data-animate="stat">
+          <div class="about-stat-icon">
+            <i data-lucide="award" class="w-6 h-6"></i>
+          </div>
+          <div class="about-stat-value">55+</div>
+          <div class="about-stat-label">Years of Excellence</div>
+          <div class="about-stat-bar"></div>
+        </div>
+        
+        <div class="about-stat-card" data-animate="stat">
+          <div class="about-stat-icon">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+          <div class="about-stat-value">500+</div>
+          <div class="about-stat-label">Distinguished Alumni</div>
+          <div class="about-stat-bar"></div>
+        </div>
+        
+        <div class="about-stat-card" data-animate="stat">
+          <div class="about-stat-icon">
+            <i data-lucide="calendar" class="w-6 h-6"></i>
+          </div>
+          <div class="about-stat-value">1971</div>
+          <div class="about-stat-label">Founded at UST</div>
+          <div class="about-stat-bar"></div>
+        </div>
+        
+        <div class="about-stat-card" data-animate="stat">
+          <div class="about-stat-icon">
+            <i data-lucide="trending-up" class="w-6 h-6"></i>
+          </div>
+          <div class="about-stat-value">100%</div>
+          <div class="about-stat-label">Medical Professionals</div>
+          <div class="about-stat-bar"></div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -387,9 +476,156 @@
   </section>
 
   <!-- ============================================
+       MERCHANDISE / STORE SECTION
+       ============================================ -->
+  <section id="merch" class="landing-section landing-section-alt">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <span class="landing-section-badge">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          Merchandise
+        </span>
+        <h2 class="landing-section-title">Official ZBM Store</h2>
+        <p class="landing-section-subtitle">
+          Show your pride and support the brotherhood with exclusive Zeta Beta Mu merchandise.
+        </p>
+      </div>
+
+      <div class="merch-grid">
+        <!-- Black Cap -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-black-cap.png" alt="ZBM Embroidered Cap (Black)" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Embroidered Cap (Black)</h3>
+            <p class="merch-description">Premium black cap with embroidered ZBM logo</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 1,500</span>
+              <button class="merch-inquire-btn">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                Inquire
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Green Cap -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-green-cap.png" alt="ZBM Embroidered Cap (Green)" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Embroidered Cap (Green)</h3>
+            <p class="merch-description">Classic green cap with gold embroidered logo</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 1,500</span>
+              <button class="merch-inquire-btn">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                Inquire
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coaster Set -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-coaster.png" alt="ZBM Coaster (4 Pieces)" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Coaster (4 Pieces)</h3>
+            <p class="merch-description">Elegant coaster set with embroidered ZBM emblem</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 500</span>
+              <button class="merch-inquire-btn">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                Inquire
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fridge Magnet -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-fridge-magnet.png" alt="ZBM Fridge Magnet" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Fridge Magnet</h3>
+            <p class="merch-description">Premium fridge magnet with ZBM branding</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 300</span>
+              <button class="merch-inquire-btn">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                Inquire
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stickers -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-stickers.png" alt="ZBM Stickers" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Stickers</h3>
+            <p class="merch-description">High-quality vinyl stickers with ZBM logo</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 200</span>
+              <button class="merch-inquire-btn">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                Inquire
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-10">
+        <p class="landing-muted-text text-sm">
+          <i data-lucide="info" class="w-4 h-4 inline-block mr-1 align-middle"></i>
+          All proceeds support the Zeta Beta Mu Fraternity and its charitable initiatives.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
        CONTACT / SOCIAL SECTION
        ============================================ -->
-  <section id="contact" class="landing-section landing-section-alt">
+  <section id="contact" class="landing-section">
     <div class="landing-section-inner">
       <div class="landing-section-header">
         <span class="landing-section-badge">
@@ -443,6 +679,7 @@
         <a href="#about">About Us</a>
         <a href="#gallery">Gallery</a>
         <a href="#events">Events</a>
+        <a href="#merch">Merchandise</a>
         <a href="signup.html">Join Us</a>
       </div>
       <div class="landing-footer-links">

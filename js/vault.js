@@ -14,6 +14,30 @@ const VaultModule = {
     itemsPerYear: { min: 3, max: 8 }
   },
 
+  // Sample vault images
+  sampleImages: [
+    '012ec369-ea52-42fc-912a-d1ef7504950a.jpg',
+    '10cd9e8d-2106-42c5-996a-ba7b590fe852.jpg',
+    '21f815ad-4772-4ed3-b327-9aa23fee294e.jpg',
+    '28da8bc3-b009-46b1-a938-ff815d169cc3.jpg',
+    '2eaf4706-2fdd-47ba-ae98-a07b479269e6.jpg',
+    '2f8a6a33-7bd4-4672-9cdf-3cd4449d616e.jpg',
+    '47db4c7e-009a-4261-a8e2-d7a2f6f4eb55.jpg',
+    '5349e504-5814-469a-aac3-cd15565c51a8.jpg',
+    '542a8380-fae7-4ae4-9372-3bd5c0c42c7f.jpg',
+    '6525a973-34cf-40e0-b1e0-417e675d8d41.jpg',
+    '66ac2a3f-ed7a-44cc-9d5e-0db23b1b86d4.jpg',
+    '75e230e1-8c53-4397-ba14-b2606780ce41.jpg',
+    '8ecbf87d-4371-4e5d-8f92-4976f4500daf.jpg',
+    'ac6376cd-926d-4cde-881b-8038f5c14a65.jpg',
+    'be8869ff-3988-42f8-a3b4-8eff81a42ba2.jpg',
+    'c50e3c67-1e97-4271-a61e-5ca8cb63eaac.jpg',
+    'cc5273a3-24ce-414a-82dc-d54406d977bf.jpg',
+    'ceb34cb3-f492-4828-bfe2-628662bfad4f.jpg',
+    'e680bf91-375b-40e2-854f-096cb9170daf.jpg',
+    'e74af5dd-cea2-40c6-a1f4-c7c00ad8d01f.jpg'
+  ],
+
   // State
   years: [],
   galleryItems: {},
@@ -136,6 +160,16 @@ const VaultModule = {
         const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
         const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
         
+        // Use sample images for recent years, placeholders for older years
+        const imageIndex = (year - this.config.startYear + i) % this.sampleImages.length;
+        const useSampleImage = year >= 2020;
+        const imagePath = useSampleImage 
+          ? `sample vault/${this.sampleImages[imageIndex]}`
+          : `https://picsum.photos/400/300?random=${year * 100 + i}`;
+        const fullImagePath = useSampleImage
+          ? `sample vault/${this.sampleImages[imageIndex]}`
+          : `https://picsum.photos/1200/800?random=${year * 100 + i}`;
+
         this.galleryItems[year].push({
           id: `${year}-${i}`,
           year: year,
@@ -145,8 +179,8 @@ const VaultModule = {
           location: template.location,
           date: `${year}-${month}-${day}`,
           formattedDate: this.formatDate(`${year}-${month}-${day}`),
-          thumbnail: `https://picsum.photos/400/300?random=${year * 100 + i}`,
-          fullImage: `https://picsum.photos/1200/800?random=${year * 100 + i}`,
+          thumbnail: imagePath,
+          fullImage: fullImagePath,
           photographer: this.getRandomPhotographer(),
           attendees: Math.floor(Math.random() * 200) + 20,
           featured: i === 0,
