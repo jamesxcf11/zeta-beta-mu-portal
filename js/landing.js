@@ -163,7 +163,6 @@ const LandingModule = {
    */
   init() {
     this.setupStickyNavbar();
-    this.setupMobileMenu();
     this.renderPublicGallery();
     this.setupAboutAnimations();
   },
@@ -203,36 +202,6 @@ const LandingModule = {
         requestAnimationFrame(updateNavbar);
         ticking = true;
       }
-    });
-  },
-
-  /**
-   * Setup mobile menu toggle for navbar
-   */
-  setupMobileMenu() {
-    const toggle = document.getElementById('landing-mobile-toggle');
-    const menu = document.getElementById('landing-mobile-menu');
-    if (!toggle || !menu) return;
-
-    toggle.addEventListener('click', () => {
-      const isOpen = menu.classList.contains('open');
-      if (isOpen) {
-        menu.classList.remove('open');
-        toggle.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
-      } else {
-        menu.classList.add('open');
-        toggle.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
-      }
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-    });
-
-    // Close menu when clicking a link
-    menu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        menu.classList.remove('open');
-        toggle.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-      });
     });
   },
 
