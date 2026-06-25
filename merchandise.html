@@ -20,7 +20,7 @@
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="dark-theme">
+<body class="dark-theme subpage">
 
   <!-- ============================================
        GOLD STARDUST BACKGROUND ANIMATION
@@ -62,6 +62,83 @@
   
   <!-- Gold Dust Overlay -->
   <div class="stardust-overlay"></div>
+
+  <!-- ============================================
+       MOBILE PORTAL DRAWER (matches Feed page)
+       ============================================ -->
+  <header class="mobile-header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-10 h-10 object-contain">
+      </div>
+      <span class="font-serif text-lg font-semibold">Zeta Beta Mu</span>
+    </div>
+    <button id="hamburger-menu" class="hamburger" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-12 h-12 object-contain">
+      </div>
+      <div class="logo-text">
+        <h1 class="text-lg font-serif font-semibold">Zeta Beta Mu</h1>
+        <p class="text-xs opacity-70">Zeal for Brotherhood among Medics</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="home.html" class="nav-link">
+        <i data-lucide="home"></i>
+        <span>Feed</span>
+      </a>
+      <a href="directory.html" class="nav-link">
+        <i data-lucide="stethoscope"></i>
+        <span>Directory</span>
+      </a>
+      <a href="traditions.html" class="nav-link">
+        <i data-lucide="book-open"></i>
+        <span>Traditions</span>
+      </a>
+      <a href="vault.html" class="nav-link">
+        <i data-lucide="archive"></i>
+        <span>Vault</span>
+      </a>
+      <a href="merchandise.html" class="nav-link active">
+        <i data-lucide="shopping-bag"></i>
+        <span>Merchandise</span>
+      </a>
+      <a href="memoriam.html" class="nav-link">
+        <i data-lucide="flame"></i>
+        <span>In Memoriam</span>
+      </a>
+      <a href="admin.html" class="nav-link nav-link-officer" id="officer-tools-link">
+        <i data-lucide="shield"></i>
+        <span>Officer Tools</span>
+        <span class="nav-officer-badge">Officers</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <img id="user-avatar" src="https://i.pravatar.cc/150?img=11" alt="User" class="user-avatar">
+        <div class="user-info">
+          <div id="user-name" class="user-name">Dr. James Anderson</div>
+          <div class="user-role">Administrator</div>
+        </div>
+        <button id="logout-btn" class="icon-btn" title="Logout">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
 
   <!-- ============================================
        NAVIGATION BAR

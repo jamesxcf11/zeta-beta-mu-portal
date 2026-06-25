@@ -7997,3 +7997,39 @@ a:hover {
   color: rgba(255, 255, 255, 0.55);
   margin-top: 0.5rem;
 }
+
+/* --- Feed sub-pages: reuse the portal sidebar drawer for mobile nav --- */
+/* On desktop the sub-pages use the top landing-navbar, so hide the fixed
+   sidebar / mobile header that are otherwise always-on for the Feed page. */
+body.subpage .sidebar,
+body.subpage .mobile-header,
+body.subpage .mobile-overlay {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  body.subpage .landing-navbar {
+    display: none;
+  }
+
+  body.subpage .mobile-header {
+    display: flex;
+  }
+
+  body.subpage .sidebar {
+    display: flex;
+  }
+
+  body.subpage .mobile-overlay {
+    display: block;
+    pointer-events: none;
+  }
+
+  body.subpage .mobile-overlay.overlay-active {
+    pointer-events: auto;
+  }
+
+  body.subpage .landing-section {
+    padding-top: var(--space-xl) !important;
+  }
+}
