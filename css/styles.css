@@ -7998,6 +7998,69 @@ a:hover {
   margin-top: 0.5rem;
 }
 
+/* ============================================================
+   MOBILE-FIRST REFINEMENTS (mobile-first-design skill)
+   ============================================================ */
+
+/* Keep the merchandise cart button clear of the bottom-right theme toggle */
+.cart-fab {
+  bottom: 6rem;
+}
+
+@media (max-width: 768px) {
+  .cart-fab {
+    bottom: 5rem;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+
+  /* Simple pages (login, signup, tribute detail) only have a single
+     "Back" action in the navbar and no mobile drawer, so keep that
+     action visible instead of hiding it like the multi-link navbars. */
+  body:not(.subpage):not(.landing-page) .landing-navbar-actions {
+    display: flex;
+  }
+
+  /* Comfortable touch targets (min ~44px) */
+  .btn-sm {
+    min-height: 42px;
+  }
+
+  .filter-chip {
+    min-height: 38px;
+  }
+
+  /* Page toolbars stack full-width and buttons grow to fill the row */
+  .vault-toolbar-actions,
+  .directory-admin-actions {
+    width: 100%;
+  }
+
+  .vault-toolbar-actions .btn,
+  .directory-admin-actions .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  /* Reader modal: stack nav controls comfortably on small screens */
+  .reader-card {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Weekly highlights: single column on the smallest screens */
+  .vault-highlights-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Checkout fulfillment/payment options wrap to full width */
+  .checkout-option {
+    flex: 1 1 100%;
+  }
+}
+
 /* --- Feed sub-pages: reuse the portal sidebar drawer for mobile nav --- */
 /* On desktop the sub-pages use the top landing-navbar, so hide the fixed
    sidebar / mobile header that are otherwise always-on for the Feed page. */
