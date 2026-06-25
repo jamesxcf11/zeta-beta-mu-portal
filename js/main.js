@@ -676,11 +676,46 @@ const AuthHelper = {
 /**
  * Initialize all modules when DOM is ready
  */
+// ============================================
+// LANDING NAVBAR MOBILE MENU
+// ============================================
+
+const LandingNav = {
+  init() {
+    const toggle = document.getElementById('landing-mobile-toggle');
+    const menu = document.getElementById('landing-mobile-menu');
+    if (!toggle || !menu) return;
+
+    const close = () => {
+      menu.classList.remove('open');
+      toggle.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+      toggle.setAttribute('aria-expanded', 'false');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    };
+
+    toggle.addEventListener('click', () => {
+      const isOpen = menu.classList.toggle('open');
+      toggle.innerHTML = isOpen
+        ? '<i data-lucide="x" class="w-6 h-6"></i>'
+        : '<i data-lucide="menu" class="w-6 h-6"></i>';
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+
+    menu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', close);
+    });
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Lucide icons
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
+
+  // Initialize landing navbar mobile menu (sub-pages)
+  LandingNav.init();
 
   // Initialize theme
   ThemeManager.init();
