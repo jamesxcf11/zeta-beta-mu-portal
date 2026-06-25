@@ -94,18 +94,39 @@
         <i data-lucide="menu" class="w-6 h-6"></i>
       </button>
     </div>
-    <!-- Mobile dropdown -->
-    <div id="landing-mobile-menu" class="landing-mobile-menu">
-      <a href="#about">About</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#events">Events</a>
-      <a href="#contact">Contact</a>
-      <div class="flex gap-3 pt-2">
-        <a href="login.html" class="btn btn-glass btn-sm flex-1 text-center">Login</a>
-        <a href="signup.html" class="btn btn-gold btn-sm flex-1 text-center">Sign Up</a>
+  </nav>
+
+  <!-- Mobile slide-in menu (matches logged-in sidebar design) -->
+  <div id="landing-mobile-overlay" class="landing-mobile-overlay"></div>
+  <aside id="landing-mobile-menu" class="landing-mobile-menu">
+    <div class="landing-mobile-menu-logo">
+      <div class="landing-mobile-menu-logo-icon">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-12 h-12 object-contain">
+      </div>
+      <div class="landing-mobile-menu-logo-text">
+        <h1 class="landing-mobile-menu-title">Zeta Beta Mu</h1>
+        <p class="landing-mobile-menu-subtitle">Zeal for Brotherhood among Medics</p>
       </div>
     </div>
-  </nav>
+
+    <nav class="landing-mobile-menu-nav">
+      <a href="#about" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
+      <a href="#gallery" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
+      <a href="#events" class="nav-link"><i data-lucide="calendar"></i><span>Events</span></a>
+      <a href="#contact" class="nav-link"><i data-lucide="mail"></i><span>Contact</span></a>
+    </nav>
+
+    <div class="landing-mobile-menu-footer">
+      <a href="login.html" class="btn btn-glass btn-sm">
+        <i data-lucide="log-in" class="w-4 h-4"></i>
+        Login
+      </a>
+      <a href="signup.html" class="btn btn-gold btn-sm">
+        <i data-lucide="user-plus" class="w-4 h-4"></i>
+        Sign Up
+      </a>
+    </div>
+  </aside>
 
   <!-- ============================================
        HERO SECTION — Brotherhood First

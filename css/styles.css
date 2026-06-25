@@ -3910,27 +3910,106 @@ a:hover {
   padding: 0.25rem;
 }
 
-.landing-mobile-menu {
+/* Mobile slide-in menu — mirrors the logged-in sidebar design */
+.landing-mobile-overlay {
   display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 250;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.landing-mobile-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+.landing-mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  max-width: 80vw;
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--glass-blur-heavy));
+  -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
+  border-right: 1px solid var(--glass-edge);
+  z-index: 260;
+  padding: var(--space-xl);
+  display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 0 2rem 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: var(--space-lg);
+  transform: translateX(-100%);
+  transition: transform var(--transition-slow);
 }
 
 .landing-mobile-menu.open {
+  transform: translateX(0);
+}
+
+.landing-mobile-menu-logo {
   display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--glass-edge);
 }
 
-.landing-mobile-menu a {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.95rem;
-  padding: 0.5rem 0;
-  text-decoration: none;
+.landing-mobile-menu-logo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
-.landing-mobile-menu a:hover {
-  color: #d4af37;
+.landing-mobile-menu-logo-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.landing-mobile-menu-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.landing-mobile-menu-subtitle {
+  font-size: 0.7rem;
+  color: var(--accent-gold);
+  font-style: italic;
+  margin-top: 0.15rem;
+}
+
+.landing-mobile-menu-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.landing-mobile-menu-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--glass-edge);
+}
+
+.landing-mobile-menu-footer .btn {
+  width: 100%;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
