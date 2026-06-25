@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Historical Vault">
+  <title>Historical Vault | Zeta Beta Mu Fraternity</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- ============================================
+       GOLD STARDUST BACKGROUND ANIMATION
+       ============================================ -->
+  <div class="stardust-container">
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+  </div>
+  
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- ============================================
+       NAVIGATION BAR
+       ============================================ -->
+  <nav class="landing-navbar" style="opacity: 1; transform: translateY(0);">
+    <div class="landing-navbar-inner">
+      <a href="home.html" class="landing-navbar-logo">
+        <div class="landing-navbar-logo-icon">
+          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+        </div>
+        <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
+      </a>
+      <div class="landing-navbar-links">
+        <a href="home.html">Home</a>
+        <a href="directory.html">Directory</a>
+        <a href="traditions.html">Traditions</a>
+        <a href="vault.html" class="active">Vault</a>
+        <a href="merchandise.html">Merchandise</a>
+        <a href="memoriam.html">In Memoriam</a>
+      </div>
+      <div class="landing-navbar-actions">
+        <a href="home.html" class="btn btn-glass btn-sm">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          Back to Portal
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       VAULT SECTION
+       ============================================ -->
+  <section class="landing-section" style="padding-top: 120px;">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <span class="landing-section-badge">
+          <i data-lucide="archive" class="w-4 h-4"></i>
+          Historical Vault
+        </span>
+        <h2 class="landing-section-title">Photo Archives</h2>
+        <p class="landing-section-subtitle">
+          Preserving our fraternity's rich history through photographs and memories spanning over 50 years.
+        </p>
+      </div>
+
+      <!-- Vault Stats -->
+      <div id="vault-stats" class="vault-stats-clean">
+        <!-- Stats rendered dynamically -->
+      </div>
+
+      <!-- Vault Toolbar -->
+      <div class="vault-toolbar">
+        <div class="vault-toolbar-search">
+          <i data-lucide="search" class="w-5 h-5"></i>
+          <input type="text" id="vault-search" class="glass-input" placeholder="Search albums by title, location, or event...">
+        </div>
+        <div class="vault-toolbar-actions">
+          <button class="btn btn-gold btn-sm" onclick="VaultModule.openUploadModal()">
+            <i data-lucide="upload" class="w-4 h-4"></i>
+            Upload Photos / Videos
+          </button>
+          <button id="officer-view-btn" class="btn btn-glass btn-sm" onclick="VaultModule.toggleOfficerView()" title="Officers only">
+            <i data-lucide="shield" class="w-4 h-4"></i>
+            Officer View
+          </button>
+        </div>
+      </div>
+
+      <!-- Weekly Highlights -->
+      <div class="vault-highlights">
+        <div class="vault-highlights-header">
+          <h3 class="vault-highlights-title">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+            Weekly Highlights
+          </h3>
+          <span class="vault-highlights-note">Top photos this week, ranked by reactions &amp; comments</span>
+        </div>
+        <div class="vault-highlights-row">
+          <div class="vault-highlight-card">
+            <div class="vault-highlight-thumb"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <div class="vault-highlight-stats"><span><i data-lucide="heart" class="w-3 h-3"></i> 128</span><span><i data-lucide="message-circle" class="w-3 h-3"></i> 24</span></div>
+          </div>
+          <div class="vault-highlight-card">
+            <div class="vault-highlight-thumb"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <div class="vault-highlight-stats"><span><i data-lucide="heart" class="w-3 h-3"></i> 96</span><span><i data-lucide="message-circle" class="w-3 h-3"></i> 18</span></div>
+          </div>
+          <div class="vault-highlight-card">
+            <div class="vault-highlight-thumb"><i data-lucide="play-circle" class="w-6 h-6"></i></div>
+            <div class="vault-highlight-stats"><span><i data-lucide="heart" class="w-3 h-3"></i> 84</span><span><i data-lucide="message-circle" class="w-3 h-3"></i> 31</span></div>
+          </div>
+          <div class="vault-highlight-card">
+            <div class="vault-highlight-thumb"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <div class="vault-highlight-stats"><span><i data-lucide="heart" class="w-3 h-3"></i> 72</span><span><i data-lucide="message-circle" class="w-3 h-3"></i> 12</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Officer Approval Panel (shown when Officer View is on) -->
+      <div id="officer-approval-panel" class="vault-approval-panel glass-card" style="display:none;">
+        <div class="vault-approval-header">
+          <h3><i data-lucide="clipboard-check" class="w-5 h-5"></i> Pending Approvals</h3>
+          <span class="vault-approval-note">Officers review uploads before they appear in the Vault</span>
+        </div>
+        <div class="vault-approval-item">
+          <div class="vault-approval-thumb"><i data-lucide="image" class="w-5 h-5"></i></div>
+          <div class="vault-approval-info">
+            <strong>Medical Mission — Batangas (12 photos, 2 videos)</strong>
+            <span>Submitted by Dr. Sarah Mitchell &bull; New album &bull; Aug 2024 &bull; Brgy. San Isidro</span>
+          </div>
+          <div class="vault-approval-controls">
+            <button class="btn btn-gold btn-sm"><i data-lucide="check" class="w-4 h-4"></i> Approve</button>
+            <button class="btn btn-glass btn-sm"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Album Gallery -->
+      <div id="vault-gallery" class="vault-albums-grid">
+        <!-- Albums rendered dynamically -->
+      </div>
+
+      <p class="landing-muted-text text-sm mt-6 text-center">
+        <i data-lucide="shield-check" class="w-4 h-4 inline-block mr-1 align-middle"></i>
+        Private by default. Only selected officers can toggle albums or individual photos for public viewing. Comments support text, emoji, GIFs, and video.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="landing-footer">
+    <div class="landing-footer-inner">
+      <div class="landing-footer-brand">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="landing-footer-logo-icon">
+            <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+          </div>
+          <span class="font-serif font-semibold text-lg landing-footer-title">Zeta Beta Mu</span>
+        </div>
+        <p class="landing-muted-text text-sm leading-relaxed max-w-sm">
+          A fraternity of medical excellence since 1971. United by purpose, driven by service, bound by brotherhood.
+        </p>
+      </div>
+      <div class="landing-footer-links">
+        <h4>Quick Links</h4>
+        <a href="index.html#about">About Us</a>
+        <a href="vault.html">Vault</a>
+        <a href="memoriam.html">In Memoriam</a>
+        <a href="merchandise.html">Merchandise</a>
+      </div>
+      <div class="landing-footer-links">
+        <h4>Members</h4>
+        <a href="home.html">Member Portal</a>
+        <a href="signup.html">Create Account</a>
+      </div>
+    </div>
+    <div class="landing-footer-bottom">
+      <p>© 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ============================================
+       VAULT UPLOAD MODAL (UI mock)
+       ============================================ -->
+  <div id="vault-upload-modal" class="vault-modal hidden">
+    <div class="vault-modal-backdrop" onclick="VaultModule.closeUploadModal()"></div>
+    <div class="vault-modal-card glass-heavy">
+      <button class="vault-modal-close" onclick="VaultModule.closeUploadModal()">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <h3 class="vault-modal-title">
+        <i data-lucide="upload" class="w-5 h-5"></i>
+        Upload to the Vault
+      </h3>
+      <p class="vault-modal-sub">Submit photos and videos. Officers will review before they go live.</p>
+
+      <div class="form-group">
+        <label class="form-label">Album</label>
+        <div class="vault-album-choice">
+          <label class="vault-radio"><input type="radio" name="album-mode" checked> Create new album</label>
+          <label class="vault-radio"><input type="radio" name="album-mode"> Add to existing album</label>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label class="form-label" for="upload-album-name">Album / Event Name</label>
+          <input id="upload-album-name" type="text" class="glass-input" placeholder="e.g., Medical Mission 2025">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="upload-date">Date</label>
+          <input id="upload-date" type="date" class="glass-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="upload-location">Location</label>
+          <input id="upload-location" type="text" class="glass-input" placeholder="e.g., Porac, Pampanga">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="upload-visibility">Default Visibility</label>
+          <select id="upload-visibility" class="glass-input">
+            <option value="private">Members only (private)</option>
+            <option value="public">Public</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Files (photos &amp; videos)</label>
+        <div class="vault-dropzone">
+          <i data-lucide="cloud-upload" class="w-8 h-8"></i>
+          <p>Drag &amp; drop or click to browse</p>
+          <span>JPG, PNG, MP4, MOV</span>
+          <input type="file" accept="image/*,video/*" multiple>
+        </div>
+      </div>
+
+      <div class="vault-modal-actions">
+        <button class="btn btn-glass" onclick="VaultModule.closeUploadModal()">Cancel</button>
+        <button class="btn btn-gold" onclick="VaultModule.closeUploadModal()">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          Submit for Approval
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Glassmorphism Theme Toggle -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script src="js/vault.js"></script>
+  
+  <script>
+    // Initialize vault module
+    document.addEventListener('DOMContentLoaded', () => {
+      VaultModule.init();
+      lucide.createIcons();
+    });
+  </script>
+  
+</body>
+</html>

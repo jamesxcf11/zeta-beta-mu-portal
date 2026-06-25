@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Tribute">
+  <title>Tribute | Zeta Beta Mu Fraternity</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme memoriam-solemn">
+
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- NAVIGATION BAR -->
+  <nav class="landing-navbar" style="opacity: 1; transform: translateY(0);">
+    <div class="landing-navbar-inner">
+      <a href="memoriam.html" class="landing-navbar-logo">
+        <div class="landing-navbar-logo-icon">
+          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+        </div>
+        <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
+      </a>
+      <div class="landing-navbar-actions">
+        <a href="memoriam.html" class="btn btn-glass btn-sm">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          Back to In Memoriam
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TRIBUTE HEADER -->
+  <section class="landing-section" style="padding-top: 120px;">
+    <div class="memorial-container">
+
+      <header class="memorial-hero glass-card">
+        <div class="memorial-candle">
+          <i data-lucide="flame" class="w-7 h-7"></i>
+        </div>
+        <img src="https://i.pravatar.cc/240?img=33" alt="Memorial portrait" class="memorial-portrait">
+        <h1 class="memorial-name">Dr. Roberto M. Santos</h1>
+        <p class="memorial-dates">1945 — 2023</p>
+        <p class="memorial-meta">Cardiology &bull; Batch 1971 &bull; 52 years of service</p>
+        <p class="memorial-bio">
+          A founding member whose compassion and expertise touched countless lives. His legacy of
+          excellence in cardiac care continues to inspire generations of Zeta Beta Mu brothers.
+        </p>
+      </header>
+
+      <!-- TWO COLUMN: Tribute wall + Gallery -->
+      <div class="memorial-layout">
+
+        <!-- Tribute Wall -->
+        <div class="memorial-main">
+          <h2 class="memorial-section-title">
+            <i data-lucide="message-square-heart" class="w-5 h-5"></i>
+            Tribute Wall
+          </h2>
+
+          <!-- Post a tribute (mock) -->
+          <div class="memorial-composer glass-card">
+            <textarea class="composer-input" placeholder="Share a message or tribute for our brother..."></textarea>
+            <div class="memorial-composer-actions">
+              <div class="flex gap-2">
+                <button class="composer-btn" type="button"><i data-lucide="image" class="w-4 h-4"></i> Photo</button>
+                <button class="composer-btn" type="button"><i data-lucide="video" class="w-4 h-4"></i> Video</button>
+              </div>
+              <button class="btn btn-gold" type="button"><i data-lucide="send" class="w-4 h-4"></i> Post Tribute</button>
+            </div>
+          </div>
+
+          <!-- Sample tributes -->
+          <article class="memorial-tribute glass-card">
+            <div class="memorial-tribute-head">
+              <img src="https://i.pravatar.cc/100?img=5" alt="" class="memorial-tribute-avatar">
+              <div>
+                <div class="memorial-tribute-author">Dr. Sarah Mitchell</div>
+                <div class="memorial-tribute-time">Batch 2008 &bull; 2 days ago</div>
+              </div>
+            </div>
+            <p class="memorial-tribute-text">
+              Sir Roberto mentored me during my residency. His kindness and brilliance shaped the doctor I am today. Rest well, brother.
+            </p>
+            <div class="memorial-tribute-actions">
+              <button class="reaction-btn" type="button"><i data-lucide="heart" class="w-4 h-4"></i> <span>32</span></button>
+              <button class="reaction-btn" type="button"><i data-lucide="message-circle" class="w-4 h-4"></i> <span>Comment</span></button>
+            </div>
+          </article>
+
+          <article class="memorial-tribute glass-card">
+            <div class="memorial-tribute-head">
+              <img src="https://i.pravatar.cc/100?img=12" alt="" class="memorial-tribute-avatar">
+              <div>
+                <div class="memorial-tribute-author">Dr. Antonio Cruz</div>
+                <div class="memorial-tribute-time">Batch 1973 &bull; 5 days ago</div>
+              </div>
+            </div>
+            <p class="memorial-tribute-text">
+              A true brother and a giant in cardiology. We shared so many memories at the frat house. You will be missed.
+            </p>
+            <div class="memorial-tribute-actions">
+              <button class="reaction-btn" type="button"><i data-lucide="heart" class="w-4 h-4"></i> <span>48</span></button>
+              <button class="reaction-btn" type="button"><i data-lucide="message-circle" class="w-4 h-4"></i> <span>Comment</span></button>
+            </div>
+          </article>
+        </div>
+
+        <!-- Photo / Video Gallery -->
+        <aside class="memorial-side">
+          <h2 class="memorial-section-title">
+            <i data-lucide="images" class="w-5 h-5"></i>
+            Photos &amp; Videos
+          </h2>
+          <div class="memorial-gallery">
+            <div class="memorial-gallery-item"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <div class="memorial-gallery-item"><i data-lucide="image" class="w-6 h-6"></i></div>
+            <div class="memorial-gallery-item"><i data-lucide="play-circle" class="w-6 h-6"></i></div>
+            <div class="memorial-gallery-item"><i data-lucide="image" class="w-6 h-6"></i></div>
+          </div>
+          <p class="landing-muted-text text-sm mt-4">
+            <i data-lucide="info" class="w-4 h-4 inline-block mr-1 align-middle"></i>
+            Brothers will be able to upload photos and videos here.
+          </p>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Theme Toggle -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+
+</body>
+</html>

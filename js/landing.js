@@ -183,19 +183,15 @@ const LandingModule = {
       const heroBottom = hero.offsetTop + hero.offsetHeight - 100;
       const scrollY = window.scrollY;
 
-      if (scrollY > heroBottom) {
-        navbar.classList.add('visible');
-      } else {
-        navbar.classList.remove('visible');
-      }
-
-      // Hide on fast scroll down, show on scroll up
+      // Hide on fast scroll down past hero, show on scroll up
       if (scrollY > heroBottom) {
         if (scrollY > lastScrollY && scrollY - lastScrollY > 10) {
           navbar.classList.add('hidden-up');
         } else {
           navbar.classList.remove('hidden-up');
         }
+      } else {
+        navbar.classList.remove('hidden-up');
       }
 
       lastScrollY = scrollY;

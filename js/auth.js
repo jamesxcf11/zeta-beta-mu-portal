@@ -154,7 +154,7 @@ const AuthModule = {
       this.showSuccess(
         'Registration submitted! Your account is pending admin verification. You will be notified via email once approved.',
         () => {
-          window.location.href = 'login.html';
+          window.location.href = 'index.html';
         }
       );
     });
@@ -235,9 +235,12 @@ const AuthModule = {
 
     this.showSuccess('Welcome back, ' + user.name.split(' ')[1] + '!');
 
+    // Set flag so home.html shows the welcome modal
+    localStorage.setItem('zbm-show-welcome', 'true');
+
     // Redirect after short delay
     setTimeout(() => {
-      window.location.href = 'welcome.html';
+      window.location.href = 'home.html';
     }, 800);
   },
 
@@ -250,7 +253,7 @@ const AuthModule = {
     const isAuthPage = document.body.classList.contains('auth-page');
 
     if (session && isAuthPage) {
-      window.location.href = 'welcome.html';
+      window.location.href = 'home.html';
     }
   },
 
@@ -327,7 +330,7 @@ const AuthModule = {
   logout() {
     localStorage.removeItem('zbm-session');
     localStorage.removeItem('zbm-remember');
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   },
 
   /**

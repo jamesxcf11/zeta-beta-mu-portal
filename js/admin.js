@@ -53,7 +53,7 @@ const AdminModule = {
     const session = localStorage.getItem('zbm-session');
     if (!session) {
       // Not logged in - redirect to login
-      // window.location.href = 'login.html';
+      // window.location.href = 'index.html';
       console.log('Admin access: No session found');
     }
   },

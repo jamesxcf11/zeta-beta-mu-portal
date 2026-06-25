@@ -3,41 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Zeta Beta Mu Fraternity - Elite Medical Professional Portal. A brotherhood of medical excellence since 1971.">
-  <title>Zeta Beta Mu Fraternity | Brotherhood of Medical Excellence</title>
-  
+  <meta name="description" content="Zeta Beta Mu Fraternity - Member Login. Access the private portal.">
+  <title>Member Login | Zeta Beta Mu Fraternity</title>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  
+
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="dark-theme landing-page">
-  
+<body class="dark-theme auth-page login-page">
+
   <!-- ============================================
        GOLD STARDUST BACKGROUND ANIMATION
        ============================================ -->
   <div class="stardust-container">
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
     <div class="stardust-particle"></div>
     <div class="stardust-particle"></div>
     <div class="stardust-particle"></div>
@@ -63,637 +51,124 @@
   <div class="stardust-overlay"></div>
 
   <!-- ============================================
-       STICKY NAVBAR (appears on scroll)
+       NAVIGATION BAR
        ============================================ -->
-  <nav id="landing-navbar" class="landing-navbar">
+  <nav class="landing-navbar" style="opacity: 1; transform: translateY(0);">
     <div class="landing-navbar-inner">
-      <a href="#" class="landing-navbar-logo">
+      <a href="index.html" class="landing-navbar-logo">
         <div class="landing-navbar-logo-icon">
           <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
         </div>
         <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
       </a>
-      <div class="landing-navbar-links">
-        <a href="#about">About</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#events">Events</a>
-        <a href="#merch">Merch</a>
-        <a href="#contact">Contact</a>
-      </div>
       <div class="landing-navbar-actions">
-        <button onclick="document.getElementById('username').focus(); window.scrollTo({top:0,behavior:'smooth'})" class="btn btn-glass btn-sm">
-          <i data-lucide="log-in" class="w-4 h-4"></i>
-          Login
-        </button>
-        <a href="signup.html" class="btn btn-gold btn-sm">
-          <i data-lucide="user-plus" class="w-4 h-4"></i>
-          Sign Up
+        <a href="index.html" class="btn btn-glass btn-sm">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          Back to Home
         </a>
-      </div>
-      <!-- Mobile hamburger for navbar -->
-      <button id="landing-mobile-toggle" class="landing-mobile-toggle" aria-label="Toggle menu">
-        <i data-lucide="menu" class="w-6 h-6"></i>
-      </button>
-    </div>
-    <!-- Mobile dropdown -->
-    <div id="landing-mobile-menu" class="landing-mobile-menu">
-      <a href="#about">About</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#events">Events</a>
-      <a href="#merch">Merch</a>
-      <a href="#contact">Contact</a>
-      <div class="flex gap-3 pt-2">
-        <button onclick="document.getElementById('username').focus(); window.scrollTo({top:0,behavior:'smooth'})" class="btn btn-glass btn-sm flex-1">Login</button>
-        <a href="signup.html" class="btn btn-gold btn-sm flex-1 text-center">Sign Up</a>
       </div>
     </div>
   </nav>
 
   <!-- ============================================
-       HERO SECTION — Branding Left, Login Right
+       LOGIN SECTION
        ============================================ -->
-  <section id="landing-hero" class="landing-hero">
-    <div class="landing-hero-inner">
+  <section class="login-section">
+    <div class="login-section-inner">
+      <div class="glass-heavy auth-card">
 
-      <!-- Left: Branding -->
-      <div class="landing-hero-branding">
-        <div class="landing-hero-badge">
-          <i data-lucide="shield-check" class="w-4 h-4"></i>
-          EST. 1971
+        <!-- Logo -->
+        <div class="auth-logo">
+          <img src="image/logo1.png" alt="ZBM Logo" class="auth-logo-img">
         </div>
-        <h1 class="landing-hero-title">Zeta Beta Mu</h1>
-        <p class="landing-hero-motto">Scholarship. Service. Sociability. Sacrifice. Idealism.</p>
-        <p class="landing-hero-desc">
-          A distinguished fraternity of medical professionals united by a shared commitment to excellence, 
-          brotherhood, and service. Join a network of physicians, surgeons, and specialists who are shaping 
-          the future of healthcare.
-        </p>
-        <div class="landing-hero-stats">
-          <div class="landing-hero-stat">
-            <span class="landing-hero-stat-value">55+</span>
-            <span class="landing-hero-stat-label">Years</span>
-          </div>
-          <div class="landing-hero-stat">
-            <span class="landing-hero-stat-value">500+</span>
-            <span class="landing-hero-stat-label">Members</span>
-          </div>
-          <div class="landing-hero-stat">
-            <span class="landing-hero-stat-value">50+</span>
-            <span class="landing-hero-stat-label">Hospitals</span>
-          </div>
-          <div class="landing-hero-stat">
-            <span class="landing-hero-stat-value">20+</span>
-            <span class="landing-hero-stat-label">Specialties</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Right: Login Card -->
-      <div class="landing-hero-login">
-        <div class="glass-heavy auth-card">
-          
-          <!-- Logo -->
-          <div class="auth-logo">
-            <img src="image/logo1.png" alt="ZBM Logo" class="auth-logo-img">
-          </div>
-          
-          <!-- Title -->
-          <h2 class="auth-title" style="font-size:1.5rem;">Member Login</h2>
-          <p class="auth-motto">Access the private portal</p>
-          
-          <!-- Error Message Container -->
-          <div id="auth-error" class="hidden mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm"></div>
-          
-          <!-- Login Form -->
-          <form id="login-form" class="auth-form">
-            
-            <!-- Username Field -->
-            <div class="form-group">
-              <label for="username" class="form-label">Username</label>
-              <div class="relative">
-                <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="username" 
-                  name="username"
-                  class="glass-input pl-10" 
-                  placeholder="Enter your username"
-                  autocomplete="username"
-                  required
-                >
-              </div>
+        <!-- Title -->
+        <h2 class="auth-title">Member Login</h2>
+        <p class="auth-motto">Access the private portal</p>
+
+        <!-- Error Message Container -->
+        <div id="auth-error" class="hidden mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm"></div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form">
+
+          <!-- Username Field -->
+          <div class="form-group">
+            <label for="username" class="form-label">Username</label>
+            <div class="relative">
+              <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                class="glass-input pl-10"
+                placeholder="Enter your username"
+                autocomplete="username"
+                required
+              >
             </div>
-            
-            <!-- Password Field -->
-            <div class="form-group">
-              <label for="password" class="form-label">Password</label>
-              <div class="relative">
-                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                <input 
-                  type="password" 
-                  id="password" 
-                  name="password"
-                  class="glass-input pl-10" 
-                  placeholder="Enter your password"
-                  autocomplete="current-password"
-                  required
-                >
-                <button 
-                  type="button" 
-                  id="toggle-password"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                  onclick="togglePasswordVisibility()"
-                >
-                  <i data-lucide="eye" class="w-5 h-5"></i>
-                </button>
-              </div>
-            </div>
-            
-            <!-- Form Options -->
-            <div class="form-options">
-              <label class="remember-me">
-                <input type="checkbox" id="remember-me" name="remember-me">
-                <span>Remember me</span>
-              </label>
-              <a href="#" class="forgot-password hover:text-[#d4af37] transition-colors">Forgot Password?</a>
-            </div>
-            
-            <!-- Login Button -->
-            <button 
-              type="submit" 
-              class="btn btn-gold btn-lg w-full"
-              data-original-text="Login"
-            >
-              <i data-lucide="log-in" class="w-5 h-5"></i>
-              Login
-            </button>
-            
-          </form>
-          
-          <!-- Divider -->
-          <div class="auth-divider">
-            <span>New to the fraternity?</span>
           </div>
-          
-          <!-- Register Link -->
-          <a href="signup.html" class="btn btn-glass w-full">
-            <i data-lucide="user-plus" class="w-5 h-5"></i>
-            Create Account
-          </a>
-          
-        </div>
-      </div>
 
-    </div>
-  </section>
-
-  <!-- ============================================
-       ABOUT US SECTION - REDESIGNED
-       ============================================ -->
-  <section id="about" class="landing-section-about">
-    <div class="about-container">
-      
-      <!-- Header -->
-      <div class="about-header">
-        <span class="about-badge">
-          <i data-lucide="sparkles" class="w-4 h-4"></i>
-          DISCOVER OUR STORY
-        </span>
-        <h2 class="about-title">About Us</h2>
-        <div class="about-divider"></div>
-      </div>
-
-      <!-- Description -->
-      <p class="about-description">
-        The Zeta Beta Mu Fraternity is a brotherhood founded in 1971 at the University of Santo Tomas, rooted in a shared commitment to excellence, leadership, and service among future medical professionals. Guided by its five pillars—Scholarship, Service, Sociability, Sacrifice, and Idealism—the fraternity cultivates well-rounded individuals who strive for academic distinction, meaningful community engagement, strong bonds of brotherhood, selfless dedication, and principled living. Through generations, it has continued to uphold its legacy of shaping competent, compassionate physicians and leaders dedicated to making a lasting impact in society.
-      </p>
-
-      <!-- Image on Top -->
-      <div class="about-image-top-container" data-animate="center">
-        <div class="about-image-frame-top">
-          <img src="image/aboutus.jpg" alt="Zeta Beta Mu Fraternity" class="about-image-top">
-          <div class="about-image-overlay-top">
-            <a href="#gallery" class="about-portfolio-btn">
-              Our Heritage
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2x3 Grid Layout -->
-      <div class="about-grid-2x3">
-        
-        <!-- Row 1 -->
-        <div class="about-service-card" data-animate="grid-1">
-          <div class="about-service-icon">
-            <i data-lucide="heart-pulse" class="w-6 h-6"></i>
-            <i data-lucide="sparkles" class="about-service-icon-accent"></i>
-          </div>
-          <h3 class="about-service-title">Medical Excellence</h3>
-          <p class="about-service-desc">Our members represent the pinnacle of medical practice across cardiology, neurology, oncology, surgery, and many more specialties.</p>
-        </div>
-        
-        <div class="about-service-card" data-animate="grid-2">
-          <div class="about-service-icon">
-            <i data-lucide="book-open" class="w-6 h-6"></i>
-            <i data-lucide="sparkles" class="about-service-icon-accent"></i>
-          </div>
-          <h3 class="about-service-title">Rich Traditions</h3>
-          <p class="about-service-desc">Over five decades of traditions, ceremonies, and stories documented in our Traditions Library and Historical Vault.</p>
-        </div>
-        
-        <div class="about-service-card" data-animate="grid-3">
-          <div class="about-service-icon">
-            <i data-lucide="users" class="w-6 h-6"></i>
-            <i data-lucide="check-circle" class="about-service-icon-accent"></i>
-          </div>
-          <h3 class="about-service-title">Brotherhood</h3>
-          <p class="about-service-desc">A lifelong bond connecting medical professionals across generations, hospitals, and borders — supporting each other from residency to retirement.</p>
-        </div>
-
-        <!-- Row 2 -->
-        <div class="about-service-card" data-animate="grid-4">
-          <div class="about-service-icon">
-            <i data-lucide="graduation-cap" class="w-6 h-6"></i>
-            <i data-lucide="check-circle" class="about-service-icon-accent"></i>
-          </div>
-          <h3 class="about-service-title">Scholarship</h3>
-          <p class="about-service-desc">Academic excellence and continuous learning are at the core of our fraternity values, fostering intellectual growth among members.</p>
-        </div>
-        
-        <div class="about-service-card" data-animate="grid-5">
-          <div class="about-service-icon">
-            <i data-lucide="heart-handshake" class="w-6 h-6"></i>
-            <i data-lucide="star" class="about-service-icon-accent"></i>
-          </div>
-          <h3 class="about-service-title">Community Service</h3>
-          <p class="about-service-desc">Through charity missions, free clinics, and health fairs, we give back to the communities that need us the most.</p>
-        </div>
-        
-        <div class="about-service-card" data-animate="grid-6">
-          <div class="about-service-icon">
-            <i data-lucide="shield-check" class="w-6 h-6"></i>
-            <i data-lucide="star" class="about-service-icon-accent"></i>
-          </div>
-          <h3 class="about-service-title">Idealism</h3>
-          <p class="about-service-desc">Upholding the highest ethical standards and ideals in medical practice, serving as role models for future generations.</p>
-        </div>
-      </div>
-
-      <!-- Stats Section -->
-      <div class="about-stats">
-        <div class="about-stat-card" data-animate="stat">
-          <div class="about-stat-icon">
-            <i data-lucide="award" class="w-6 h-6"></i>
-          </div>
-          <div class="about-stat-value">55+</div>
-          <div class="about-stat-label">Years of Excellence</div>
-          <div class="about-stat-bar"></div>
-        </div>
-        
-        <div class="about-stat-card" data-animate="stat">
-          <div class="about-stat-icon">
-            <i data-lucide="users" class="w-6 h-6"></i>
-          </div>
-          <div class="about-stat-value">500+</div>
-          <div class="about-stat-label">Distinguished Alumni</div>
-          <div class="about-stat-bar"></div>
-        </div>
-        
-        <div class="about-stat-card" data-animate="stat">
-          <div class="about-stat-icon">
-            <i data-lucide="calendar" class="w-6 h-6"></i>
-          </div>
-          <div class="about-stat-value">1971</div>
-          <div class="about-stat-label">Founded at UST</div>
-          <div class="about-stat-bar"></div>
-        </div>
-        
-        <div class="about-stat-card" data-animate="stat">
-          <div class="about-stat-icon">
-            <i data-lucide="trending-up" class="w-6 h-6"></i>
-          </div>
-          <div class="about-stat-value">100%</div>
-          <div class="about-stat-label">Medical Professionals</div>
-          <div class="about-stat-bar"></div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ============================================
-       PUBLIC GALLERY SECTION (Vault Preview)
-       ============================================ -->
-  <section id="gallery" class="landing-section landing-section-alt">
-    <div class="landing-section-inner">
-      <div class="landing-section-header">
-        <span class="landing-section-badge">
-          <i data-lucide="images" class="w-4 h-4"></i>
-          Gallery
-        </span>
-        <h2 class="landing-section-title">From the Vault</h2>
-        <p class="landing-section-subtitle">
-          A curated selection of moments from our fraternity's rich history, approved for public viewing.
-        </p>
-      </div>
-
-      <div id="public-gallery" class="landing-gallery-grid">
-        <!-- Rendered by landing.js -->
-      </div>
-
-      <div class="text-center mt-10">
-        <p class="landing-muted-text text-sm">
-          <i data-lucide="lock" class="w-4 h-4 inline-block mr-1 align-middle"></i>
-          Members can access the full Historical Vault with thousands of photos after logging in.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       UPCOMING EVENTS SECTION
-       ============================================ -->
-  <section id="events" class="landing-section">
-    <div class="landing-section-inner">
-      <div class="landing-section-header">
-        <span class="landing-section-badge">
-          <i data-lucide="calendar" class="w-4 h-4"></i>
-          Events
-        </span>
-        <h2 class="landing-section-title">Upcoming Events</h2>
-        <p class="landing-section-subtitle">
-          Stay connected with what's happening in the Zeta Beta Mu community.
-        </p>
-      </div>
-
-      <div class="landing-events-grid">
-        <div class="landing-event-card glass-card">
-          <div class="landing-event-date">
-            <span class="landing-event-month">MAR</span>
-            <span class="landing-event-day">25</span>
-          </div>
-          <div class="landing-event-info">
-            <h3>Annual Gala 2026</h3>
-            <p class="landing-event-meta">
-              <i data-lucide="map-pin" class="w-4 h-4"></i>
-              The Grand Hotel Ballroom
-            </p>
-            <p class="landing-event-desc">Join us for our 55th anniversary celebration with distinguished alumni and guest speakers.</p>
-          </div>
-        </div>
-        <div class="landing-event-card glass-card">
-          <div class="landing-event-date">
-            <span class="landing-event-month">APR</span>
-            <span class="landing-event-day">15</span>
-          </div>
-          <div class="landing-event-info">
-            <h3>New Member Induction</h3>
-            <p class="landing-event-meta">
-              <i data-lucide="map-pin" class="w-4 h-4"></i>
-              University Great Hall
-            </p>
-            <p class="landing-event-desc">Ceremony welcoming 12 new medical professionals into the brotherhood.</p>
-          </div>
-        </div>
-        <div class="landing-event-card glass-card">
-          <div class="landing-event-date">
-            <span class="landing-event-month">MAY</span>
-            <span class="landing-event-day">10</span>
-          </div>
-          <div class="landing-event-info">
-            <h3>Medical Excellence Conference</h3>
-            <p class="landing-event-meta">
-              <i data-lucide="map-pin" class="w-4 h-4"></i>
-              Convention Center
-            </p>
-            <p class="landing-event-desc">Three-day annual conference featuring research presentations and keynote speakers.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       MERCHANDISE / STORE SECTION
-       ============================================ -->
-  <section id="merch" class="landing-section landing-section-alt">
-    <div class="landing-section-inner">
-      <div class="landing-section-header">
-        <span class="landing-section-badge">
-          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-          Merchandise
-        </span>
-        <h2 class="landing-section-title">Official ZBM Store</h2>
-        <p class="landing-section-subtitle">
-          Show your pride and support the brotherhood with exclusive Zeta Beta Mu merchandise.
-        </p>
-      </div>
-
-      <div class="merch-grid">
-        <!-- Black Cap -->
-        <div class="merch-card glass-card">
-          <div class="merch-image-container">
-            <img src="image/merch-black-cap.png" alt="ZBM Embroidered Cap (Black)" class="merch-image">
-            <div class="merch-overlay">
-              <button class="merch-view-btn">
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <div class="relative">
+              <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="glass-input pl-10"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              >
+              <button
+                type="button"
+                id="toggle-password"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                onclick="togglePasswordVisibility()"
+              >
                 <i data-lucide="eye" class="w-5 h-5"></i>
-                View Details
               </button>
             </div>
           </div>
-          <div class="merch-info">
-            <h3 class="merch-title">ZBM Embroidered Cap (Black)</h3>
-            <p class="merch-description">Premium black cap with embroidered ZBM logo</p>
-            <div class="merch-footer">
-              <span class="merch-price">PHP 1,500</span>
-              <button class="merch-inquire-btn">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                Inquire
-              </button>
-            </div>
+
+          <!-- Form Options -->
+          <div class="form-options">
+            <label class="remember-me">
+              <input type="checkbox" id="remember-me" name="remember-me">
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="forgot-password hover:text-[#d4af37] transition-colors">Forgot Password?</a>
           </div>
+
+          <!-- Login Button -->
+          <button
+            type="submit"
+            class="btn btn-gold btn-lg w-full"
+            data-original-text="Login"
+          >
+            <i data-lucide="log-in" class="w-5 h-5"></i>
+            Login
+          </button>
+
+        </form>
+
+        <!-- Divider -->
+        <div class="auth-divider">
+          <span>New to the fraternity?</span>
         </div>
 
-        <!-- Green Cap -->
-        <div class="merch-card glass-card">
-          <div class="merch-image-container">
-            <img src="image/merch-green-cap.png" alt="ZBM Embroidered Cap (Green)" class="merch-image">
-            <div class="merch-overlay">
-              <button class="merch-view-btn">
-                <i data-lucide="eye" class="w-5 h-5"></i>
-                View Details
-              </button>
-            </div>
-          </div>
-          <div class="merch-info">
-            <h3 class="merch-title">ZBM Embroidered Cap (Green)</h3>
-            <p class="merch-description">Classic green cap with gold embroidered logo</p>
-            <div class="merch-footer">
-              <span class="merch-price">PHP 1,500</span>
-              <button class="merch-inquire-btn">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                Inquire
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Coaster Set -->
-        <div class="merch-card glass-card">
-          <div class="merch-image-container">
-            <img src="image/merch-coaster.png" alt="ZBM Coaster (4 Pieces)" class="merch-image">
-            <div class="merch-overlay">
-              <button class="merch-view-btn">
-                <i data-lucide="eye" class="w-5 h-5"></i>
-                View Details
-              </button>
-            </div>
-          </div>
-          <div class="merch-info">
-            <h3 class="merch-title">ZBM Coaster (4 Pieces)</h3>
-            <p class="merch-description">Elegant coaster set with embroidered ZBM emblem</p>
-            <div class="merch-footer">
-              <span class="merch-price">PHP 500</span>
-              <button class="merch-inquire-btn">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                Inquire
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Fridge Magnet -->
-        <div class="merch-card glass-card">
-          <div class="merch-image-container">
-            <img src="image/merch-fridge-magnet.png" alt="ZBM Fridge Magnet" class="merch-image">
-            <div class="merch-overlay">
-              <button class="merch-view-btn">
-                <i data-lucide="eye" class="w-5 h-5"></i>
-                View Details
-              </button>
-            </div>
-          </div>
-          <div class="merch-info">
-            <h3 class="merch-title">ZBM Fridge Magnet</h3>
-            <p class="merch-description">Premium fridge magnet with ZBM branding</p>
-            <div class="merch-footer">
-              <span class="merch-price">PHP 300</span>
-              <button class="merch-inquire-btn">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                Inquire
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stickers -->
-        <div class="merch-card glass-card">
-          <div class="merch-image-container">
-            <img src="image/merch-stickers.png" alt="ZBM Stickers" class="merch-image">
-            <div class="merch-overlay">
-              <button class="merch-view-btn">
-                <i data-lucide="eye" class="w-5 h-5"></i>
-                View Details
-              </button>
-            </div>
-          </div>
-          <div class="merch-info">
-            <h3 class="merch-title">ZBM Stickers</h3>
-            <p class="merch-description">High-quality vinyl stickers with ZBM logo</p>
-            <div class="merch-footer">
-              <span class="merch-price">PHP 200</span>
-              <button class="merch-inquire-btn">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                Inquire
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-10">
-        <p class="landing-muted-text text-sm">
-          <i data-lucide="info" class="w-4 h-4 inline-block mr-1 align-middle"></i>
-          All proceeds support the Zeta Beta Mu Fraternity and its charitable initiatives.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       CONTACT / SOCIAL SECTION
-       ============================================ -->
-  <section id="contact" class="landing-section">
-    <div class="landing-section-inner">
-      <div class="landing-section-header">
-        <span class="landing-section-badge">
-          <i data-lucide="share-2" class="w-4 h-4"></i>
-          Connect
-        </span>
-        <h2 class="landing-section-title">Stay Connected</h2>
-        <p class="landing-section-subtitle">
-          Follow us on social media and stay updated with the latest from Zeta Beta Mu.
-        </p>
-      </div>
-
-      <div class="landing-social-grid">
-        <a href="#" class="landing-social-card glass-card">
-          <i data-lucide="facebook" class="w-10 h-10" style="color: #3b82f6;"></i>
-          <h3>Facebook</h3>
-          <p>@ZetaBetaMu</p>
+        <!-- Register Link -->
+        <a href="signup.html" class="btn btn-glass w-full">
+          <i data-lucide="user-plus" class="w-5 h-5"></i>
+          Create Account
         </a>
-        <a href="#" class="landing-social-card glass-card">
-          <i data-lucide="instagram" class="w-10 h-10" style="color: #e1306c;"></i>
-          <h3>Instagram</h3>
-          <p>@zetabetamu</p>
-        </a>
-        <a href="#" class="landing-social-card glass-card">
-          <i data-lucide="mail" class="w-10 h-10" style="color: #d4af37;"></i>
-          <h3>Email Us</h3>
-          <p>info@zetabetamu.com</p>
-        </a>
+
       </div>
     </div>
   </section>
-
-  <!-- ============================================
-       FOOTER
-       ============================================ -->
-  <footer class="landing-footer">
-    <div class="landing-footer-inner">
-      <div class="landing-footer-brand">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="landing-footer-logo-icon">
-            <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
-          </div>
-          <span class="font-serif font-semibold text-lg landing-footer-title">Zeta Beta Mu</span>
-        </div>
-        <p class="landing-muted-text text-sm leading-relaxed max-w-sm">
-          A fraternity of medical excellence since 1971. United by purpose, driven by service, bound by brotherhood.
-        </p>
-      </div>
-      <div class="landing-footer-links">
-        <h4>Quick Links</h4>
-        <a href="#about">About Us</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#events">Events</a>
-        <a href="#merch">Merchandise</a>
-        <a href="signup.html">Join Us</a>
-      </div>
-      <div class="landing-footer-links">
-        <h4>Members</h4>
-        <a href="#" onclick="document.getElementById('username').focus(); window.scrollTo({top:0,behavior:'smooth'}); return false;">Member Login</a>
-        <a href="signup.html">Create Account</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-      </div>
-    </div>
-    <div class="landing-footer-bottom">
-      <p>© 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
-    </div>
-  </footer>
 
   <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
   <div class="theme-toggle-container">
@@ -711,14 +186,13 @@
   <!-- Scripts -->
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
-  <script src="js/landing.js"></script>
-  
+
   <script>
     // Password visibility toggle
     function togglePasswordVisibility() {
       const passwordInput = document.getElementById('password');
       const toggleBtn = document.getElementById('toggle-password');
-      
+
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         toggleBtn.innerHTML = '<i data-lucide="eye-off" class="w-5 h-5"></i>';
@@ -726,13 +200,13 @@
         passwordInput.type = 'password';
         toggleBtn.innerHTML = '<i data-lucide="eye" class="w-5 h-5"></i>';
       }
-      
+
       lucide.createIcons();
     }
-    
+
     // Initialize icons
     lucide.createIcons();
   </script>
-  
+
 </body>
 </html>

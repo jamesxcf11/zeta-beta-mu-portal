@@ -7,6 +7,16 @@
  */
 
 const FeedModule = {
+  // Available Facebook-style reactions
+  REACTIONS: [
+    { type: 'like', icon: '👍', label: 'Like', color: '#3b82f6' },
+    { type: 'love', icon: '❤️', label: 'Love', color: '#ef4444' },
+    { type: 'celebrate', icon: '🎉', label: 'Celebrate', color: '#22c55e' },
+    { type: 'support', icon: '🤝', label: 'Support', color: '#a855f7' },
+    { type: 'insightful', icon: '💡', label: 'Insightful', color: '#d4af37' },
+    { type: 'haha', icon: '😄', label: 'Haha', color: '#f59e0b' }
+  ],
+
   // Mock posts data with multiple reactions
   posts: [
     {
@@ -225,6 +235,15 @@ const FeedModule = {
     const totalReactions = Object.values(post.reactions).reduce((sum, count) => sum + count, 0);
     const reactionSummary = this.getReactionSummary(post.reactions);
 
+    const current = this.REACTIONS.find(r => r.type === post.userReaction);
+    const mainLabel = current ? current.label : 'Like';
+    const mainIcon = current
+      ? `<span class="reaction-emoji">${current.icon}</span>`
+      : '<i data-lucide="heart" class="w-4 h-4"></i>';
+    const picker = this.REACTIONS.map(r => `
+      <button class="reaction-pick" title="${r.label}" onclick="FeedModule.toggleReaction(${post.id}, '${r.type}')">${r.icon}</button>
+    `).join('');
+
     return `
       <article class="post-card" data-post-id="${post.id}">
         <div class="post-header">
@@ -242,10 +261,13 @@ const FeedModule = {
         
         <div class="post-actions">
           <div class="post-reactions">
-            <button class="reaction-btn ${post.userReaction ? 'liked' : ''}" onclick="FeedModule.toggleReaction(${post.id}, 'like')">
-              <i data-lucide="heart" class="w-4 h-4"></i>
-              <span>Like</span>
-            </button>
+            <div class="reaction-trigger">
+              <button class="reaction-btn ${post.userReaction ? 'liked reacted-' + post.userReaction : ''}" onclick="FeedModule.toggleReaction(${post.id}, '${post.userReaction || 'like'}')">
+                ${mainIcon}
+                <span>${mainLabel}</span>
+              </button>
+              <div class="reaction-picker">${picker}</div>
+            </div>
             <button class="reaction-btn ${post.userReaction ? 'commented' : ''}" onclick="FeedModule.toggleComments(${post.id})">
               <i data-lucide="message-circle" class="w-4 h-4"></i>
               <span>Comment</span>
@@ -306,14 +328,7 @@ const FeedModule = {
    * Get reaction summary HTML
    */
   getReactionSummary(reactions) {
-    const reactionTypes = [
-      { type: 'love', icon: '❤️', color: '#ef4444' },
-      { type: 'celebrate', icon: '🎉', color: '#22c55e' },
-      { type: 'insightful', icon: '💡', color: '#d4af37' },
-      { type: 'like', icon: '👍', color: '#3b82f6' }
-    ];
-
-    return reactionTypes
+    return this.REACTIONS
       .filter(r => reactions[r.type] > 0)
       .map(r => `
         <span class="reaction-option reaction-${r.type}" title="${reactions[r.type]} ${r.type === 'love' ? 'loves' : r.type + 's'}">
@@ -330,14 +345,16 @@ const FeedModule = {
     const post = this.posts.find(p => p.id === postId);
     if (!post) return;
 
+    if (post.reactions[reactionType] === undefined) post.reactions[reactionType] = 0;
+
     // If user already reacted with this type, remove it
     if (post.userReaction === reactionType) {
-      post.reactions[reactionType]--;
+      post.reactions[reactionType] = Math.max(0, post.reactions[reactionType] - 1);
       post.userReaction = null;
     } else {
       // Remove previous reaction if any
-      if (post.userReaction) {
-        post.reactions[post.userReaction]--;
+      if (post.userReaction && post.reactions[post.userReaction] !== undefined) {
+        post.reactions[post.userReaction] = Math.max(0, post.reactions[post.userReaction] - 1);
       }
       // Add new reaction
       post.reactions[reactionType]++;

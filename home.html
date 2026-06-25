@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Medical Excellence Blog & Magazine">
+  <title>Zeta Beta Mu Fraternity | Medical Excellence Blog</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- ============================================
+       GOLD STARDUST BACKGROUND ANIMATION
+       ============================================ -->
+  <div class="stardust-container">
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+  </div>
+  
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- ============================================
+       MOBILE HEADER
+       ============================================ -->
+  <header class="mobile-header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-10 h-10 object-contain">
+      </div>
+      <span class="font-serif text-lg font-semibold">Zeta Beta Mu</span>
+    </div>
+    <button id="hamburger-menu" class="hamburger" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Mobile Overlay -->
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <!-- Logo Section -->
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-12 h-12 object-contain">
+      </div>
+      <div class="logo-text">
+        <h1 class="text-lg font-serif font-semibold">Zeta Beta Mu</h1>
+        <p class="text-xs opacity-70">Zeal for Brotherhood among Medics</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <a href="#feed" class="nav-link active">
+        <i data-lucide="home"></i>
+        <span>Feed</span>
+      </a>
+      <a href="directory.html" class="nav-link">
+        <i data-lucide="stethoscope"></i>
+        <span>Directory</span>
+      </a>
+      <a href="traditions.html" class="nav-link">
+        <i data-lucide="book-open"></i>
+        <span>Traditions</span>
+      </a>
+      <a href="vault.html" class="nav-link">
+        <i data-lucide="archive"></i>
+        <span>Vault</span>
+      </a>
+      <a href="merchandise.html" class="nav-link">
+        <i data-lucide="shopping-bag"></i>
+        <span>Merchandise</span>
+      </a>
+      <a href="memoriam.html" class="nav-link">
+        <i data-lucide="flame"></i>
+        <span>In Memoriam</span>
+      </a>
+      <a href="admin.html" class="nav-link nav-link-officer" id="officer-tools-link">
+        <i data-lucide="shield"></i>
+        <span>Officer Tools</span>
+        <span class="nav-officer-badge">Officers</span>
+      </a>
+    </nav>
+    
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      
+      <!-- User Card -->
+      <div class="user-card">
+        <img id="user-avatar" src="https://i.pravatar.cc/150?img=11" alt="User" class="user-avatar">
+        <div class="user-info">
+          <div id="user-name" class="user-name">Dr. James Anderson</div>
+          <div class="user-role">Administrator</div>
+        </div>
+        <button id="logout-btn" class="icon-btn" title="Logout">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </button>
+      </div>
+      
+    </div>
+    
+  </aside>
+
+  <!-- ============================================
+       MAIN CONTENT - BLOG LAYOUT
+       ============================================ -->
+  <main id="main-content" class="main-content">
+
+    <!-- ==================== FEED SECTION ==================== -->
+    <section id="screen-feed" class="screen active">
+      
+      <!-- Header -->
+      <header class="top-header mb-8">
+        <h1 id="page-title" class="header-title flex items-center gap-3">
+          <i data-lucide="home" class="w-6 h-6 text-[#d4af37]"></i>
+          Feed
+        </h1>
+        <div class="header-actions">
+          <button class="icon-btn" title="Search">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </button>
+          <button class="icon-btn" title="Notifications">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-[#d4af37] rounded-full"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Feed Layout -->
+      <div class="feed-layout">
+        
+        <!-- Main Feed Column -->
+        <div class="feed-main">
+          
+          <!-- Post Composer -->
+          <div class="post-composer">
+            <div class="composer-header">
+              <img src="https://i.pravatar.cc/150?img=11" alt="User" class="composer-avatar">
+              <div class="composer-input-wrapper">
+                <textarea id="post-input" class="composer-input" placeholder="What's on your mind, Dr. Anderson?"></textarea>
+              </div>
+            </div>
+            <div class="composer-actions">
+              <div class="flex gap-2">
+                <button id="add-image-btn" class="composer-btn">
+                  <i data-lucide="image" class="w-4 h-4"></i>
+                  Photo
+                </button>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+              </div>
+              <button id="post-btn" class="btn btn-gold">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                Post
+              </button>
+            </div>
+            <div id="image-preview" class="composer-image-preview" style="display: none;">
+              <img id="preview-img" src="" alt="Preview">
+              <button id="remove-image" class="composer-image-remove">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Posts Container -->
+          <div id="posts-container"></div>
+
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="feed-sidebar">
+          
+          <!-- Announcements Widget (primary emphasis) -->
+          <div class="sidebar-section sidebar-section-primary">
+            <div class="sidebar-header">
+              <i data-lucide="megaphone" class="w-5 h-5 text-[#d4af37]"></i>
+              <h3 class="sidebar-title">Announcements</h3>
+            </div>
+            <div id="announcements-list" class="widget-list">
+              <!-- Announcements rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Birthdays Widget -->
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <i data-lucide="cake" class="w-5 h-5 text-[#d4af37]"></i>
+              <h3 class="sidebar-title">Birthdays Today</h3>
+            </div>
+            <div id="birthdays-list" class="widget-list">
+              <!-- Birthdays rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <i data-lucide="share-2" class="w-5 h-5 text-[#d4af37]"></i>
+              <h3 class="sidebar-title">Connect</h3>
+            </div>
+            <div class="social-links">
+              <a href="https://www.facebook.com/ZetaBetaMuFraternity" target="_blank" rel="noopener" class="social-link facebook">
+                <i data-lucide="facebook" class="w-6 h-6"></i>
+                <div class="social-info">
+                  <span class="social-name">Facebook</span>
+                  <span class="social-handle">@ZetaBetaMuFraternity</span>
+                </div>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+              <a href="https://www.instagram.com/zetabetamufraternity/" target="_blank" rel="noopener" class="social-link instagram">
+                <i data-lucide="instagram" class="w-6 h-6"></i>
+                <div class="social-info">
+                  <span class="social-name">Instagram</span>
+                  <span class="social-handle">@zetabetamufraternity</span>
+                </div>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== SCREEN 2: MEDICAL DIRECTORY ==================== -->
+    <section id="screen-directory" class="screen hidden">
+      
+      <header class="top-header">
+        <h1 class="header-title">Medical Directory</h1>
+      </header>
+      
+      <div class="search-container">
+        <i data-lucide="search" class="search-icon w-5 h-5"></i>
+        <input type="text" id="directory-search" class="glass-input search-input" 
+               placeholder="Search by name, hospital, or specialty...">
+      </div>
+      
+      <div class="filter-chips">
+        <button class="filter-chip active flex items-center gap-1"><i data-lucide="layout-grid" class="w-3 h-3"></i> All</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="heart-pulse" class="w-3 h-3"></i> Cardiology</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="brain" class="w-3 h-3"></i> Neurology</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="ribbon" class="w-3 h-3"></i> Oncology</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="baby" class="w-3 h-3"></i> Pediatrics</button>
+        <button class="filter-chip flex items-center gap-1"><i data-lucide="scissors" class="w-3 h-3"></i> Surgery</button>
+      </div>
+      
+      <div id="directory-grid" class="directory-grid">
+        <!-- Members loaded dynamically -->
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 3: TRADITIONS LIBRARY ==================== -->
+    <section id="screen-traditions" class="screen hidden">
+      <header class="top-header">
+        <h1 class="header-title">Traditions Library</h1>
+      </header>
+      
+      <div id="magazines-grid" class="magazines-grid">
+        <!-- Magazines loaded dynamically -->
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 4: HISTORICAL VAULT ==================== -->
+    <section id="screen-vault" class="screen hidden">
+      <header class="top-header">
+        <h1 class="header-title">Historical Vault</h1>
+      </header>
+
+      <!-- Vault Stats -->
+      <div id="vault-stats" class="vault-stats">
+        <!-- Stats rendered dynamically -->
+      </div>
+
+      <!-- Category Filter -->
+      <div id="vault-categories" class="vault-categories">
+        <!-- Categories rendered dynamically -->
+      </div>
+
+      <!-- Search & Timeline Row -->
+      <div class="flex flex-col lg:flex-row gap-4 mb-6">
+        <div class="vault-search-wrapper">
+          <i data-lucide="search" class="w-5 h-5"></i>
+          <input type="text" id="vault-search" class="glass-input" placeholder="Search photos by title, location, or description...">
+        </div>
+      </div>
+      
+      <!-- Year Timeline -->
+      <div id="vault-timeline" class="vault-timeline">
+        <!-- Timeline rendered dynamically -->
+      </div>
+      
+      <!-- Gallery Layout with Info Panel -->
+      <div class="vault-layout">
+        <div id="vault-gallery" class="vault-gallery">
+          <!-- Gallery items rendered dynamically -->
+        </div>
+        
+        <!-- Info Panel -->
+        <aside id="vault-info" class="vault-info">
+          <!-- Info panel rendered dynamically -->
+        </aside>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 5: IN MEMORIAM ==================== -->
+    <section id="screen-memoriam" class="screen hidden">
+      <header class="top-header">
+        <h1 class="header-title flex items-center gap-3">
+          <i data-lucide="candle" class="w-6 h-6 text-[#d4af37]"></i>
+          In Memoriam
+        </h1>
+      </header>
+
+      <div class="memoriam-intro glass-card" style="padding: 2rem; margin-bottom: 2rem; text-align: center;">
+        <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.125rem; line-height: 1.8; font-style: italic;">
+          "In loving memory of our brothers who have passed. Their dedication to medicine, service, and brotherhood continues to inspire us. They live on in our hearts and in the legacy they left behind."
+        </p>
+      </div>
+
+      <div class="memoriam-grid">
+        <!-- Memorial Card 1 -->
+        <div class="memoriam-card glass-card">
+          <div class="memoriam-candle">
+            <i data-lucide="flame" class="w-6 h-6"></i>
+          </div>
+          <div class="memoriam-photo">
+            <img src="https://i.pravatar.cc/200?img=33" alt="Memorial" class="memoriam-image">
+          </div>
+          <div class="memoriam-info">
+            <h3 class="memoriam-name">Dr. Roberto M. Santos</h3>
+            <p class="memoriam-dates">1945 - 2023</p>
+            <p class="memoriam-specialty">Cardiology</p>
+            <p class="memoriam-years">Batch 1971 • 52 years of service</p>
+            <p class="memoriam-tribute">
+              A founding member whose compassion and expertise touched countless lives. His legacy of excellence in cardiac care continues to inspire.
+            </p>
+          </div>
+        </div>
+
+        <!-- Memorial Card 2 -->
+        <div class="memoriam-card glass-card">
+          <div class="memoriam-candle">
+            <i data-lucide="flame" class="w-6 h-6"></i>
+          </div>
+          <div class="memoriam-photo">
+            <img src="https://i.pravatar.cc/200?img=12" alt="Memorial" class="memoriam-image">
+          </div>
+          <div class="memoriam-info">
+            <h3 class="memoriam-name">Dr. Antonio L. Cruz</h3>
+            <p class="memoriam-dates">1948 - 2022</p>
+            <p class="memoriam-specialty">Neurosurgery</p>
+            <p class="memoriam-years">Batch 1973 • 49 years of service</p>
+            <p class="memoriam-tribute">
+              A brilliant surgeon and mentor who dedicated his life to advancing neurosurgical techniques and training the next generation.
+            </p>
+          </div>
+        </div>
+
+        <!-- Memorial Card 3 -->
+        <div class="memoriam-card glass-card">
+          <div class="memoriam-candle">
+            <i data-lucide="flame" class="w-6 h-6"></i>
+          </div>
+          <div class="memoriam-photo">
+            <img src="https://i.pravatar.cc/200?img=68" alt="Memorial" class="memoriam-image">
+          </div>
+          <div class="memoriam-info">
+            <h3 class="memoriam-name">Dr. Manuel P. Reyes</h3>
+            <p class="memoriam-dates">1950 - 2021</p>
+            <p class="memoriam-specialty">Pediatrics</p>
+            <p class="memoriam-years">Batch 1975 • 46 years of service</p>
+            <p class="memoriam-tribute">
+              His gentle spirit and unwavering commitment to children's health made him beloved by patients and colleagues alike.
+            </p>
+          </div>
+        </div>
+
+        <!-- Memorial Card 4 -->
+        <div class="memoriam-card glass-card">
+          <div class="memoriam-candle">
+            <i data-lucide="flame" class="w-6 h-6"></i>
+          </div>
+          <div class="memoriam-photo">
+            <img src="https://i.pravatar.cc/200?img=52" alt="Memorial" class="memoriam-image">
+          </div>
+          <div class="memoriam-info">
+            <h3 class="memoriam-name">Dr. Francisco J. Mendoza</h3>
+            <p class="memoriam-dates">1952 - 2020</p>
+            <p class="memoriam-specialty">Internal Medicine</p>
+            <p class="memoriam-years">Batch 1977 • 43 years of service</p>
+            <p class="memoriam-tribute">
+              A pillar of our community whose wisdom and kindness left an indelible mark on all who knew him.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-10">
+        <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; font-style: italic;">
+          <i data-lucide="heart" class="w-4 h-4 inline-block mr-1 align-middle"></i>
+          Forever in our hearts, forever in our brotherhood
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top">
+    <i data-lucide="chevron-up" class="w-6 h-6"></i>
+  </button>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       WELCOME MODAL (shown after login)
+       ============================================ -->
+  <div id="welcome-modal" class="fixed inset-0 z-[999] hidden">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeWelcomeModal()"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative flex items-center justify-center min-h-screen p-4">
+      <div class="glass-heavy relative w-full max-w-lg rounded-2xl p-8 text-center border border-[#d4af37]/20 shadow-2xl" style="animation: welcomeModalIn 0.5s ease-out;">
+        
+        <!-- Close Button -->
+        <button onclick="closeWelcomeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Logo -->
+        <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#d4af37]/20 to-[#d4af37]/5 border border-[#d4af37]/30 flex items-center justify-center shadow-lg">
+          <img src="image/logo1.png" alt="ZBM Logo" class="w-20 h-20 object-contain">
+        </div>
+
+        <!-- Greeting -->
+        <h2 id="welcome-modal-greeting" class="text-2xl font-serif font-semibold text-white mb-1">Welcome!</h2>
+        <p class="text-[#d4af37] text-sm mb-6">"Zeal for Brotherhood among Medics"</p>
+
+        <!-- Divider -->
+        <div class="w-16 h-px bg-[#d4af37]/40 mx-auto mb-6"></div>
+
+        <!-- Latest Announcement -->
+        <div class="glass rounded-xl p-4 mb-4 text-left">
+          <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="megaphone" class="w-4 h-4 text-[#d4af37]"></i>
+            <span class="text-xs font-semibold text-[#d4af37] uppercase tracking-wide">Latest Announcement</span>
+          </div>
+          <h4 class="text-white text-sm font-semibold mb-1">Annual Gala 2026</h4>
+          <p class="text-gray-400 text-xs mb-1">March 25, 2026</p>
+          <p class="text-gray-300 text-xs">Join us for our 55th anniversary celebration with distinguished alumni and guest speakers at The Grand Hotel Ballroom.</p>
+        </div>
+
+        <!-- Today's Birthdays -->
+        <div class="glass rounded-xl p-4 mb-6 text-left">
+          <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="cake" class="w-4 h-4 text-[#d4af37]"></i>
+            <span class="text-xs font-semibold text-[#d4af37] uppercase tracking-wide">Birthdays Today</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <img src="https://i.pravatar.cc/150?img=3" alt="Birthday" class="w-10 h-10 rounded-full border-2 border-[#d4af37]/40">
+            <div>
+              <h4 class="text-white text-sm font-semibold">Dr. Michael Chen</h4>
+              <p class="text-gray-400 text-xs">Class of 2008 &bull; Oncologist</p>
+            </div>
+            <i data-lucide="party-popper" class="w-5 h-5 text-[#d4af37] ml-auto"></i>
+          </div>
+        </div>
+
+        <!-- Enter Button -->
+        <button onclick="closeWelcomeModal()" class="btn btn-gold btn-lg w-full">
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          Enter the Community
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes welcomeModalIn {
+      0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+
+  <!-- JavaScript Modules -->
+  <script src="js/main.js"></script>
+  <script src="js/feed.js"></script>
+  <script src="js/directory.js"></script>
+  <script src="js/traditions.js"></script>
+  <script src="js/vault.js"></script>
+
+  <script>
+    // Welcome modal logic
+    function closeWelcomeModal() {
+      const modal = document.getElementById('welcome-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const showWelcome = localStorage.getItem('zbm-show-welcome');
+      if (showWelcome === 'true') {
+        localStorage.removeItem('zbm-show-welcome');
+        const modal = document.getElementById('welcome-modal');
+        if (modal) {
+          // Personalize greeting
+          const session = localStorage.getItem('zbm-session');
+          if (session) {
+            const user = JSON.parse(session);
+            const firstName = user.name ? user.name.split(' ').pop() : 'Brother';
+            document.getElementById('welcome-modal-greeting').textContent = 'Welcome, ' + (user.name || 'Brother') + '!';
+          }
+          modal.classList.remove('hidden');
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      }
+    });
+  </script>
+  
+</body>
+</html>

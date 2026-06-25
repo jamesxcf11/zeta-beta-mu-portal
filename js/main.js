@@ -29,7 +29,8 @@ const SCREENS = {
   feed: { id: 'feed', title: 'Social Feed', icon: 'home' },
   directory: { id: 'directory', title: 'Medical Directory', icon: 'users' },
   traditions: { id: 'traditions', title: 'Traditions Library', icon: 'book-open' },
-  vault: { id: 'vault', title: 'Historical Vault', icon: 'archive' }
+  vault: { id: 'vault', title: 'Historical Vault', icon: 'archive' },
+  memoriam: { id: 'memoriam', title: 'In Memoriam', icon: 'candle' }
 };
 
 // ============================================
@@ -647,7 +648,7 @@ const AuthHelper = {
    */
   logout() {
     localStorage.removeItem(CONFIG.sessionStorageKey);
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   },
 
   /**

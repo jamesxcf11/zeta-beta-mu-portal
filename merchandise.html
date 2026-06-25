@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Official Merchandise Store">
+  <title>Merchandise | Zeta Beta Mu Fraternity</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- ============================================
+       GOLD STARDUST BACKGROUND ANIMATION
+       ============================================ -->
+  <div class="stardust-container">
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+  </div>
+  
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- ============================================
+       NAVIGATION BAR
+       ============================================ -->
+  <nav class="landing-navbar" style="opacity: 1; transform: translateY(0);">
+    <div class="landing-navbar-inner">
+      <a href="home.html" class="landing-navbar-logo">
+        <div class="landing-navbar-logo-icon">
+          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+        </div>
+        <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
+      </a>
+      <div class="landing-navbar-links">
+        <a href="home.html">Home</a>
+        <a href="directory.html">Directory</a>
+        <a href="traditions.html">Traditions</a>
+        <a href="vault.html">Vault</a>
+        <a href="merchandise.html" class="active">Merchandise</a>
+        <a href="memoriam.html">In Memoriam</a>
+      </div>
+      <div class="landing-navbar-actions">
+        <a href="home.html" class="btn btn-glass btn-sm">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          Back to Portal
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       MERCHANDISE SECTION
+       ============================================ -->
+  <section class="landing-section" style="padding-top: 120px;">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <span class="landing-section-badge">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          Merchandise
+        </span>
+        <h2 class="landing-section-title">Official ZBM Store</h2>
+        <p class="landing-section-subtitle">
+          Show your pride and support the brotherhood with exclusive Zeta Beta Mu merchandise.
+        </p>
+      </div>
+
+      <div class="merch-grid">
+        <!-- Black Cap -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-black-cap.png" alt="ZBM Embroidered Cap (Black)" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Embroidered Cap (Black)</h3>
+            <p class="merch-description">Premium black cap with embroidered ZBM logo</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 1,500</span>
+              <button class="merch-inquire-btn" onclick="addToCart(this)">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Green Cap -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-green-cap.png" alt="ZBM Embroidered Cap (Green)" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Embroidered Cap (Green)</h3>
+            <p class="merch-description">Classic green cap with gold embroidered logo</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 1,500</span>
+              <button class="merch-inquire-btn" onclick="addToCart(this)">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coaster Set -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-coaster.png" alt="ZBM Coaster (4 Pieces)" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Coaster (4 Pieces)</h3>
+            <p class="merch-description">Elegant coaster set with embroidered ZBM emblem</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 500</span>
+              <button class="merch-inquire-btn" onclick="addToCart(this)">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fridge Magnet -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-fridge-magnet.png" alt="ZBM Fridge Magnet" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Fridge Magnet</h3>
+            <p class="merch-description">Premium fridge magnet with ZBM branding</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 300</span>
+              <button class="merch-inquire-btn" onclick="addToCart(this)">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stickers -->
+        <div class="merch-card glass-card">
+          <div class="merch-image-container">
+            <img src="image/merch-stickers.png" alt="ZBM Stickers" class="merch-image">
+            <div class="merch-overlay">
+              <button class="merch-view-btn">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+          <div class="merch-info">
+            <h3 class="merch-title">ZBM Stickers</h3>
+            <p class="merch-description">High-quality vinyl stickers with ZBM logo</p>
+            <div class="merch-footer">
+              <span class="merch-price">PHP 200</span>
+              <button class="merch-inquire-btn" onclick="addToCart(this)">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-10">
+        <p class="landing-muted-text text-sm">
+          <i data-lucide="info" class="w-4 h-4 inline-block mr-1 align-middle"></i>
+          All proceeds support the Zeta Beta Mu Fraternity and its charitable initiatives.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="landing-footer">
+    <div class="landing-footer-inner">
+      <div class="landing-footer-brand">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="landing-footer-logo-icon">
+            <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+          </div>
+          <span class="font-serif font-semibold text-lg landing-footer-title">Zeta Beta Mu</span>
+        </div>
+        <p class="landing-muted-text text-sm leading-relaxed max-w-sm">
+          A fraternity of medical excellence since 1971. United by purpose, driven by service, bound by brotherhood.
+        </p>
+      </div>
+      <div class="landing-footer-links">
+        <h4>Quick Links</h4>
+        <a href="index.html#about">About Us</a>
+        <a href="index.html#gallery">Gallery</a>
+        <a href="index.html#events">Events</a>
+        <a href="merchandise.html">Merchandise</a>
+      </div>
+      <div class="landing-footer-links">
+        <h4>Members</h4>
+        <a href="home.html">Member Portal</a>
+        <a href="signup.html">Create Account</a>
+      </div>
+    </div>
+    <div class="landing-footer-bottom">
+      <p>© 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Floating Cart Button -->
+  <button id="cart-fab" class="cart-fab" onclick="openCart()" title="View cart">
+    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+    <span id="cart-count" class="cart-count">0</span>
+  </button>
+
+  <!-- ============================================
+       CART / CHECKOUT MODAL (UI mock)
+       ============================================ -->
+  <div id="cart-modal" class="vault-modal hidden">
+    <div class="vault-modal-backdrop" onclick="closeCart()"></div>
+    <div class="vault-modal-card glass-heavy">
+      <button class="vault-modal-close" onclick="closeCart()"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <h3 class="vault-modal-title"><i data-lucide="shopping-cart" class="w-5 h-5"></i> Your Cart</h3>
+      <p class="vault-modal-sub">Review your items, choose fulfillment and payment. (Demo checkout)</p>
+
+      <div id="cart-items" class="cart-items"></div>
+      <div id="cart-empty" class="cart-empty">Your cart is empty.</div>
+
+      <div class="cart-total-row">
+        <span>Total</span>
+        <strong id="cart-total">PHP 0</strong>
+      </div>
+
+      <!-- Fulfillment -->
+      <div class="form-group">
+        <label class="form-label">Fulfillment</label>
+        <div class="checkout-options">
+          <label class="checkout-option"><input type="radio" name="fulfillment" value="pickup" checked onchange="toggleAddress()"> <i data-lucide="store" class="w-4 h-4"></i> Pickup</label>
+          <label class="checkout-option"><input type="radio" name="fulfillment" value="delivery" onchange="toggleAddress()"> <i data-lucide="truck" class="w-4 h-4"></i> Delivery</label>
+        </div>
+      </div>
+      <div class="form-group" id="delivery-address-group" style="display:none;">
+        <label class="form-label" for="delivery-address">Delivery Address</label>
+        <input id="delivery-address" type="text" class="glass-input" placeholder="House no., street, barangay, city">
+      </div>
+
+      <!-- Payment -->
+      <div class="form-group">
+        <label class="form-label">Payment Method</label>
+        <div class="checkout-options">
+          <label class="checkout-option"><input type="radio" name="payment" value="card" checked onchange="togglePayment()"> <i data-lucide="credit-card" class="w-4 h-4"></i> Card</label>
+          <label class="checkout-option"><input type="radio" name="payment" value="gcash" onchange="togglePayment()"> <i data-lucide="smartphone" class="w-4 h-4"></i> GCash</label>
+        </div>
+      </div>
+
+      <div id="pay-card" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group md:col-span-2">
+          <label class="form-label">Card Number</label>
+          <input type="text" class="glass-input" placeholder="4242 4242 4242 4242">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expiry</label>
+          <input type="text" class="glass-input" placeholder="MM/YY">
+        </div>
+        <div class="form-group">
+          <label class="form-label">CVC</label>
+          <input type="text" class="glass-input" placeholder="123">
+        </div>
+      </div>
+
+      <div id="pay-gcash" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">GCash Mobile Number</label>
+          <input type="tel" class="glass-input" placeholder="09XX XXX XXXX">
+        </div>
+        <p class="gcash-note"><i data-lucide="info" class="w-4 h-4 inline-block mr-1 align-middle"></i> You'll be redirected to GCash to confirm payment.</p>
+      </div>
+
+      <div class="vault-modal-actions">
+        <button class="btn btn-glass" onclick="closeCart()">Continue Shopping</button>
+        <button class="btn btn-gold" onclick="placeOrder()"><i data-lucide="check" class="w-4 h-4"></i> Place Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Glassmorphism Theme Toggle -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  
+  <script>
+    const cart = [];
+
+    function parsePrice(str) {
+      return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
+    }
+    function formatPHP(n) {
+      return 'PHP ' + n.toLocaleString();
+    }
+
+    function addToCart(btn) {
+      const card = btn.closest('.merch-card');
+      const name = card.querySelector('.merch-title').textContent.trim();
+      const price = parsePrice(card.querySelector('.merch-price').textContent);
+      const existing = cart.find(i => i.name === name);
+      if (existing) existing.qty++;
+      else cart.push({ name, price, qty: 1 });
+      updateCartUI();
+      showToast(name + ' added to cart');
+    }
+
+    function removeFromCart(name) {
+      const idx = cart.findIndex(i => i.name === name);
+      if (idx > -1) cart.splice(idx, 1);
+      updateCartUI();
+    }
+
+    function changeQty(name, delta) {
+      const item = cart.find(i => i.name === name);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) removeFromCart(name);
+      updateCartUI();
+    }
+
+    function cartTotal() {
+      return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((sum, i) => sum + i.qty, 0);
+      document.getElementById('cart-count').textContent = count;
+      const itemsEl = document.getElementById('cart-items');
+      const emptyEl = document.getElementById('cart-empty');
+      if (cart.length === 0) {
+        itemsEl.innerHTML = '';
+        emptyEl.style.display = 'block';
+      } else {
+        emptyEl.style.display = 'none';
+        itemsEl.innerHTML = cart.map(i => `
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <strong>${i.name}</strong>
+              <span>${formatPHP(i.price)}</span>
+            </div>
+            <div class="cart-item-qty">
+              <button onclick="changeQty('${i.name.replace(/'/g, "\\'")}', -1)">-</button>
+              <span>${i.qty}</span>
+              <button onclick="changeQty('${i.name.replace(/'/g, "\\'")}', 1)">+</button>
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart('${i.name.replace(/'/g, "\\'")}')"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </div>
+        `).join('');
+      }
+      document.getElementById('cart-total').textContent = formatPHP(cartTotal());
+      lucide.createIcons();
+    }
+
+    function openCart() {
+      document.getElementById('cart-modal').classList.remove('hidden');
+      updateCartUI();
+    }
+    function closeCart() {
+      document.getElementById('cart-modal').classList.add('hidden');
+    }
+
+    function toggleAddress() {
+      const isDelivery = document.querySelector('input[name="fulfillment"]:checked').value === 'delivery';
+      document.getElementById('delivery-address-group').style.display = isDelivery ? 'block' : 'none';
+    }
+    function togglePayment() {
+      const method = document.querySelector('input[name="payment"]:checked').value;
+      document.getElementById('pay-card').style.display = method === 'card' ? 'grid' : 'none';
+      document.getElementById('pay-gcash').style.display = method === 'gcash' ? 'block' : 'none';
+    }
+
+    function placeOrder() {
+      if (cart.length === 0) { showToast('Your cart is empty'); return; }
+      const method = document.querySelector('input[name="payment"]:checked').value;
+      showToast('Order placed! (Demo • ' + (method === 'gcash' ? 'GCash' : 'Card') + ')');
+      cart.length = 0;
+      updateCartUI();
+      closeCart();
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2600);
+    }
+
+    lucide.createIcons();
+  </script>
+  
+</body>
+</html>

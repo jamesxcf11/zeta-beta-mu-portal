@@ -70,7 +70,7 @@
       
       <!-- Logo -->
       <div class="auth-logo">
-        <i data-lucide="user-plus"></i>
+        <img src="image/logo1.png" alt="ZBM Logo" class="auth-logo-img">
       </div>
       
       <!-- Title & Subtitle -->
@@ -117,7 +117,22 @@
                 >
               </div>
             </div>
-            
+
+            <!-- Nickname -->
+            <div class="form-group">
+              <label for="nickname" class="form-label">Nickname</label>
+              <div class="relative">
+                <i data-lucide="smile" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="nickname" 
+                  name="nickname"
+                  class="glass-input pl-10" 
+                  placeholder="What the brods call you"
+                >
+              </div>
+            </div>
+
             <!-- Email -->
             <div class="form-group">
               <label for="email" class="form-label">Email Address *</label>
@@ -129,6 +144,37 @@
                   name="email"
                   class="glass-input pl-10" 
                   placeholder="john@hospital.com"
+                  required
+                >
+              </div>
+            </div>
+
+            <!-- Birthday (mandatory) -->
+            <div class="form-group">
+              <label for="birthday" class="form-label">Birthday *</label>
+              <div class="relative">
+                <i data-lucide="cake" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="date" 
+                  id="birthday" 
+                  name="birthday"
+                  class="glass-input pl-10" 
+                  required
+                >
+              </div>
+            </div>
+
+            <!-- Contact Number (mandatory) -->
+            <div class="form-group md:col-span-2">
+              <label for="contact-number" class="form-label">Contact Number *</label>
+              <div class="relative">
+                <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="tel" 
+                  id="contact-number" 
+                  name="contact-number"
+                  class="glass-input pl-10" 
+                  placeholder="Cellphone, telephone, or home number"
                   required
                 >
               </div>
@@ -231,35 +277,19 @@
               </div>
             </div>
             
-            <!-- Medical Field -->
+            <!-- Specialization / Subspecialization (free text) -->
             <div class="form-group">
-              <label for="field" class="form-label">Field of Medicine *</label>
+              <label for="field" class="form-label">Specialization / Subspecialization *</label>
               <div class="relative">
                 <i data-lucide="activity" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <select 
+                <input 
+                  type="text" 
                   id="field" 
                   name="field"
-                  class="glass-input pl-10 appearance-none cursor-pointer"
+                  class="glass-input pl-10" 
+                  placeholder="e.g., Interventional Cardiology"
                   required
                 >
-                  <option value="">Select field</option>
-                  <option value="Cardiology">Cardiology</option>
-                  <option value="Neurology">Neurology</option>
-                  <option value="Oncology">Oncology</option>
-                  <option value="Pediatrics">Pediatrics</option>
-                  <option value="Orthopedics">Orthopedics</option>
-                  <option value="Dermatology">Dermatology</option>
-                  <option value="Psychiatry">Psychiatry</option>
-                  <option value="Surgery">Surgery</option>
-                  <option value="Internal Medicine">Internal Medicine</option>
-                  <option value="Emergency Medicine">Emergency Medicine</option>
-                  <option value="Radiology">Radiology</option>
-                  <option value="Pathology">Pathology</option>
-                  <option value="Anesthesiology">Anesthesiology</option>
-                  <option value="Obstetrics & Gynecology">Obstetrics & Gynecology</option>
-                  <option value="Other">Other</option>
-                </select>
-                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
               </div>
             </div>
             
@@ -275,6 +305,77 @@
                   class="glass-input pl-10" 
                   placeholder="e.g., St. Luke's Medical Center, Johns Hopkins Medicine"
                   required
+                >
+              </div>
+            </div>
+
+            <!-- Batch Name -->
+            <div class="form-group md:col-span-2">
+              <label for="batch" class="form-label">Batch Name *</label>
+              <div class="relative">
+                <i data-lucide="users" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="batch" 
+                  name="batch"
+                  class="glass-input pl-10" 
+                  placeholder="Name only, e.g. Ignis (no need to type 'Batch')"
+                  required
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional Details Section -->
+        <div class="mb-6">
+          <h3 class="text-[#d4af37] font-semibold mb-4 flex items-center gap-2">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+            Optional Details
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Facebook -->
+            <div class="form-group">
+              <label for="facebook" class="form-label">Facebook (link or username)</label>
+              <div class="relative">
+                <i data-lucide="facebook" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="facebook" 
+                  name="facebook"
+                  class="glass-input pl-10" 
+                  placeholder="facebook.com/yourname"
+                >
+              </div>
+            </div>
+
+            <!-- Instagram -->
+            <div class="form-group">
+              <label for="instagram" class="form-label">Instagram (link or handle)</label>
+              <div class="relative">
+                <i data-lucide="instagram" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="instagram" 
+                  name="instagram"
+                  class="glass-input pl-10" 
+                  placeholder="@yourhandle"
+                >
+              </div>
+            </div>
+
+            <!-- Home Address -->
+            <div class="form-group md:col-span-2">
+              <label for="address" class="form-label">Home Address / Current Residence</label>
+              <div class="relative">
+                <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="address" 
+                  name="address"
+                  class="glass-input pl-10" 
+                  placeholder="Optional"
                 >
               </div>
             </div>

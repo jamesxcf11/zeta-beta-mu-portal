@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Traditions Library">
+  <title>Traditions Library | Zeta Beta Mu Fraternity</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- ============================================
+       GOLD STARDUST BACKGROUND ANIMATION
+       ============================================ -->
+  <div class="stardust-container">
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+    <div class="stardust-particle"></div>
+  </div>
+  
+  <!-- Gold Dust Overlay -->
+  <div class="stardust-overlay"></div>
+
+  <!-- ============================================
+       NAVIGATION BAR
+       ============================================ -->
+  <nav class="landing-navbar" style="opacity: 1; transform: translateY(0);">
+    <div class="landing-navbar-inner">
+      <a href="home.html" class="landing-navbar-logo">
+        <div class="landing-navbar-logo-icon">
+          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+        </div>
+        <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
+      </a>
+      <div class="landing-navbar-links">
+        <a href="home.html">Home</a>
+        <a href="directory.html">Directory</a>
+        <a href="traditions.html" class="active">Traditions</a>
+        <a href="vault.html">Vault</a>
+        <a href="merchandise.html">Merchandise</a>
+        <a href="memoriam.html">In Memoriam</a>
+      </div>
+      <div class="landing-navbar-actions">
+        <a href="home.html" class="btn btn-glass btn-sm">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          Back to Portal
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       TRADITIONS LIBRARY SECTION
+       ============================================ -->
+  <section class="landing-section" style="padding-top: 120px;">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <span class="landing-section-badge">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          Traditions
+        </span>
+        <h2 class="landing-section-title">Traditions Library</h2>
+        <p class="landing-section-subtitle">
+          Over five decades of traditions, ceremonies, and stories documented for the brotherhood. Explore our rich heritage through annual magazines and publications.
+        </p>
+      </div>
+
+      <!-- Traditions / Magazine Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- Magazine Card 1 -->
+        <div class="glass-card overflow-hidden group cursor-pointer">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://picsum.photos/400/300?random=501" alt="Traditions 2025" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <span class="inline-block px-3 py-1 bg-[#d4af37]/20 text-[#d4af37] text-xs font-semibold rounded-full mb-2">2025 Edition</span>
+              <h3 class="text-white text-lg font-semibold">The Golden Legacy</h3>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-gray-400 text-sm mb-3">Annual magazine celebrating 54 years of brotherhood, featuring alumni profiles and highlights from the year.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i> 48 pages</span>
+              <button onclick="openReader(this)" class="text-[#d4af37] text-sm font-medium hover:underline flex items-center gap-1">
+                Read <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Magazine Card 2 -->
+        <div class="glass-card overflow-hidden group cursor-pointer">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://picsum.photos/400/300?random=502" alt="Traditions 2024" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <span class="inline-block px-3 py-1 bg-[#d4af37]/20 text-[#d4af37] text-xs font-semibold rounded-full mb-2">2024 Edition</span>
+              <h3 class="text-white text-lg font-semibold">Bonds Beyond Medicine</h3>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-gray-400 text-sm mb-3">Exploring the deeper connections that tie our brotherhood together, with stories from community service and outreach.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i> 52 pages</span>
+              <button onclick="openReader(this)" class="text-[#d4af37] text-sm font-medium hover:underline flex items-center gap-1">
+                Read <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Magazine Card 3 -->
+        <div class="glass-card overflow-hidden group cursor-pointer">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://picsum.photos/400/300?random=503" alt="Traditions 2023" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <span class="inline-block px-3 py-1 bg-[#d4af37]/20 text-[#d4af37] text-xs font-semibold rounded-full mb-2">2023 Edition</span>
+              <h3 class="text-white text-lg font-semibold">The Healing Hands</h3>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-gray-400 text-sm mb-3">A tribute to the medical professionals who have dedicated their lives to healing, featuring the annual charity mission.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i> 44 pages</span>
+              <button onclick="openReader(this)" class="text-[#d4af37] text-sm font-medium hover:underline flex items-center gap-1">
+                Read <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Magazine Card 4 -->
+        <div class="glass-card overflow-hidden group cursor-pointer">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://picsum.photos/400/300?random=504" alt="Traditions 2022" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <span class="inline-block px-3 py-1 bg-[#d4af37]/20 text-[#d4af37] text-xs font-semibold rounded-full mb-2">2022 Edition</span>
+              <h3 class="text-white text-lg font-semibold">Pillars of Service</h3>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-gray-400 text-sm mb-3">Celebrating the five pillars of Zeta Beta Mu through the lens of service, sacrifice, and scholarship.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i> 40 pages</span>
+              <button onclick="openReader(this)" class="text-[#d4af37] text-sm font-medium hover:underline flex items-center gap-1">
+                Read <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Magazine Card 5 -->
+        <div class="glass-card overflow-hidden group cursor-pointer">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://picsum.photos/400/300?random=505" alt="Traditions 2021" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <span class="inline-block px-3 py-1 bg-[#d4af37]/20 text-[#d4af37] text-xs font-semibold rounded-full mb-2">2021 Edition</span>
+              <h3 class="text-white text-lg font-semibold">50 Years of Brotherhood</h3>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-gray-400 text-sm mb-3">The golden jubilee issue — a comprehensive retrospective of 50 years of medical excellence and fraternity.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i> 72 pages</span>
+              <button onclick="openReader(this)" class="text-[#d4af37] text-sm font-medium hover:underline flex items-center gap-1">
+                Read <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Magazine Card 6 -->
+        <div class="glass-card overflow-hidden group cursor-pointer">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://picsum.photos/400/300?random=506" alt="Traditions 2020" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <span class="inline-block px-3 py-1 bg-[#d4af37]/20 text-[#d4af37] text-xs font-semibold rounded-full mb-2">2020 Edition</span>
+              <h3 class="text-white text-lg font-semibold">Resilience in Crisis</h3>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-gray-400 text-sm mb-3">How ZBM brothers rose to the challenge during the pandemic — frontline stories and unwavering dedication.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="file-text" class="w-3 h-3"></i> 56 pages</span>
+              <button onclick="openReader(this)" class="text-[#d4af37] text-sm font-medium hover:underline flex items-center gap-1">
+                Read <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-10">
+        <p class="landing-muted-text text-sm">
+          <i data-lucide="book-open" class="w-4 h-4 inline-block mr-1 align-middle"></i>
+          Browse our complete collection of annual magazines and publications dating back to 1971.
+        </p>
+        <p class="landing-muted-text text-sm mt-2">
+          <i data-lucide="shield-check" class="w-4 h-4 inline-block mr-1 align-middle"></i>
+          Members-only, view-only access. Downloading and redistribution are disabled to protect the brotherhood's records.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="landing-footer">
+    <div class="landing-footer-inner">
+      <div class="landing-footer-brand">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="landing-footer-logo-icon">
+            <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+          </div>
+          <span class="font-serif font-semibold text-lg landing-footer-title">Zeta Beta Mu</span>
+        </div>
+        <p class="landing-muted-text text-sm leading-relaxed max-w-sm">
+          A fraternity of medical excellence since 1971. United by purpose, driven by service, bound by brotherhood.
+        </p>
+      </div>
+      <div class="landing-footer-links">
+        <h4>Quick Links</h4>
+        <a href="index.html#about">About Us</a>
+        <a href="vault.html">Vault</a>
+        <a href="memoriam.html">In Memoriam</a>
+        <a href="merchandise.html">Merchandise</a>
+      </div>
+      <div class="landing-footer-links">
+        <h4>Members</h4>
+        <a href="home.html">Member Portal</a>
+        <a href="signup.html">Create Account</a>
+      </div>
+    </div>
+    <div class="landing-footer-bottom">
+      <p>&copy; 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Glassmorphism Theme Toggle -->
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+      <div class="theme-toggle-icons">
+        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
+        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
+      </div>
+      <div class="theme-toggle-thumb">
+        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       SECURE MAGAZINE READER (UI mock)
+       ============================================ -->
+  <div id="reader-modal" class="vault-modal hidden">
+    <div class="vault-modal-backdrop" onclick="closeReader()"></div>
+    <div class="reader-card glass-heavy">
+      <div class="reader-toolbar">
+        <span class="reader-title" id="reader-title">Traditions Magazine</span>
+        <div class="reader-toolbar-actions">
+          <span class="reader-secure-badge"><i data-lucide="lock" class="w-3 h-3"></i> View only</span>
+          <button class="vault-modal-close" style="position:static" onclick="closeReader()"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+      </div>
+      <div class="reader-stage" oncontextmenu="return false;">
+        <button class="reader-nav reader-prev" onclick="readerPage(-1)"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+        <div class="reader-page">
+          <i data-lucide="book-open" class="w-10 h-10"></i>
+          <p>Page <span id="reader-page-num">1</span> of 48</p>
+          <span class="reader-watermark">Zeta Beta Mu &bull; Members Only</span>
+        </div>
+        <button class="reader-nav reader-next" onclick="readerPage(1)"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  
+  <script>
+    let readerCurrentPage = 1;
+    const readerTotalPages = 48;
+
+    function openReader(btn) {
+      const card = btn.closest('.glass-card');
+      const titleEl = card ? card.querySelector('h3') : null;
+      document.getElementById('reader-title').textContent = titleEl ? titleEl.textContent : 'Traditions Magazine';
+      readerCurrentPage = 1;
+      document.getElementById('reader-page-num').textContent = readerCurrentPage;
+      document.getElementById('reader-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeReader() {
+      document.getElementById('reader-modal').classList.add('hidden');
+    }
+
+    function readerPage(delta) {
+      readerCurrentPage = Math.min(readerTotalPages, Math.max(1, readerCurrentPage + delta));
+      document.getElementById('reader-page-num').textContent = readerCurrentPage;
+    }
+
+    lucide.createIcons();
+  </script>
+  
+</body>
+</html>
