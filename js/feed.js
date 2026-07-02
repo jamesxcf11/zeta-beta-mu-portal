@@ -23,11 +23,11 @@ const FeedModule = {
       id: 1,
       author: {
         name: 'Dr. Sarah Mitchell',
-        avatar: 'https://i.pravatar.cc/150?img=5',
+        avatar: 'image/placeholders/avatars/a5.jpg',
         title: 'Neurologist at Mount Sinai'
       },
       content: 'Just published our latest research on neuroplasticity in stroke recovery. Excited to share these findings with our medical community! The study followed 200 patients over 18 months and shows remarkable improvement potential with targeted therapy protocols.',
-      image: 'https://picsum.photos/800/400?random=1',
+      image: 'image/placeholders/picsum/p1.jpg',
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
       reactions: {
         love: 8,
@@ -39,13 +39,13 @@ const FeedModule = {
       comments: [
         {
           id: 1,
-          author: { name: 'Dr. Michael Chen', avatar: 'https://i.pravatar.cc/150?img=3' },
+          author: { name: 'Dr. Michael Chen', avatar: 'image/placeholders/avatars/a3.jpg' },
           content: 'Congratulations Dr. Mitchell! This is groundbreaking work.',
           timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000)
         },
         {
           id: 2,
-          author: { name: 'Dr. James Anderson', avatar: 'https://i.pravatar.cc/150?img=11' },
+          author: { name: 'Dr. James Anderson', avatar: 'image/placeholders/avatars/a11.jpg' },
           content: 'Would love to discuss the methodology. Great job!',
           timestamp: new Date(Date.now() - 30 * 60 * 1000)
         }
@@ -57,7 +57,7 @@ const FeedModule = {
       id: 2,
       author: {
         name: 'Dr. Michael Chen',
-        avatar: 'https://i.pravatar.cc/150?img=3',
+        avatar: 'image/placeholders/avatars/a3.jpg',
         title: 'Oncologist at Johns Hopkins'
       },
       content: 'Honored to be speaking at the Annual Oncology Summit next month. Looking forward to reconnecting with fellow Zeta Beta Mu brothers at the event! Who else is attending?',
@@ -72,7 +72,7 @@ const FeedModule = {
       comments: [
         {
           id: 3,
-          author: { name: 'Dr. Emily Roberts', avatar: 'https://i.pravatar.cc/150?img=9' },
+          author: { name: 'Dr. Emily Roberts', avatar: 'image/placeholders/avatars/a9.jpg' },
           content: 'I will be there! Let\'s grab coffee between sessions.',
           timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000)
         }
@@ -84,11 +84,11 @@ const FeedModule = {
       id: 3,
       author: {
         name: 'Dr. James Anderson',
-        avatar: 'https://i.pravatar.cc/150?img=11',
+        avatar: 'image/placeholders/avatars/a11.jpg',
         title: 'Cardiologist at St. Luke\'s'
       },
       content: 'Reminder: The Annual Fraternity Gala Dinner is scheduled for March 25th at The Grand Hotel. Please RSVP by March 10th. This year\'s theme is "Honoring 50 Years of Excellence." Looking forward to seeing everyone there!',
-      image: 'https://picsum.photos/800/400?random=2',
+      image: 'image/placeholders/picsum/p2.jpg',
       timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
       reactions: {
         love: 45,
@@ -105,7 +105,7 @@ const FeedModule = {
       id: 4,
       author: {
         name: 'Dr. Emily Roberts',
-        avatar: 'https://i.pravatar.cc/150?img=9',
+        avatar: 'image/placeholders/avatars/a9.jpg',
         title: 'Pediatrician at Children\'s Hospital'
       },
       content: 'Congratulations to our newest inductees! Welcome to the brotherhood, Dr. Martinez, Dr. Patel, and Dr. Wong. Your dedication to medicine and service is truly inspiring. 🎓',
@@ -120,7 +120,7 @@ const FeedModule = {
       comments: [
         {
           id: 4,
-          author: { name: 'Dr. Martinez', avatar: 'https://i.pravatar.cc/150?img=12' },
+          author: { name: 'Dr. Martinez', avatar: 'image/placeholders/avatars/a12.jpg' },
           content: 'Thank you so much! Honored to be part of this amazing fraternity.',
           timestamp: new Date(Date.now() - 1.5 * 24 * 60 * 60 * 1000)
         }
@@ -132,7 +132,7 @@ const FeedModule = {
       id: 5,
       author: {
         name: 'Dr. Robert Kim',
-        avatar: 'https://i.pravatar.cc/150?img=8',
+        avatar: 'image/placeholders/avatars/a8.jpg',
         title: 'Surgeon at Mayo Clinic'
       },
       content: 'Sharing a case study from yesterday: 6-hour complex cardiac surgery on a 72-year-old patient. Successful outcome thanks to the incredible team at Mayo. Grateful for the expertise honed through years of practice and the support of mentors from Zeta Beta Mu.',
@@ -147,13 +147,13 @@ const FeedModule = {
       comments: [
         {
           id: 5,
-          author: { name: 'Dr. James Anderson', avatar: 'https://i.pravatar.cc/150?img=11' },
+          author: { name: 'Dr. James Anderson', avatar: 'image/placeholders/avatars/a11.jpg' },
           content: 'Excellent work, Dr. Kim! The patient is fortunate to have you.',
           timestamp: new Date(Date.now() - 2.5 * 24 * 60 * 60 * 1000)
         },
         {
           id: 6,
-          author: { name: 'Dr. Sarah Mitchell', avatar: 'https://i.pravatar.cc/150?img=5' },
+          author: { name: 'Dr. Sarah Mitchell', avatar: 'image/placeholders/avatars/a5.jpg' },
           content: 'Proud of our brother! This is what excellence looks like.',
           timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
         }
@@ -165,9 +165,9 @@ const FeedModule = {
 
   // Mock birthdays data (today, tomorrow, next)
   birthdays: [
-    { name: 'Dr. Michael Chen', date: 'Today', avatar: 'https://i.pravatar.cc/150?img=3', year: 2008, isToday: true },
-    { name: 'Dr. Sarah Johnson', date: 'Tomorrow', avatar: 'https://i.pravatar.cc/150?img=6', year: 2012, isToday: false },
-    { name: 'Dr. Robert Kim', date: 'March 18', avatar: 'https://i.pravatar.cc/150?img=8', year: 2010, isToday: false }
+    { name: 'Dr. Michael Chen', date: 'Today', avatar: 'image/placeholders/avatars/a3.jpg', year: 2008, isToday: true },
+    { name: 'Dr. Sarah Johnson', date: 'Tomorrow', avatar: 'image/placeholders/avatars/a6.jpg', year: 2012, isToday: false },
+    { name: 'Dr. Robert Kim', date: 'March 18', avatar: 'image/placeholders/avatars/a8.jpg', year: 2010, isToday: false }
   ],
 
   // Mock announcements data
@@ -317,10 +317,6 @@ const FeedModule = {
               <i data-lucide="message-circle" class="w-4 h-4"></i>
               <span>Comment</span>
             </button>
-            <button class="reaction-btn ${post.userReaction ? 'shared' : ''}" onclick="FeedModule.sharePost(${post.id})">
-              <i data-lucide="share" class="w-4 h-4"></i>
-              <span>Share</span>
-            </button>
           </div>
         </div>
         
@@ -343,7 +339,7 @@ const FeedModule = {
           
           ${post.showComments ? `
             <div class="comment-input-wrapper">
-              <img src="https://i.pravatar.cc/150?img=11" alt="You" class="comment-avatar">
+              <img src="image/placeholders/avatars/a11.jpg" alt="You" class="comment-avatar">
               <input type="text" class="comment-input" placeholder="Add a comment..." onkeypress="FeedModule.handleCommentKeypress(event, ${post.id})">
             </div>
           ` : ''}
@@ -421,18 +417,6 @@ const FeedModule = {
   },
 
   /**
-   * Share post
-   */
-  sharePost(postId) {
-    const post = this.posts.find(p => p.id === postId);
-    if (!post) return;
-
-    post.shares++;
-    this.showToast('Post shared successfully!');
-    this.updatePost(postId);
-  },
-
-  /**
    * Handle comment input keypress
    */
   handleCommentKeypress(event, postId) {
@@ -453,7 +437,7 @@ const FeedModule = {
       id: Date.now(),
       author: { 
         name: 'Dr. James Anderson', 
-        avatar: 'https://i.pravatar.cc/150?img=11' 
+        avatar: 'image/placeholders/avatars/a11.jpg' 
       },
       content: content,
       timestamp: new Date()
@@ -605,7 +589,7 @@ const FeedModule = {
       id: Date.now(),
       author: {
         name: 'Dr. James Anderson',
-        avatar: 'https://i.pravatar.cc/150?img=11',
+        avatar: 'image/placeholders/avatars/a11.jpg',
         title: 'Cardiologist at St. Luke\'s'
       },
       content: text,

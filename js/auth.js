@@ -19,7 +19,7 @@ const AuthModule = {
       hospital: 'St. Luke\'s Medical Center',
       field: 'Cardiology',
       role: 'admin',
-      avatar: 'https://i.pravatar.cc/150?img=11',
+      avatar: 'image/placeholders/avatars/a11.jpg',
       verified: true
     },
     {
@@ -32,7 +32,7 @@ const AuthModule = {
       hospital: 'Mount Sinai Hospital',
       field: 'Neurology',
       role: 'member',
-      avatar: 'https://i.pravatar.cc/150?img=5',
+      avatar: 'image/placeholders/avatars/a5.jpg',
       verified: true
     },
     {
@@ -45,7 +45,7 @@ const AuthModule = {
       hospital: 'Johns Hopkins Medicine',
       field: 'Oncology',
       role: 'member',
-      avatar: 'https://i.pravatar.cc/150?img=3',
+      avatar: 'image/placeholders/avatars/a3.jpg',
       verified: true
     }
   ],
@@ -145,7 +145,7 @@ const AuthModule = {
         hospital: formData.hospital,
         field: formData.field,
         role: 'member',
-        avatar: `https://i.pravatar.cc/150?img=${this.mockUsers.length + 10}`,
+        avatar: `image/placeholders/avatars/a${[10, 13, 14, 20, 25][this.mockUsers.length % 5]}.jpg`,
         verified: false
       };
 

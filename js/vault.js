@@ -4,6 +4,16 @@
  */
 
 const VaultModule = {
+  // Officer-defined category list (fixed taxonomy; maps to a future
+  // categories table maintained by officers, not free-form member tags)
+  CATEGORIES: [
+    'Charity Mission',
+    'Annual Gala',
+    'Induction',
+    'Founders Day',
+    'Research'
+  ],
+
   // Sample vault images from the folder
   sampleImages: [
     '012ec369-ea52-42fc-912a-d1ef7504950a.jpg',
@@ -70,19 +80,19 @@ const VaultModule = {
       description: 'A prestigious evening celebrating excellence in medicine with distinguished alumni, guest speakers, and awards ceremony.',
       date: 'November 20, 2024',
       location: 'The Grand Hotel Ballroom',
-      coverImage: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&h=600&fit=crop',
+      coverImage: 'image/placeholders/photos/u-1511795409834-ef04bbd61622.jpg',
       category: 'Annual Gala',
       categoryIcon: 'party-popper',
       categoryColor: '#f59e0b',
       photos: [
-        { src: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&h=800&fit=crop', caption: 'Grand ballroom setup with elegant decorations' },
-        { src: 'https://images.unsplash.com/photo-1519167758481-83f29da8c2b0?w=1200&h=800&fit=crop', caption: 'Guests arriving at the red carpet entrance' },
-        { src: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&h=800&fit=crop', caption: 'Opening remarks by the fraternity president' },
-        { src: 'https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?w=1200&h=800&fit=crop', caption: 'Award presentation to distinguished alumni' },
-        { src: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1200&h=800&fit=crop', caption: 'Keynote speaker addressing the audience' },
-        { src: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=1200&h=800&fit=crop', caption: 'Formal dinner service' },
-        { src: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=800&fit=crop', caption: 'Live orchestra performance' },
-        { src: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&h=800&fit=crop', caption: 'Dancing and celebration' }
+        { src: 'image/placeholders/photos/u-1511795409834-ef04bbd61622.jpg', caption: 'Grand ballroom setup with elegant decorations' },
+        { src: 'image/placeholders/photos/u-1519167758481-83f29da8c2b0.jpg', caption: 'Guests arriving at the red carpet entrance' },
+        { src: 'image/placeholders/photos/u-1464366400600-7168b8af9bc3.jpg', caption: 'Opening remarks by the fraternity president' },
+        { src: 'image/placeholders/photos/u-1478145046317-39f10e56b5e9.jpg', caption: 'Award presentation to distinguished alumni' },
+        { src: 'image/placeholders/photos/u-1530103862676-de8c9debad1d.jpg', caption: 'Keynote speaker addressing the audience' },
+        { src: 'image/placeholders/photos/u-1505236858219-8359eb29e329.jpg', caption: 'Formal dinner service' },
+        { src: 'image/placeholders/photos/u-1519225421980-715cb0215aed.jpg', caption: 'Live orchestra performance' },
+        { src: 'image/placeholders/photos/u-1492684223066-81342ee5ff30.jpg', caption: 'Dancing and celebration' }
       ]
     },
     {
@@ -91,17 +101,17 @@ const VaultModule = {
       description: 'Providing essential healthcare services to underserved communities in remote areas, embodying our commitment to service.',
       date: 'August 10-12, 2024',
       location: 'Barangay San Isidro, Batangas',
-      coverImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop',
+      coverImage: 'image/placeholders/photos/u-1576091160399-112ba8d25d1d.jpg',
       category: 'Charity Mission',
       categoryIcon: 'heart-handshake',
       categoryColor: '#ef4444',
       photos: [
-        { src: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&h=800&fit=crop', caption: 'Medical team setting up the clinic' },
-        { src: 'https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=1200&h=800&fit=crop', caption: 'Free consultation and check-ups' },
-        { src: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=1200&h=800&fit=crop', caption: 'Distributing free medicines' },
-        { src: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1200&h=800&fit=crop', caption: 'Dental services for children' },
-        { src: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&h=800&fit=crop', caption: 'Health education seminar' },
-        { src: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1200&h=800&fit=crop', caption: 'Team photo with community members' }
+        { src: 'image/placeholders/photos/u-1576091160399-112ba8d25d1d.jpg', caption: 'Medical team setting up the clinic' },
+        { src: 'image/placeholders/photos/u-1584982751601-97dcc096659c.jpg', caption: 'Free consultation and check-ups' },
+        { src: 'image/placeholders/photos/u-1631815588090-d4bfec5b1ccb.jpg', caption: 'Distributing free medicines' },
+        { src: 'image/placeholders/photos/u-1579684385127-1ef15d508118.jpg', caption: 'Dental services for children' },
+        { src: 'image/placeholders/photos/u-1582750433449-648ed127bb54.jpg', caption: 'Health education seminar' },
+        { src: 'image/placeholders/photos/u-1516549655169-df83a0774514.jpg', caption: 'Team photo with community members' }
       ]
     },
     {
@@ -110,16 +120,16 @@ const VaultModule = {
       description: 'The sacred tradition of welcoming new brothers into the fraternity, complete with the oath and ceremonial regalia.',
       date: 'March 15, 2024',
       location: 'University Great Hall',
-      coverImage: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=600&fit=crop',
+      coverImage: 'image/placeholders/photos/u-1523050854058-8df90110c9f1.jpg',
       category: 'Induction',
       categoryIcon: 'award',
       categoryColor: '#10b981',
       photos: [
-        { src: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&h=800&fit=crop', caption: 'Inductees taking the fraternity oath' },
-        { src: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1200&h=800&fit=crop', caption: 'Ceremonial candle lighting' },
-        { src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&h=800&fit=crop', caption: 'Presentation of fraternity pins' },
-        { src: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&h=800&fit=crop', caption: 'Senior members welcoming new brothers' },
-        { src: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=1200&h=800&fit=crop', caption: 'Group photo of the new batch' }
+        { src: 'image/placeholders/photos/u-1523050854058-8df90110c9f1.jpg', caption: 'Inductees taking the fraternity oath' },
+        { src: 'image/placeholders/photos/u-1517486808906-6ca8b3f04846.jpg', caption: 'Ceremonial candle lighting' },
+        { src: 'image/placeholders/photos/u-1541339907198-e08756dedf3f.jpg', caption: 'Presentation of fraternity pins' },
+        { src: 'image/placeholders/photos/u-1524178232363-1fb2b075b655.jpg', caption: 'Senior members welcoming new brothers' },
+        { src: 'image/placeholders/photos/u-1529070538774-1843cb3265df.jpg', caption: 'Group photo of the new batch' }
       ]
     },
     {
@@ -128,16 +138,16 @@ const VaultModule = {
       description: 'Paying tribute to the visionary founders who established our fraternity in 1971, celebrating 52 years of brotherhood.',
       date: 'October 8, 2023',
       location: 'Fraternity Memorial Garden',
-      coverImage: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop',
+      coverImage: 'image/placeholders/photos/u-1511578314322-379afb476865.jpg',
       category: 'Founders Day',
       categoryIcon: 'crown',
       categoryColor: '#f97316',
       photos: [
-        { src: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&h=800&fit=crop', caption: 'Wreath laying ceremony at founders monument' },
-        { src: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1200&h=800&fit=crop', caption: 'Historical photo exhibition' },
-        { src: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1200&h=800&fit=crop', caption: 'Founding members sharing stories' },
-        { src: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1200&h=800&fit=crop', caption: 'Memorial service and prayer' },
-        { src: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=800&fit=crop', caption: 'All generations of members together' }
+        { src: 'image/placeholders/photos/u-1511578314322-379afb476865.jpg', caption: 'Wreath laying ceremony at founders monument' },
+        { src: 'image/placeholders/photos/u-1475721027785-f74eccf877e2.jpg', caption: 'Historical photo exhibition' },
+        { src: 'image/placeholders/photos/u-1556761175-4b46a572b786.jpg', caption: 'Founding members sharing stories' },
+        { src: 'image/placeholders/photos/u-1515187029135-18ee286d815b.jpg', caption: 'Memorial service and prayer' },
+        { src: 'image/placeholders/photos/u-1522071820081-009f0129c71c.jpg', caption: 'All generations of members together' }
       ]
     },
     {
@@ -146,16 +156,16 @@ const VaultModule = {
       description: 'Presenting groundbreaking research findings and innovations in medical science to peers and mentors.',
       date: 'June 22, 2023',
       location: 'Medical School Auditorium',
-      coverImage: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=600&fit=crop',
+      coverImage: 'image/placeholders/photos/u-1576091160550-2173dba999ef.jpg',
       category: 'Research',
       categoryIcon: 'microscope',
       categoryColor: '#14b8a6',
       photos: [
-        { src: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=800&fit=crop', caption: 'Research presentation on stage' },
-        { src: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1200&h=800&fit=crop', caption: 'Poster session and networking' },
-        { src: 'https://images.unsplash.com/photo-1581093458791-9d42e1e4b8f3?w=1200&h=800&fit=crop', caption: 'Panel discussion with experts' },
-        { src: 'https://images.unsplash.com/photo-1582560475093-ba66accbc424?w=1200&h=800&fit=crop', caption: 'Laboratory demonstrations' },
-        { src: 'https://images.unsplash.com/photo-1581594549595-35f6edc7b762?w=1200&h=800&fit=crop', caption: 'Award ceremony for best research' }
+        { src: 'image/placeholders/photos/u-1576091160550-2173dba999ef.jpg', caption: 'Research presentation on stage' },
+        { src: 'image/placeholders/photos/u-1532094349884-543bc11b234d.jpg', caption: 'Poster session and networking' },
+        { src: 'image/placeholders/photos/u-1581093458791-9d42e1e4b8f3.jpg', caption: 'Panel discussion with experts' },
+        { src: 'image/placeholders/photos/u-1582560475093-ba66accbc424.jpg', caption: 'Laboratory demonstrations' },
+        { src: 'image/placeholders/photos/u-1581594549595-35f6edc7b762.jpg', caption: 'Award ceremony for best research' }
       ]
     }
   ],
@@ -177,9 +187,19 @@ const VaultModule = {
   init() {
     this.applyRoleGating();
     this.renderFilters();
+    this.populateUploadCategories();
     this.renderAlbumGrid();
     this.setupEventListeners();
     this.renderStats();
+  },
+
+  /**
+   * Fill the upload modal's category select from the officer-defined list
+   */
+  populateUploadCategories() {
+    const select = document.getElementById('upload-category');
+    if (!select) return;
+    select.innerHTML = this.CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
   },
 
   /**
@@ -206,6 +226,9 @@ const VaultModule = {
     if (!src) return src;
     if (src.startsWith('sample vault/') && !src.includes('/thumbs/')) {
       return src.replace('sample vault/', 'sample vault/thumbs/');
+    }
+    if (src.startsWith('image/placeholders/photos/') && !src.includes('/thumbs/')) {
+      return src.replace('image/placeholders/photos/', 'image/placeholders/photos/thumbs/');
     }
     return src.replace(/w=\d+/, 'w=400').replace(/h=\d+/, 'h=300');
   },
@@ -250,8 +273,8 @@ const VaultModule = {
 
     const chips = [
       `<button class="filter-chip ${this.selectedCategory === 'all' ? 'active' : ''}" onclick="VaultModule.filterByCategory('all')">All <span class="chip-count">${this.albums.length}</span></button>`,
-      ...Object.keys(counts).sort().map(cat =>
-        `<button class="filter-chip ${this.selectedCategory === cat ? 'active' : ''}" onclick="VaultModule.filterByCategory('${cat.replace(/'/g, "\\'")}')">${cat} <span class="chip-count">${counts[cat]}</span></button>`
+      ...this.CATEGORIES.map(cat =>
+        `<button class="filter-chip ${this.selectedCategory === cat ? 'active' : ''}" onclick="VaultModule.filterByCategory('${cat.replace(/'/g, "\\'")}')">${cat} <span class="chip-count">${counts[cat] || 0}</span></button>`
       )
     ].join('');
 

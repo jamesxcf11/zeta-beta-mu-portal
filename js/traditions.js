@@ -32,7 +32,7 @@ const TraditionsModule = {
         id: year,
         year: year,
         title: `${titles[titleIndex]} ${year}`,
-        coverImage: `https://picsum.photos/300/400?random=${year}`,
+        coverImage: `image/placeholders/covers/c${(year % 6) + 1}.jpg`,
         description: `Annual traditions publication documenting the brotherhood activities, achievements, and memories from ${year}.`,
         pages: Math.floor(Math.random() * 50) + 30,
         featured: year >= 2020 || year === 1971 || year === 2000

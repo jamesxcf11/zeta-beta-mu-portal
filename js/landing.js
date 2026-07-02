@@ -92,12 +92,12 @@ const LandingModule = {
       category: 'Founders Day',
       year: 2024,
       location: 'Fraternity Memorial Garden',
-      coverImage: 'https://picsum.photos/600/400?random=301',
+      coverImage: 'image/placeholders/picsum/p301.jpg',
       photoCount: 3,
       photos: [
-        'https://picsum.photos/600/400?random=301',
-        'https://picsum.photos/600/400?random=302',
-        'https://picsum.photos/600/400?random=303'
+        'image/placeholders/picsum/p301.jpg',
+        'image/placeholders/picsum/p302.jpg',
+        'image/placeholders/picsum/p303.jpg'
       ]
     },
     {
@@ -106,13 +106,13 @@ const LandingModule = {
       category: 'Induction',
       year: 2023,
       location: 'University Chapel',
-      coverImage: 'https://picsum.photos/600/400?random=304',
+      coverImage: 'image/placeholders/picsum/p304.jpg',
       photoCount: 4,
       photos: [
-        'https://picsum.photos/600/400?random=304',
-        'https://picsum.photos/600/400?random=305',
-        'https://picsum.photos/600/400?random=306',
-        'https://picsum.photos/600/400?random=307'
+        'image/placeholders/picsum/p304.jpg',
+        'image/placeholders/picsum/p305.jpg',
+        'image/placeholders/picsum/p306.jpg',
+        'image/placeholders/picsum/p307.jpg'
       ]
     },
     {
@@ -121,12 +121,12 @@ const LandingModule = {
       category: 'Community Service',
       year: 2023,
       location: 'Community Center',
-      coverImage: 'https://picsum.photos/600/400?random=308',
+      coverImage: 'image/placeholders/picsum/p308.jpg',
       photoCount: 3,
       photos: [
-        'https://picsum.photos/600/400?random=308',
-        'https://picsum.photos/600/400?random=309',
-        'https://picsum.photos/600/400?random=310'
+        'image/placeholders/picsum/p308.jpg',
+        'image/placeholders/picsum/p309.jpg',
+        'image/placeholders/picsum/p310.jpg'
       ]
     }
   ],
@@ -139,13 +139,13 @@ const LandingModule = {
       category: 'Annual Gala',
       year: 2020,
       location: 'Grand Ballroom',
-      coverImage: 'https://picsum.photos/600/400?random=401',
+      coverImage: 'image/placeholders/picsum/p401.jpg',
       photoCount: 4,
       photos: [
-        'https://picsum.photos/600/400?random=401',
-        'https://picsum.photos/600/400?random=402',
-        'https://picsum.photos/600/400?random=403',
-        'https://picsum.photos/600/400?random=404'
+        'image/placeholders/picsum/p401.jpg',
+        'image/placeholders/picsum/p402.jpg',
+        'image/placeholders/picsum/p403.jpg',
+        'image/placeholders/picsum/p404.jpg'
       ]
     }
   ],
