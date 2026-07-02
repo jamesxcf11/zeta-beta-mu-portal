@@ -726,6 +726,35 @@ const LandingNav = {
   }
 };
 
+/**
+ * Route guard (client-side shell placeholder for real server middleware):
+ * portal pages (any page with the sidebar) require a session.
+ */
+(function guardPortalPages() {
+  if (!document.getElementById('sidebar')) return;
+  const session = localStorage.getItem(CONFIG.sessionStorageKey);
+  if (!session) {
+    window.location.replace('login.html');
+  }
+})();
+
+/**
+ * Role gating (UI-level): hide officer/admin-only controls for members.
+ * Real enforcement happens server-side once the backend exists.
+ */
+(function applyRoleVisibility() {
+  let session = null;
+  try {
+    session = JSON.parse(localStorage.getItem(CONFIG.sessionStorageKey) || 'null');
+  } catch (e) { /* invalid session */ }
+  const isAdmin = !!session && session.role === 'admin';
+  if (!isAdmin) {
+    document.querySelectorAll('#officer-tools-link, .directory-admin-toolbar').forEach(el => {
+      el.style.display = 'none';
+    });
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Lucide icons
   if (typeof lucide !== 'undefined') {

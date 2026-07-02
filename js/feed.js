@@ -202,6 +202,11 @@ const FeedModule = {
     imagePreview: null
   },
 
+  // Incremental rendering state (matches a future paginated API)
+  visibleCount: 5,
+  PAGE_SIZE: 5,
+  scrollObserver: null,
+
   /**
    * Initialize feed module
    */
@@ -213,15 +218,55 @@ const FeedModule = {
   },
 
   /**
-   * Render all posts to the feed
+   * Render visible posts to the feed (chunked; more load on scroll)
    */
   renderPosts() {
     const container = document.getElementById('posts-container');
     if (!container) return;
 
-    container.innerHTML = this.posts.map(post => this.createPostHTML(post)).join('');
-    
+    const visible = this.posts.slice(0, this.visibleCount);
+    const hasMore = this.posts.length > this.visibleCount;
+
+    container.innerHTML = visible.map(post => this.createPostHTML(post)).join('')
+      + (hasMore ? '<div id="feed-sentinel" class="feed-sentinel" aria-hidden="true"></div>' : '');
+
+    this.observeSentinel();
+
     // Initialize icons for new content
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  },
+
+  /**
+   * Load the next chunk when the sentinel scrolls into view
+   */
+  observeSentinel() {
+    const sentinel = document.getElementById('feed-sentinel');
+    if (this.scrollObserver) this.scrollObserver.disconnect();
+    if (!sentinel || !('IntersectionObserver' in window)) return;
+
+    this.scrollObserver = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) {
+        this.visibleCount = Math.min(this.visibleCount + this.PAGE_SIZE, this.posts.length);
+        this.renderPosts();
+      }
+    }, { rootMargin: '400px' });
+    this.scrollObserver.observe(sentinel);
+  },
+
+  /**
+   * Re-render a single post card in place (no full-feed re-render,
+   * keeps scroll position and avoids re-decoding every image)
+   */
+  updatePost(postId) {
+    const post = this.posts.find(p => p.id === postId);
+    const card = document.querySelector(`article[data-post-id="${postId}"]`);
+    if (!post || !card) {
+      this.renderPosts();
+      return;
+    }
+    card.outerHTML = this.createPostHTML(post);
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
@@ -247,7 +292,7 @@ const FeedModule = {
     return `
       <article class="post-card" data-post-id="${post.id}">
         <div class="post-header">
-          <img src="${post.author.avatar}" alt="${post.author.name}" class="post-avatar">
+          <img src="${post.author.avatar}" alt="${post.author.name}" class="post-avatar" loading="lazy" decoding="async" width="48" height="48">
           <div class="post-author-info">
             <div class="post-author-name">${post.author.name}</div>
             <div class="post-author-title">${post.author.title}</div>
@@ -257,7 +302,7 @@ const FeedModule = {
         
         <div class="post-content">${post.content}</div>
         
-        ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image">` : ''}
+        ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image" loading="lazy" decoding="async">` : ''}
         
         <div class="post-actions">
           <div class="post-reactions">
@@ -314,7 +359,7 @@ const FeedModule = {
     const timeAgo = this.getTimeAgo(comment.timestamp);
     return `
       <div class="comment">
-        <img src="${comment.author.avatar}" alt="${comment.author.name}" class="comment-avatar">
+        <img src="${comment.author.avatar}" alt="${comment.author.name}" class="comment-avatar" loading="lazy" decoding="async" width="32" height="32">
         <div class="comment-content">
           <div class="comment-author">${comment.author.name}</div>
           <div class="comment-text">${comment.content}</div>
@@ -361,7 +406,7 @@ const FeedModule = {
       post.userReaction = reactionType;
     }
 
-    this.renderPosts();
+    this.updatePost(postId);
   },
 
   /**
@@ -372,7 +417,7 @@ const FeedModule = {
     if (!post) return;
 
     post.showComments = !post.showComments;
-    this.renderPosts();
+    this.updatePost(postId);
   },
 
   /**
@@ -384,7 +429,7 @@ const FeedModule = {
 
     post.shares++;
     this.showToast('Post shared successfully!');
-    this.renderPosts();
+    this.updatePost(postId);
   },
 
   /**
@@ -415,7 +460,7 @@ const FeedModule = {
     };
 
     post.comments.push(newComment);
-    this.renderPosts();
+    this.updatePost(postId);
   },
 
   /**
@@ -574,6 +619,7 @@ const FeedModule = {
     };
 
     this.posts.unshift(newPost);
+    this.visibleCount++;
     this.renderPosts();
     
     // Reset composer

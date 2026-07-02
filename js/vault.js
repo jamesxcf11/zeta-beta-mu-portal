@@ -167,6 +167,7 @@ const VaultModule = {
   searchQuery: '',
   selectedCategory: 'all',
   selectedYear: 'all',
+  sortBy: 'newest',
   yearDropdownOpen: false,
   officerView: false,  // Officer-only public/private controls (UI mock)
 
@@ -174,9 +175,108 @@ const VaultModule = {
    * Initialize vault module
    */
   init() {
+    this.applyRoleGating();
+    this.renderFilters();
     this.renderAlbumGrid();
     this.setupEventListeners();
     this.renderStats();
+  },
+
+  /**
+   * Hide officer-only controls unless the session role is admin (UI-level gate)
+   */
+  applyRoleGating() {
+    let isAdmin = false;
+    try {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      isAdmin = !!session && session.role === 'admin';
+    } catch (e) { /* no session */ }
+    if (!isAdmin) {
+      const btn = document.getElementById('officer-view-btn');
+      if (btn) btn.style.display = 'none';
+    }
+  },
+
+  /**
+   * Resolve a thumbnail URL for grid/cover usage (full-size stays for lightbox).
+   * Local vault files map to the pre-generated thumbs folder; Unsplash URLs
+   * get a smaller width parameter. Maps 1:1 to future R2 thumb keys.
+   */
+  thumb(src) {
+    if (!src) return src;
+    if (src.startsWith('sample vault/') && !src.includes('/thumbs/')) {
+      return src.replace('sample vault/', 'sample vault/thumbs/');
+    }
+    return src.replace(/w=\d+/, 'w=400').replace(/h=\d+/, 'h=300');
+  },
+
+  /**
+   * Approximate timestamp for an album (for sorting). Handles dates like
+   * 'August 10-12, 2024' by falling back to month + year.
+   */
+  albumTime(album) {
+    const direct = Date.parse(album.date);
+    if (!isNaN(direct)) return direct;
+    const month = (album.date.match(/^([A-Za-z]+)/) || [])[1];
+    const year = (album.date.match(/(\d{4})/) || [])[1];
+    if (month && year) {
+      const t = Date.parse(`${month} 1, ${year}`);
+      if (!isNaN(t)) return t;
+    }
+    return year ? Date.parse(`Jan 1, ${year}`) : 0;
+  },
+
+  /**
+   * Years present in album data (descending), derived instead of hard-coded
+   */
+  availableYears() {
+    const years = new Set();
+    this.albums.forEach(a => {
+      const y = (a.date.match(/(\d{4})/) || [])[1];
+      if (y) years.add(y);
+    });
+    return [...years].sort((a, b) => b - a);
+  },
+
+  /**
+   * Render category chips (with counts) and sort control
+   */
+  renderFilters() {
+    const container = document.getElementById('vault-filters');
+    if (!container) return;
+
+    const counts = {};
+    this.albums.forEach(a => { counts[a.category] = (counts[a.category] || 0) + 1; });
+
+    const chips = [
+      `<button class="filter-chip ${this.selectedCategory === 'all' ? 'active' : ''}" onclick="VaultModule.filterByCategory('all')">All <span class="chip-count">${this.albums.length}</span></button>`,
+      ...Object.keys(counts).sort().map(cat =>
+        `<button class="filter-chip ${this.selectedCategory === cat ? 'active' : ''}" onclick="VaultModule.filterByCategory('${cat.replace(/'/g, "\\'")}')">${cat} <span class="chip-count">${counts[cat]}</span></button>`
+      )
+    ].join('');
+
+    container.innerHTML = `
+      <div class="vault-filter-chips">${chips}</div>
+      <div class="vault-sort">
+        <label for="vault-sort-select" class="vault-sort-label">Sort</label>
+        <select id="vault-sort-select" class="glass-input vault-sort-select" onchange="VaultModule.setSort(this.value)">
+          <option value="newest" ${this.sortBy === 'newest' ? 'selected' : ''}>Newest first</option>
+          <option value="oldest" ${this.sortBy === 'oldest' ? 'selected' : ''}>Oldest first</option>
+          <option value="photos" ${this.sortBy === 'photos' ? 'selected' : ''}>Most photos</option>
+        </select>
+      </div>
+    `;
+  },
+
+  filterByCategory(category) {
+    this.selectedCategory = category;
+    this.renderFilters();
+    this.renderAlbumGrid();
+  },
+
+  setSort(value) {
+    this.sortBy = value;
+    this.renderAlbumGrid();
   },
 
   /**
@@ -198,19 +298,29 @@ const VaultModule = {
     // Apply category filter
     if (this.selectedCategory !== 'all') {
       filteredAlbums = filteredAlbums.filter(album => 
-        album.category.toLowerCase().includes(this.selectedCategory.toLowerCase())
+        album.category.toLowerCase() === this.selectedCategory.toLowerCase()
       );
     }
 
-    // Apply search filter
+    // Apply search filter (title, description, location, category, captions, tags)
     if (this.searchQuery) {
       const query = this.searchQuery.toLowerCase();
       filteredAlbums = filteredAlbums.filter(album =>
         album.title.toLowerCase().includes(query) ||
         album.description.toLowerCase().includes(query) ||
-        album.location.toLowerCase().includes(query)
+        album.location.toLowerCase().includes(query) ||
+        album.category.toLowerCase().includes(query) ||
+        (album.tags || []).some(t => t.toLowerCase().includes(query)) ||
+        album.photos.some(p => (p.caption || '').toLowerCase().includes(query))
       );
     }
+
+    // Apply sort
+    filteredAlbums = [...filteredAlbums].sort((a, b) => {
+      if (this.sortBy === 'oldest') return this.albumTime(a) - this.albumTime(b);
+      if (this.sortBy === 'photos') return b.photos.length - a.photos.length;
+      return this.albumTime(b) - this.albumTime(a);
+    });
 
     if (filteredAlbums.length === 0) {
       gallery.innerHTML = `
@@ -240,7 +350,7 @@ const VaultModule = {
       return `
       <div class="album-card glass-card" onclick="VaultModule.openAlbum('${album.id}')">
         <div class="album-cover">
-          <img src="${album.coverImage}" alt="${album.title}" class="album-cover-image">
+          <img src="${this.thumb(album.coverImage)}" alt="${album.title}" class="album-cover-image" loading="lazy" decoding="async">
           <div class="album-cover-badges">${visBadge}</div>
           <div class="album-overlay">
             <div class="album-photo-count">
@@ -334,7 +444,18 @@ const VaultModule = {
     const gallery = document.getElementById('vault-gallery');
     if (!gallery || !this.currentAlbum) return;
 
+    const related = this.albums
+      .filter(a => a.id !== this.currentAlbum.id && a.category === this.currentAlbum.category)
+      .slice(0, 3);
+
     let html = `
+      <nav class="vault-breadcrumb">
+        <a href="#" onclick="VaultModule.closeAlbum(); return false;">Vault</a>
+        <span class="vault-breadcrumb-sep">/</span>
+        <a href="#" onclick="VaultModule.filterByCategory('${this.currentAlbum.category.replace(/'/g, "\\'")}'); VaultModule.closeAlbum(); return false;">${this.currentAlbum.category}</a>
+        <span class="vault-breadcrumb-sep">/</span>
+        <span class="vault-breadcrumb-current">${this.currentAlbum.title}</span>
+      </nav>
       <div class="album-hero-card album-hero-clickable" onclick="VaultModule.closeAlbum()">
         <div class="album-hero-badge" style="color: ${this.currentAlbum.categoryColor}">
           <i data-lucide="${this.currentAlbum.categoryIcon}" class="w-4 h-4"></i>
@@ -352,7 +473,7 @@ const VaultModule = {
       <div class="album-grid-container">
         ${this.currentAlbum.photos.map((photo, index) => `
           <div class="album-grid-item" onclick="VaultModule.openLightbox(${index})">
-            <img src="${photo.src}" alt="${photo.caption}" class="album-grid-img">
+            <img src="${this.thumb(photo.src)}" alt="${photo.caption}" class="album-grid-img" loading="lazy" decoding="async">
             <div class="album-grid-overlay">
               <i data-lucide="maximize-2" class="w-6 h-6"></i>
             </div>
@@ -360,6 +481,23 @@ const VaultModule = {
           </div>
         `).join('')}
       </div>
+
+      ${related.length > 0 ? `
+        <div class="vault-related">
+          <h3 class="vault-related-title">More from ${this.currentAlbum.category}</h3>
+          <div class="vault-related-row">
+            ${related.map(a => `
+              <div class="vault-related-card glass-card" onclick="VaultModule.openAlbum('${a.id}')">
+                <img src="${this.thumb(a.coverImage)}" alt="${a.title}" loading="lazy" decoding="async">
+                <div class="vault-related-info">
+                  <span class="vault-related-name">${a.title}</span>
+                  <span class="vault-related-date">${a.date}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
     `;
 
     gallery.innerHTML = html;
@@ -517,7 +655,7 @@ const VaultModule = {
         <button class="yd-trigger" onclick="VaultModule.toggleYearDropdown(event)">
           <i data-lucide="calendar" class="w-6 h-6 text-[#d4af37]"></i>
           <div>
-            <span class="vault-stat-value">${this.selectedYear === 'all' ? '2023-2025' : this.selectedYear}</span>
+            <span class="vault-stat-value">${this.selectedYear === 'all' ? (() => { const ys = this.availableYears(); return ys.length ? ys[ys.length - 1] + '-' + ys[0] : 'All'; })() : this.selectedYear}</span>
             <span class="vault-stat-label">Year Filter</span>
           </div>
           <i data-lucide="chevron-down" class="w-4 h-4 yd-chevron ${this.yearDropdownOpen ? 'yd-chevron-open' : ''}"></i>
@@ -526,15 +664,11 @@ const VaultModule = {
           <button class="yd-item ${this.selectedYear === 'all' ? 'yd-item-active' : ''}" onclick="VaultModule.filterByYear('all');" style="--i:0">
             <i data-lucide="layers" class="w-4 h-4"></i> All Years
           </button>
-          <button class="yd-item ${this.selectedYear === '2025' ? 'yd-item-active' : ''}" onclick="VaultModule.filterByYear('2025');" style="--i:1">
-            <i data-lucide="calendar" class="w-4 h-4"></i> 2025
-          </button>
-          <button class="yd-item ${this.selectedYear === '2024' ? 'yd-item-active' : ''}" onclick="VaultModule.filterByYear('2024');" style="--i:2">
-            <i data-lucide="calendar" class="w-4 h-4"></i> 2024
-          </button>
-          <button class="yd-item ${this.selectedYear === '2023' ? 'yd-item-active' : ''}" onclick="VaultModule.filterByYear('2023');" style="--i:3">
-            <i data-lucide="calendar" class="w-4 h-4"></i> 2023
-          </button>
+          ${this.availableYears().map((year, i) => `
+            <button class="yd-item ${this.selectedYear === year ? 'yd-item-active' : ''}" onclick="VaultModule.filterByYear('${year}');" style="--i:${i + 1}">
+              <i data-lucide="calendar" class="w-4 h-4"></i> ${year}
+            </button>
+          `).join('')}
         </div>
       </div>
     `;

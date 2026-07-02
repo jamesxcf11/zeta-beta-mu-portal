@@ -8140,6 +8140,226 @@ a:hover {
   }
 }
 
+/* ============================================================
+   PERFORMANCE REFINEMENTS
+   ============================================================ */
+
+/* Cap decorative particles: only the 12 positioned ones animate.
+   (Extra particle divs past the styled set stacked at 0,0 and wasted paint.) */
+.stardust-particle:nth-child(n+13) {
+  display: none;
+}
+
+/* Disable the particle field on phones and for reduced-motion users;
+   the static gold gradient overlay stays for the look. */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .stardust-container {
+    display: none;
+  }
+}
+
+/* Solid fallbacks where backdrop-filter is unsupported (old iPads/Android):
+   glass panels would otherwise render nearly transparent. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-card,
+  .glass-heavy,
+  .sidebar,
+  .mobile-header,
+  .landing-navbar,
+  .post-card,
+  .sidebar-section {
+    background: rgba(6, 46, 36, 0.92);
+  }
+
+  .light-theme .glass-card,
+  .light-theme .glass-heavy,
+  .light-theme .sidebar,
+  .light-theme .mobile-header,
+  .light-theme .landing-navbar,
+  .light-theme .post-card,
+  .light-theme .sidebar-section {
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* Feed infinite-scroll sentinel */
+.feed-sentinel {
+  height: 1px;
+}
+
+/* ============================================================
+   VAULT FILTERS / BREADCRUMB / RELATED ALBUMS
+   ============================================================ */
+
+.vault-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.25rem 0;
+}
+
+.vault-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vault-filter-chips .filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.vault-filter-chips .filter-chip:hover {
+  border-color: rgba(212, 175, 55, 0.6);
+  color: #d4af37;
+}
+
+.vault-filter-chips .filter-chip.active {
+  background: rgba(212, 175, 55, 0.18);
+  border-color: #d4af37;
+  color: #d4af37;
+}
+
+.chip-count {
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+.vault-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vault-sort-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.vault-sort-select {
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.vault-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.vault-breadcrumb a {
+  color: #d4af37;
+  text-decoration: none;
+}
+
+.vault-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.vault-breadcrumb-current {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.vault-related {
+  margin-top: 2.5rem;
+}
+
+.vault-related-title {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vault-related-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.vault-related-card {
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.vault-related-card:hover {
+  transform: translateY(-3px);
+}
+
+.vault-related-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.vault-related-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem 0.75rem;
+}
+
+.vault-related-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vault-related-date {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.light-theme .vault-filter-chips .filter-chip {
+  background: rgba(6, 78, 59, 0.06);
+  color: #065f46;
+  border-color: rgba(6, 78, 59, 0.2);
+}
+
+.light-theme .vault-filter-chips .filter-chip.active {
+  background: rgba(184, 148, 31, 0.15);
+  border-color: #b8941f;
+  color: #b8941f;
+}
+
+.light-theme .vault-sort-select {
+  background: rgba(6, 78, 59, 0.06);
+  color: #065f46;
+  border-color: rgba(6, 78, 59, 0.2);
+}
+
+.light-theme .vault-breadcrumb {
+  color: rgba(6, 78, 59, 0.5);
+}
+
+.light-theme .vault-breadcrumb a { color: #b8941f; }
+.light-theme .vault-breadcrumb-current { color: #065f46; }
+.light-theme .vault-related-name { color: #064e3b; }
+.light-theme .vault-related-date { color: rgba(6, 78, 59, 0.55); }
+.light-theme .vault-related-title { color: #064e3b; }
+
 /* --- Feed sub-pages: reuse the portal sidebar drawer for mobile nav --- */
 /* On desktop the sub-pages use the top landing-navbar, so hide the fixed
    sidebar / mobile header that are otherwise always-on for the Feed page. */
