@@ -165,6 +165,7 @@ const LandingModule = {
     this.setupStickyNavbar();
     this.renderPublicGallery();
     this.setupAboutAnimations();
+    this.setupScrollReveal();
   },
 
   /**
@@ -172,7 +173,7 @@ const LandingModule = {
    */
   setupStickyNavbar() {
     const navbar = document.getElementById('landing-navbar');
-    const hero = document.getElementById('landing-hero');
+    const hero = document.querySelector('.landing-hero');
     if (!navbar || !hero) return;
 
     let lastScrollY = 0;
@@ -181,6 +182,9 @@ const LandingModule = {
     const updateNavbar = () => {
       const heroBottom = hero.offsetTop + hero.offsetHeight - 100;
       const scrollY = window.scrollY;
+
+      // Elevated style once scrolled away from very top
+      navbar.classList.toggle('navbar-scrolled', scrollY > 40);
 
       // Hide on fast scroll down past hero, show on scroll up
       if (scrollY > heroBottom) {
@@ -224,6 +228,25 @@ const LandingModule = {
     });
 
     observer.observe(aboutSection);
+  },
+
+  /**
+   * Reveal sections/cards on scroll
+   */
+  setupScrollReveal() {
+    const targets = document.querySelectorAll('[data-reveal]');
+    if (!targets.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    targets.forEach(el => observer.observe(el));
   },
 
   /**

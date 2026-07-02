@@ -23,80 +23,41 @@
 <body class="dark-theme landing-page">
   
   <!-- ============================================
-       GOLD STARDUST BACKGROUND ANIMATION
-       ============================================ -->
-  <div class="stardust-container">
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-  </div>
-  <!-- Gold Dust Overlay -->
-  <div class="stardust-overlay"></div>
-
-  <!-- ============================================
-       STICKY NAVBAR (appears on scroll)
+       PREMIUM STICKY NAVBAR
        ============================================ -->
   <nav id="landing-navbar" class="landing-navbar">
     <div class="landing-navbar-inner">
-      <a href="#" class="landing-navbar-logo">
+      <a href="#home" class="landing-navbar-logo">
         <div class="landing-navbar-logo-icon">
           <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
         </div>
-        <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
+        <div class="landing-navbar-logo-text">
+          <span class="landing-navbar-logo-title">Zeta Beta Mu</span>
+          <span class="landing-navbar-logo-subtitle">MEDICAL FRATERNITY</span>
+        </div>
       </a>
       <div class="landing-navbar-links">
+        <a href="#home">Home</a>
         <a href="#about">About</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#events">Events</a>
+        <a href="#pillars">Pillars</a>
+        <a href="#vault">Gallery</a>
+        <a href="#vault">Vault</a>
         <a href="#contact">Contact</a>
       </div>
       <div class="landing-navbar-actions">
-        <a href="login.html" class="btn btn-glass btn-sm">
-          <i data-lucide="log-in" class="w-4 h-4"></i>
-          Login
-        </a>
-        <a href="signup.html" class="btn btn-gold btn-sm">
-          <i data-lucide="user-plus" class="w-4 h-4"></i>
-          Sign Up
-        </a>
+        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+        </button>
+        <a href="login.html" class="btn btn-gold btn-sm">Member Login</a>
       </div>
-      <!-- Mobile hamburger for navbar -->
       <button id="landing-mobile-toggle" class="landing-mobile-toggle" aria-label="Toggle menu">
         <i data-lucide="menu" class="w-6 h-6"></i>
       </button>
     </div>
   </nav>
 
-  <!-- Mobile slide-in menu (matches logged-in sidebar design) -->
+  <!-- Mobile slide-in menu -->
   <div id="landing-mobile-overlay" class="landing-mobile-overlay"></div>
   <aside id="landing-mobile-menu" class="landing-mobile-menu">
     <div class="landing-mobile-menu-logo">
@@ -105,86 +66,79 @@
       </div>
       <div class="landing-mobile-menu-logo-text">
         <h1 class="landing-mobile-menu-title">Zeta Beta Mu</h1>
-        <p class="landing-mobile-menu-subtitle">Zeal for Brotherhood among Medics</p>
+        <p class="landing-mobile-menu-subtitle">Medical Fraternity</p>
       </div>
     </div>
 
     <nav class="landing-mobile-menu-nav">
+      <a href="#home" class="nav-link"><i data-lucide="home"></i><span>Home</span></a>
       <a href="#about" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
-      <a href="#gallery" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
-      <a href="#events" class="nav-link"><i data-lucide="calendar"></i><span>Events</span></a>
+      <a href="#pillars" class="nav-link"><i data-lucide="columns-3"></i><span>Pillars</span></a>
+      <a href="#vault" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
+      <a href="#vault" class="nav-link"><i data-lucide="archive"></i><span>Vault</span></a>
       <a href="#contact" class="nav-link"><i data-lucide="mail"></i><span>Contact</span></a>
     </nav>
 
     <div class="landing-mobile-menu-footer">
-      <a href="login.html" class="btn btn-glass btn-sm">
+      <a href="login.html" class="btn btn-gold btn-sm">
         <i data-lucide="log-in" class="w-4 h-4"></i>
-        Login
-      </a>
-      <a href="signup.html" class="btn btn-gold btn-sm">
-        <i data-lucide="user-plus" class="w-4 h-4"></i>
-        Sign Up
+        Member Login
       </a>
     </div>
   </aside>
 
   <!-- ============================================
-       HERO SECTION — Brotherhood First
+       PREMIUM HERO SECTION
        ============================================ -->
-  <section id="landing-hero" class="landing-hero landing-hero--solo">
-    <div class="landing-hero-inner landing-hero-inner--solo">
-
-      <!-- Branding -->
+  <section id="home" class="landing-hero landing-hero--premium">
+    <div class="landing-hero-glow" aria-hidden="true"></div>
+    <div class="landing-hero-inner landing-hero-inner--premium">
       <div class="landing-hero-branding">
         <div class="landing-hero-badge">
-          <i data-lucide="shield-check" class="w-4 h-4"></i>
-          EST. 1971
+          EST. 1971 &middot; UNIVERSITY OF SANTO TOMAS
         </div>
-        <h1 class="landing-hero-title">Zeta Beta Mu</h1>
+        <h1 class="landing-hero-title">
+          Zeta Beta <em>Mu</em>
+        </h1>
         <p class="landing-hero-motto">Scholarship. Service. Sociability. Sacrifice. Idealism.</p>
         <p class="landing-hero-desc">
-          A distinguished fraternity of medical professionals united by a shared commitment to excellence,
-          brotherhood, and service. For over five decades, we have shaped physicians and leaders dedicated
-          to making a lasting impact on society.
+          A distinguished medical fraternity united by a shared commitment to excellence,
+          brotherhood, and service — shaping physicians who make a lasting impact in the
+          Philippines and beyond.
         </p>
-
-        <!-- Call to Action -->
         <div class="landing-hero-cta">
-          <a href="vault.html" class="btn btn-gold btn-lg">
-            <i data-lucide="archive" class="w-5 h-5"></i>
-            Explore the Vault
-          </a>
-          <a href="signup.html" class="btn btn-glass btn-lg">
-            <i data-lucide="user-plus" class="w-5 h-5"></i>
-            Join Us
-          </a>
-          <a href="login.html" class="btn btn-glass btn-lg">
-            <i data-lucide="log-in" class="w-5 h-5"></i>
-            Member Login
-          </a>
-        </div>
-
-        <!-- Stats -->
-        <div class="landing-hero-stats">
-          <div class="landing-hero-stat">
-            <span class="landing-hero-stat-value">55</span>
-            <span class="landing-hero-stat-label">Years</span>
-          </div>
-          <div class="landing-hero-stat">
-            <span class="landing-hero-stat-value">651</span>
-            <span class="landing-hero-stat-label">Members</span>
-          </div>
-          <div class="landing-hero-stat">
-            <span class="landing-hero-stat-value">220+</span>
-            <span class="landing-hero-stat-label">Hospital Affiliations</span>
-          </div>
-          <div class="landing-hero-stat">
-            <span class="landing-hero-stat-value">35+</span>
-            <span class="landing-hero-stat-label">Medical Specialties</span>
-          </div>
+          <a href="#about" class="btn btn-legacy btn-lg">Discover Our Legacy</a>
+          <a href="#pillars" class="btn btn-pillars btn-lg">Our Five Pillars</a>
         </div>
       </div>
-
+      <div class="landing-hero-shield">
+        <svg viewBox="0 0 400 460" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="ZBM Shield">
+          <path d="M200 8 L380 60 L380 220 C380 340 280 420 200 452 C120 420 20 340 20 220 L20 60 Z" stroke="url(#shieldStroke)" stroke-width="2" fill="url(#shieldFill)" opacity="0.18"/>
+          <path d="M200 35 L350 78 L350 215 C350 315 270 385 200 415 C130 385 50 315 50 215 L50 78 Z" stroke="url(#shieldStroke)" stroke-width="1.5" fill="url(#shieldInner)" opacity="0.28"/>
+          <path d="M200 70 L320 105 L320 210 C320 290 255 350 200 375 C145 350 80 290 80 210 L80 105 Z" stroke="url(#shieldStroke)" stroke-width="1" fill="url(#shieldInner)" opacity="0.22"/>
+          <text x="200" y="245" text-anchor="middle" font-family="Playfair Display, serif" font-size="98" font-weight="700" fill="url(#shieldText)" letter-spacing="0.05em">ZBM</text>
+          <text x="200" y="330" text-anchor="middle" font-family="Playfair Display, serif" font-size="24" font-weight="500" fill="url(#shieldText)" letter-spacing="0.25em" opacity="0.85">EST. MCMLXXI</text>
+          <defs>
+            <linearGradient id="shieldStroke" x1="0" y1="0" x2="400" y2="460" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#064e3b" stop-opacity="0.4"/>
+            </linearGradient>
+            <linearGradient id="shieldFill" x1="0" y1="0" x2="0" y2="460" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#064e3b" stop-opacity="0.05"/>
+            </linearGradient>
+            <linearGradient id="shieldInner" x1="0" y1="0" x2="0" y2="460" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.15"/>
+              <stop offset="100%" stop-color="#02180e" stop-opacity="0.3"/>
+            </linearGradient>
+            <linearGradient id="shieldText" x1="0" y1="0" x2="400" y2="460" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#f3d67b"/>
+              <stop offset="50%" stop-color="#d4af37"/>
+              <stop offset="100%" stop-color="#b8941f"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
     </div>
   </section>
 
@@ -214,7 +168,7 @@
         <div class="about-image-frame-top">
           <img src="image/aboutus.jpg" alt="Zeta Beta Mu Fraternity" class="about-image-top">
           <div class="about-image-overlay-top">
-            <a href="#gallery" class="about-portfolio-btn">
+            <a href="#vault" class="about-portfolio-btn">
               Our Heritage
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
@@ -223,7 +177,7 @@
       </div>
 
       <!-- The Five Pillars -->
-      <div class="about-pillars-header">
+      <div id="pillars" class="about-pillars-header">
         <span class="about-badge">
           <i data-lucide="columns-3" class="w-4 h-4"></i>
           OUR FOUNDATION
@@ -318,7 +272,7 @@
        ============================================ -->
   <section id="partnership" class="landing-section">
     <div class="landing-section-inner">
-      <div class="partnership-grid">
+      <div class="partnership-grid" data-reveal>
         <div class="partnership-media">
           <img src="sample vault/012ec369-ea52-42fc-912a-d1ef7504950a.jpg" alt="Villa Maria Integrated School outreach" class="partnership-image">
           <div class="partnership-media-badge">
@@ -356,9 +310,9 @@
   <!-- ============================================
        PUBLIC GALLERY SECTION (Vault Preview)
        ============================================ -->
-  <section id="gallery" class="landing-section landing-section-alt">
+  <section id="vault" class="landing-section landing-section-alt">
     <div class="landing-section-inner">
-      <div class="landing-section-header">
+      <div class="landing-section-header" data-reveal>
         <span class="landing-section-badge">
           <i data-lucide="images" class="w-4 h-4"></i>
           Gallery
@@ -373,11 +327,13 @@
         <!-- Rendered by landing.js -->
       </div>
 
-      <div class="text-center mt-10">
-        <p class="landing-muted-text text-sm">
-          <i data-lucide="lock" class="w-4 h-4 inline-block mr-1 align-middle"></i>
-          Members can access the full Historical Vault with thousands of photos after logging in.
-        </p>
+      <div class="landing-gallery-lock-note" data-reveal>
+        <i data-lucide="lock" class="w-5 h-5"></i>
+        <p>Members can access the full Historical Vault with thousands of photos after logging in.</p>
+        <a href="login.html" class="btn btn-outline-gold btn-sm">
+          <i data-lucide="log-in" class="w-4 h-4"></i>
+          Member Login
+        </a>
       </div>
     </div>
   </section>
@@ -387,7 +343,7 @@
        ============================================ -->
   <section id="alumni" class="landing-section">
     <div class="landing-section-inner">
-      <div class="landing-section-header">
+      <div class="landing-section-header" data-reveal>
         <span class="landing-section-badge">
           <i data-lucide="star" class="w-4 h-4"></i>
           Our Pride
@@ -398,7 +354,7 @@
         </p>
       </div>
 
-      <div class="alumni-grid">
+      <div class="alumni-grid" data-reveal>
         <div class="alumni-card glass-card">
           <div class="alumni-photo-placeholder">
             <i data-lucide="user" class="w-10 h-10"></i>
@@ -439,7 +395,7 @@
        ============================================ -->
   <section id="events" class="landing-section">
     <div class="landing-section-inner">
-      <div class="landing-section-header">
+      <div class="landing-section-header" data-reveal>
         <span class="landing-section-badge">
           <i data-lucide="calendar" class="w-4 h-4"></i>
           Events
@@ -450,7 +406,7 @@
         </p>
       </div>
 
-      <div class="landing-events-grid">
+      <div class="landing-events-grid" data-reveal>
         <div class="landing-event-card glass-card">
           <div class="landing-event-date">
             <span class="landing-event-month">MAR</span>
@@ -498,89 +454,78 @@
   </section>
 
   <!-- ============================================
-       CONTACT / SOCIAL SECTION
+       PRE-FOOTER CTA
        ============================================ -->
-  <section id="contact" class="landing-section landing-section-alt">
-    <div class="landing-section-inner">
-      <div class="landing-section-header">
-        <span class="landing-section-badge">
-          <i data-lucide="share-2" class="w-4 h-4"></i>
-          Connect
-        </span>
-        <h2 class="landing-section-title">Stay Connected</h2>
-        <p class="landing-section-subtitle">
-          Follow us on social media and stay updated with the latest from Zeta Beta Mu.
-        </p>
-      </div>
-
-      <div class="landing-social-grid">
-        <a href="https://www.facebook.com/ZetaBetaMuFraternity" target="_blank" rel="noopener" class="landing-social-card glass-card">
-          <i data-lucide="facebook" class="w-10 h-10" style="color: #3b82f6;"></i>
-          <h3>Facebook</h3>
-          <p>@ZetaBetaMuFraternity</p>
-        </a>
-        <a href="https://www.instagram.com/zetabetamufraternity/" target="_blank" rel="noopener" class="landing-social-card glass-card">
-          <i data-lucide="instagram" class="w-10 h-10" style="color: #e1306c;"></i>
-          <h3>Instagram</h3>
-          <p>@zetabetamufraternity</p>
-        </a>
-        <a href="#" class="landing-social-card glass-card">
-          <i data-lucide="mail" class="w-10 h-10" style="color: #d4af37;"></i>
-          <h3>Email Us</h3>
-          <p>Email address to follow</p>
-        </a>
+  <section id="contact" class="landing-prefooter">
+    <div class="landing-prefooter-inner">
+      <span class="landing-prefooter-eyebrow">JOIN THE BROTHERHOOD</span>
+      <h2 class="landing-prefooter-title">Begin Your <em>Legacy</em></h2>
+      <p class="landing-prefooter-text">
+        If you are a medical student at UST with a commitment to excellence, service,
+        and brotherhood, we invite you to learn more about becoming part of the Zeta
+        Beta Mu family.
+      </p>
+      <div class="landing-prefooter-cta">
+        <a href="signup.html" class="btn btn-legacy btn-lg">Get in Touch</a>
+        <a href="#about" class="btn btn-pillars btn-lg">Learn More</a>
       </div>
     </div>
   </section>
 
   <!-- ============================================
-       FOOTER
+       PREMIUM FOOTER
        ============================================ -->
-  <footer class="landing-footer">
+  <footer class="landing-footer landing-footer--premium">
     <div class="landing-footer-inner">
       <div class="landing-footer-brand">
-        <div class="flex items-center gap-3 mb-4">
+        <div class="landing-footer-logo">
           <div class="landing-footer-logo-icon">
             <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
           </div>
-          <span class="font-serif font-semibold text-lg landing-footer-title">Zeta Beta Mu</span>
+          <div class="landing-footer-logo-text">
+            <span class="landing-footer-logo-title">Zeta Beta Mu</span>
+            <span class="landing-footer-logo-subtitle">MEDICAL FRATERNITY</span>
+          </div>
         </div>
-        <p class="landing-muted-text text-sm leading-relaxed max-w-sm">
-          A fraternity of medical excellence since 1971. United by purpose, driven by service, bound by brotherhood.
+        <p class="landing-footer-desc">
+          A distinguished medical fraternity founded in 1971 at the University of Santo Tomas,
+          upholding the five pillars of Scholarship, Service, Sociability, Sacrifice, and Idealism.
         </p>
+        <div class="landing-footer-social">
+          <a href="https://www.facebook.com/ZetaBetaMuFraternity" target="_blank" rel="noopener" aria-label="Facebook">
+            <i data-lucide="facebook" class="w-4 h-4"></i>
+          </a>
+          <a href="https://www.instagram.com/zetabetamufraternity/" target="_blank" rel="noopener" aria-label="Instagram">
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+          </a>
+        </div>
       </div>
       <div class="landing-footer-links">
-        <h4>Quick Links</h4>
+        <h4>QUICK LINKS</h4>
         <a href="#about">About Us</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#events">Events</a>
-        <a href="signup.html">Join Us</a>
-      </div>
-      <div class="landing-footer-links">
-        <h4>Members</h4>
+        <a href="#pillars">The Five Pillars</a>
+        <a href="#partnership">Community Partnerships</a>
+        <a href="vault.html">Historical Vault</a>
+        <a href="#vault">Gallery</a>
         <a href="login.html">Member Login</a>
-        <a href="signup.html">Create Account</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+      </div>
+      <div class="landing-footer-contact">
+        <h4>CONTACT</h4>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="map-pin" class="w-4 h-4"></i>
+          <span>University of Santo Tomas<br>España Blvd., Sampaloc<br>Manila, Philippines</span>
+        </div>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span>contact@zetabetamu.org</span>
+        </div>
       </div>
     </div>
     <div class="landing-footer-bottom">
-      <p>© 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+      <p>© 2026 Zeta Beta Mu Medical Fraternity. All rights reserved.</p>
+      <span>EST. 1971 · UNIVERSITY OF SANTO TOMAS</span>
     </div>
   </footer>
-
-  <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
-  <div class="theme-toggle-container">
-    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
-      <div class="theme-toggle-icons">
-        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
-        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
-      </div>
-      <div class="theme-toggle-thumb">
-        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
-      </div>
-    </div>
-  </div>
 
   <!-- Scripts -->
   <script src="js/main.js"></script>

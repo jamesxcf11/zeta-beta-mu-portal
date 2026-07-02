@@ -199,8 +199,8 @@ const ThemeManager = {
    * Setup toggle click handler
    */
   setupToggleHandler() {
-    const toggle = document.querySelector('.theme-toggle');
-    if (toggle) {
+    const toggles = document.querySelectorAll('.theme-toggle, .navbar-theme-toggle');
+    toggles.forEach((toggle) => {
       toggle.addEventListener('click', () => {
         this.toggle();
       });
@@ -212,7 +212,7 @@ const ThemeManager = {
           this.toggle();
         }
       });
-    }
+    });
   },
 
   /**

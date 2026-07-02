@@ -63,6 +63,14 @@
   <!-- Gold Dust Overlay -->
   <div class="stardust-overlay"></div>
 
+  <!-- Theme Toggle (Top Right) -->
+  <div class="page-theme-toggle">
+    <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+      <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+    </button>
+  </div>
+
   <!-- ============================================
        WELCOME CONTAINER
        ============================================ -->
@@ -201,7 +209,7 @@
             <!-- Tomorrow's Birthdays -->
             <div class="birthday-section">
               <div class="birthday-section-header">
-                <i data-lucide="moon" class="w-4 h-4 text-gray-400"></i>
+                <i data-lucide="moon" class="w-4 h-4 welcome-icon-muted"></i>
                 <span>Tomorrow</span>
               </div>
               <div class="birthday-item">
@@ -216,7 +224,7 @@
             <!-- Next Birthday -->
             <div class="birthday-section">
               <div class="birthday-section-header">
-                <i data-lucide="calendar" class="w-4 h-4 text-gray-400"></i>
+                <i data-lucide="calendar" class="w-4 h-4 welcome-icon-muted"></i>
                 <span>Next</span>
               </div>
               <div class="birthday-item">
@@ -266,25 +274,13 @@
         <i data-lucide="arrow-right" class="w-5 h-5"></i>
         Enter the Community
       </a>
-      <p class="mt-4 text-gray-400 text-sm">
+      <p class="mt-4 welcome-muted-text text-sm">
         Join the conversation with fellow medical professionals
       </p>
     </div>
 
   </div>
 
-  <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
-  <div class="theme-toggle-container">
-    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
-      <div class="theme-toggle-icons">
-        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
-        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
-      </div>
-      <div class="theme-toggle-thumb">
-        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
-      </div>
-    </div>
-  </div>
 
   <!-- Scripts -->
   <script src="js/main.js"></script>

@@ -62,6 +62,14 @@
   <!-- Gold Dust Overlay -->
   <div class="stardust-overlay"></div>
 
+  <!-- Theme Toggle (Top Right) -->
+  <div class="page-theme-toggle">
+    <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+      <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+    </button>
+  </div>
+
   <!-- Authentication Container -->
   <div class="auth-container min-h-screen py-8">
     
@@ -82,8 +90,8 @@
         <div class="flex items-start gap-3">
           <i data-lucide="shield-check" class="w-5 h-5 text-[#d4af37] flex-shrink-0 mt-0.5"></i>
           <div>
-            <p class="text-sm font-medium text-white mb-1">Verification Required</p>
-            <p class="text-xs text-gray-300">All registrations are reviewed by our administration team. You will receive an email notification once your account is verified.</p>
+            <p class="text-sm font-medium signup-notice-title mb-1">Verification Required</p>
+            <p class="text-xs signup-notice-text">All registrations are reviewed by our administration team. You will receive an email notification once your account is verified.</p>
           </div>
         </div>
       </div>
@@ -422,18 +430,6 @@
     
   </div>
   
-  <!-- Glassmorphism Theme Toggle (Fixed Bottom Right) -->
-  <div class="theme-toggle-container">
-    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
-      <div class="theme-toggle-icons">
-        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
-        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
-      </div>
-      <div class="theme-toggle-thumb">
-        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
-      </div>
-    </div>
-  </div>
 
   <!-- Scripts -->
   <script src="js/auth.js"></script>

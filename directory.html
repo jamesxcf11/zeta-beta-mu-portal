@@ -73,6 +73,10 @@
       </div>
       <span class="font-serif text-lg font-semibold">Zeta Beta Mu</span>
     </div>
+    <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+      <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+    </button>
     <button id="hamburger-menu" class="hamburger" aria-expanded="false" aria-label="Toggle navigation">
       <span></span>
       <span></span>
@@ -160,6 +164,10 @@
         <a href="memoriam.html">In Memoriam</a>
       </div>
       <div class="landing-navbar-actions">
+        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+        </button>
         <a href="home.html" class="btn btn-glass btn-sm">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
           Back to Portal
@@ -206,7 +214,7 @@
       <!-- Search Bar -->
       <div class="max-w-2xl mx-auto mb-8">
         <div class="relative">
-          <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+          <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 directory-search-icon"></i>
           <input type="text" id="directory-search" class="glass-input w-full pl-12 py-3" placeholder="Search by name, nickname, batch, hospital, specialization, or contact...">
         </div>
       </div>
@@ -239,10 +247,10 @@
         <!-- Member Card 1 -->
         <div class="glass-card p-6 text-center directory-card" data-specialty="cardiology">
           <img src="image/placeholders/avatars/a11.jpg" alt="Dr. James Anderson" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-[#d4af37]/50">
-          <h3 class="text-lg font-semibold text-white mb-1">Dr. James Anderson</h3>
-          <p class="text-[#d4af37] text-sm font-medium mb-2">Cardiology</p>
-          <p class="text-gray-400 text-sm mb-3">St. Luke's Medical Center</p>
-          <div class="flex items-center justify-center gap-4 text-xs text-gray-500">
+          <h3 class="text-lg font-semibold directory-card-name mb-1">Dr. James Anderson</h3>
+          <p class="directory-card-specialty text-sm font-medium mb-2">Cardiology</p>
+          <p class="directory-card-hospital text-sm mb-3">St. Luke's Medical Center</p>
+          <div class="flex items-center justify-center gap-4 text-xs directory-card-meta">
             <span class="flex items-center gap-1"><i data-lucide="graduation-cap" class="w-3 h-3"></i> Class of 1995</span>
             <span class="flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> Admin</span>
           </div>
@@ -251,10 +259,10 @@
         <!-- Member Card 2 -->
         <div class="glass-card p-6 text-center directory-card" data-specialty="neurology">
           <img src="image/placeholders/avatars/a5.jpg" alt="Dr. Sarah Mitchell" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-[#d4af37]/50">
-          <h3 class="text-lg font-semibold text-white mb-1">Dr. Sarah Mitchell</h3>
-          <p class="text-[#d4af37] text-sm font-medium mb-2">Neurology</p>
-          <p class="text-gray-400 text-sm mb-3">Mount Sinai Hospital</p>
-          <div class="flex items-center justify-center gap-4 text-xs text-gray-500">
+          <h3 class="text-lg font-semibold directory-card-name mb-1">Dr. Sarah Mitchell</h3>
+          <p class="directory-card-specialty text-sm font-medium mb-2">Neurology</p>
+          <p class="directory-card-hospital text-sm mb-3">Mount Sinai Hospital</p>
+          <div class="flex items-center justify-center gap-4 text-xs directory-card-meta">
             <span class="flex items-center gap-1"><i data-lucide="graduation-cap" class="w-3 h-3"></i> Class of 2008</span>
           </div>
         </div>
@@ -262,10 +270,10 @@
         <!-- Member Card 3 -->
         <div class="glass-card p-6 text-center directory-card" data-specialty="oncology">
           <img src="image/placeholders/avatars/a3.jpg" alt="Dr. Michael Chen" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-[#d4af37]/50">
-          <h3 class="text-lg font-semibold text-white mb-1">Dr. Michael Chen</h3>
-          <p class="text-[#d4af37] text-sm font-medium mb-2">Oncology</p>
-          <p class="text-gray-400 text-sm mb-3">Johns Hopkins Medicine</p>
-          <div class="flex items-center justify-center gap-4 text-xs text-gray-500">
+          <h3 class="text-lg font-semibold directory-card-name mb-1">Dr. Michael Chen</h3>
+          <p class="directory-card-specialty text-sm font-medium mb-2">Oncology</p>
+          <p class="directory-card-hospital text-sm mb-3">Johns Hopkins Medicine</p>
+          <div class="flex items-center justify-center gap-4 text-xs directory-card-meta">
             <span class="flex items-center gap-1"><i data-lucide="graduation-cap" class="w-3 h-3"></i> Class of 2012</span>
           </div>
         </div>
@@ -273,10 +281,10 @@
         <!-- Member Card 4 -->
         <div class="glass-card p-6 text-center directory-card" data-specialty="pediatrics">
           <img src="image/placeholders/avatars/a6.jpg" alt="Dr. Sarah Johnson" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-[#d4af37]/50">
-          <h3 class="text-lg font-semibold text-white mb-1">Dr. Sarah Johnson</h3>
-          <p class="text-[#d4af37] text-sm font-medium mb-2">Pediatrics</p>
-          <p class="text-gray-400 text-sm mb-3">Boston Children's Hospital</p>
-          <div class="flex items-center justify-center gap-4 text-xs text-gray-500">
+          <h3 class="text-lg font-semibold directory-card-name mb-1">Dr. Sarah Johnson</h3>
+          <p class="directory-card-specialty text-sm font-medium mb-2">Pediatrics</p>
+          <p class="directory-card-hospital text-sm mb-3">Boston Children's Hospital</p>
+          <div class="flex items-center justify-center gap-4 text-xs directory-card-meta">
             <span class="flex items-center gap-1"><i data-lucide="graduation-cap" class="w-3 h-3"></i> Class of 2012</span>
           </div>
         </div>
@@ -284,10 +292,10 @@
         <!-- Member Card 5 -->
         <div class="glass-card p-6 text-center directory-card" data-specialty="surgery">
           <img src="image/placeholders/avatars/a8.jpg" alt="Dr. Robert Kim" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-[#d4af37]/50">
-          <h3 class="text-lg font-semibold text-white mb-1">Dr. Robert Kim</h3>
-          <p class="text-[#d4af37] text-sm font-medium mb-2">Surgery</p>
-          <p class="text-gray-400 text-sm mb-3">Mayo Clinic</p>
-          <div class="flex items-center justify-center gap-4 text-xs text-gray-500">
+          <h3 class="text-lg font-semibold directory-card-name mb-1">Dr. Robert Kim</h3>
+          <p class="directory-card-specialty text-sm font-medium mb-2">Surgery</p>
+          <p class="directory-card-hospital text-sm mb-3">Mayo Clinic</p>
+          <div class="flex items-center justify-center gap-4 text-xs directory-card-meta">
             <span class="flex items-center gap-1"><i data-lucide="graduation-cap" class="w-3 h-3"></i> Class of 2010</span>
           </div>
         </div>
@@ -295,10 +303,10 @@
         <!-- Member Card 6 -->
         <div class="glass-card p-6 text-center directory-card" data-specialty="cardiology">
           <img src="image/placeholders/avatars/a14.jpg" alt="Dr. Maria Santos" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-[#d4af37]/50">
-          <h3 class="text-lg font-semibold text-white mb-1">Dr. Maria Santos</h3>
-          <p class="text-[#d4af37] text-sm font-medium mb-2">Cardiology</p>
-          <p class="text-gray-400 text-sm mb-3">Philippine Heart Center</p>
-          <div class="flex items-center justify-center gap-4 text-xs text-gray-500">
+          <h3 class="text-lg font-semibold directory-card-name mb-1">Dr. Maria Santos</h3>
+          <p class="directory-card-specialty text-sm font-medium mb-2">Cardiology</p>
+          <p class="directory-card-hospital text-sm mb-3">Philippine Heart Center</p>
+          <div class="flex items-center justify-center gap-4 text-xs directory-card-meta">
             <span class="flex items-center gap-1"><i data-lucide="graduation-cap" class="w-3 h-3"></i> Class of 2005</span>
           </div>
         </div>
@@ -389,18 +397,6 @@
     </div>
   </div>
 
-  <!-- Glassmorphism Theme Toggle -->
-  <div class="theme-toggle-container">
-    <div class="theme-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
-      <div class="theme-toggle-icons">
-        <i data-lucide="moon" class="theme-icon theme-icon-moon"></i>
-        <i data-lucide="sun" class="theme-icon theme-icon-sun"></i>
-      </div>
-      <div class="theme-toggle-thumb">
-        <i data-lucide="moon" class="active-icon" style="width: 14px; height: 14px;"></i>
-      </div>
-    </div>
-  </div>
 
   <!-- Scripts -->
   <script src="js/main.js"></script>
