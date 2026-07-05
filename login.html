@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Zeta Beta Mu Fraternity - Member Login. Access the private portal.">
-  <title>Member Login | Zeta Beta Mu Fraternity</title>
+  <meta name="description" content="Zeta Beta Mu Fraternity - Member Portal Login.">
+  <title>Member Portal | Zeta Beta Mu Fraternity</title>
 
   <!-- Tailwind CSS -->
   <link rel="stylesheet" href="css/tailwind.css">
@@ -12,100 +12,168 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
 
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.min.css">
+  <!-- Theme-aware color variables -->
+  <style>
+    .login-page {
+      --login-bg: var(--zbm-forest);
+      --login-bg-alt: var(--zbm-white);
+      --login-text: var(--zbm-white);
+      --login-muted: rgba(255, 255, 255, 0.7);
+      --login-text-alt: var(--zbm-forest);
+      --login-muted-alt: rgba(30, 30, 30, 0.6);
+      --login-accent: var(--zbm-gold);
+      --login-input-bg: var(--zbm-white);
+      --login-input-border: rgba(30, 30, 30, 0.12);
+      --login-primary-bg: var(--zbm-gold);
+      --login-primary-text: var(--zbm-forest);
+      --login-primary-hover: var(--zbm-gold-hover);
+      --login-secondary-border: var(--zbm-gold);
+      --login-secondary-text: var(--zbm-forest);
+      --login-secondary-hover: rgba(195, 160, 86, 0.1);
+      --login-error-bg: rgba(239, 68, 68, 0.08);
+      --login-error-border: rgba(239, 68, 68, 0.2);
+      --login-error-text: #dc2626;
+      --login-checkbox-bg: var(--zbm-white);
+      --login-checkbox-border: rgba(30, 30, 30, 0.2);
+      --login-glass-gold: rgba(195, 160, 86, 0.06);
+      --login-glass-dark: rgba(1, 74, 54, 0.6);
+    }
+
+    .dark-theme.login-page {
+      --login-bg: var(--zbm-forest-deep);
+      --login-bg-alt: var(--zbm-forest-surface);
+      --login-text: var(--zbm-white);
+      --login-muted: rgba(255, 255, 255, 0.7);
+      --login-text-alt: var(--zbm-white);
+      --login-muted-alt: #9fb0a0;
+      --login-accent: var(--zbm-gold-dark);
+      --login-input-bg: rgba(255, 255, 255, 0.05);
+      --login-input-border: rgba(201, 160, 72, 0.25);
+      --login-primary-bg: var(--zbm-gold-dark);
+      --login-primary-text: var(--zbm-forest-deep);
+      --login-primary-hover: var(--zbm-gold-dark-hover);
+      --login-secondary-border: var(--zbm-gold-dark);
+      --login-secondary-text: var(--zbm-gold-dark);
+      --login-secondary-hover: rgba(201, 160, 72, 0.1);
+      --login-error-bg: rgba(239, 68, 68, 0.15);
+      --login-error-border: rgba(239, 68, 68, 0.25);
+      --login-error-text: #fca5a5;
+      --login-checkbox-bg: rgba(255, 255, 255, 0.05);
+      --login-checkbox-border: rgba(201, 160, 72, 0.4);
+      --login-glass-gold: rgba(201, 160, 72, 0.08);
+      --login-glass-dark: rgba(0, 61, 46, 0.6);
+    }
+  </style>
 </head>
-<body class="dark-theme auth-page login-page">
+<body class="login-page light-theme min-h-screen flex flex-col bg-[var(--login-bg-alt)] font-sans text-[var(--login-text-alt)] antialiased">
 
-  <!-- ============================================
-       GOLD STARDUST BACKGROUND ANIMATION
-       ============================================ -->
-  <div class="stardust-container">
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-  </div>
-  <!-- Gold Dust Overlay -->
-  <div class="stardust-overlay"></div>
+  <!-- SPLIT SCREEN -->
+  <div class="flex flex-col md:flex-row min-h-screen">
 
-  <!-- ============================================
-       NAVIGATION BAR
-       ============================================ -->
-  <nav class="landing-navbar" style="opacity: 1; transform: translateY(0);">
-    <div class="landing-navbar-inner">
-      <a href="index.html" class="landing-navbar-logo">
-        <div class="landing-navbar-logo-icon">
-          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
-        </div>
-        <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
+    <!-- LEFT PANEL: Branding -->
+    <aside
+      class="relative flex flex-row md:flex-col md:w-1/2 items-center md:items-start justify-between bg-[var(--login-bg)] px-6 py-8 md:px-12 md:py-14 lg:px-16 lg:py-18 overflow-hidden"
+    >
+      <!-- Glass-like gradient overlay -->
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background: radial-gradient(circle at 20% 30%, var(--login-glass-gold) 0%, transparent 45%), radial-gradient(circle at 80% 80%, var(--login-glass-dark) 0%, transparent 50%);"
+      ></div>
+      <div class="absolute inset-0 bg-black/10 pointer-events-none"></div>
+
+      <!-- Back to Home -->
+      <a
+        href="index.html"
+        class="hidden md:inline-flex relative z-10 items-center gap-2 text-[var(--login-muted)] hover:text-[var(--login-accent)] transition-colors text-sm font-medium"
+      >
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Back to Home
       </a>
-      <div class="landing-navbar-actions">
-        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
-          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
-          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
-        </button>
-        <a href="index.html" class="btn btn-glass btn-sm">
+
+      <!-- Branding -->
+      <div class="relative z-10 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 flex-1 md:flex-none justify-center md:justify-start">
+        <img
+          src="image/OG logo.png"
+          alt="Zeta Beta Mu Fraternity Seal"
+          class="w-16 h-16 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain md:mb-8 lg:mb-10"
+        >
+        <div class="md:max-w-md">
+          <h1 class="font-serif text-2xl md:text-5xl lg:text-6xl font-semibold text-[var(--login-text)] mb-0 md:mb-4 leading-tight">
+            Member <span class="text-[var(--login-accent)] italic">Portal</span>
+          </h1>
+          <p class="hidden md:block text-[var(--login-muted)] text-base md:text-lg leading-relaxed max-w-md">
+            A private space for Zeta Beta Mu brothers — access fraternity resources, announcements, and brotherhood records.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quote -->
+      <div class="hidden md:block relative z-10 mt-0 md:mt-8 border-l-2 border-[var(--login-accent)]/40 pl-5">
+        <p class="font-serif italic text-lg md:text-xl lg:text-2xl text-[var(--login-text)] mb-2">
+          "Once a brother, always a brother."
+        </p>
+        <p class="text-[var(--login-muted)] text-[10px] md:text-xs tracking-[0.2em] uppercase">
+          Zeta Beta Mu Tradition
+        </p>
+      </div>
+
+      <!-- Theme Toggle -->
+      <button
+        type="button"
+        class="theme-toggle relative z-10 w-9 h-9 flex items-center justify-center rounded-full text-[var(--login-muted)] hover:text-[var(--login-accent)] transition-colors"
+        aria-label="Toggle theme"
+      >
+        <i data-lucide="sun" class="theme-icon-sun absolute w-5 h-5"></i>
+        <i data-lucide="moon" class="theme-icon-moon absolute w-5 h-5"></i>
+      </button>
+    </aside>
+
+    <!-- RIGHT PANEL: Form -->
+    <main
+      class="relative w-full md:w-1/2 grow md:grow-0 flex items-center justify-center bg-[var(--login-bg-alt)] px-6 py-8 md:px-12 md:py-14 lg:px-20 shadow-[-8px_0_30px_rgba(0,0,0,0.06)]"
+    >
+      <div class="w-full max-w-md">
+
+        <!-- Mobile Back to Home -->
+        <a
+          href="index.html"
+          class="md:hidden inline-flex items-center gap-2 text-[var(--login-muted-alt)] hover:text-[var(--login-accent)] transition-colors text-sm font-medium mb-5"
+        >
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
           Back to Home
         </a>
-      </div>
-    </div>
-  </nav>
 
-  <!-- ============================================
-       LOGIN SECTION
-       ============================================ -->
-  <section class="login-section">
-    <div class="login-section-inner">
-      <div class="glass-heavy auth-card">
-
-        <!-- Logo -->
-        <div class="auth-logo">
-          <img src="image/logo1.png" alt="ZBM Logo" class="auth-logo-img">
-        </div>
-
-        <!-- Title -->
-        <h2 class="auth-title">Member Login</h2>
-        <p class="auth-motto">Access the private portal</p>
+        <!-- Heading -->
+        <h2 class="font-serif text-4xl md:text-5xl font-semibold text-[var(--login-text-alt)] mb-2 leading-tight">
+          Welcome back, Brother
+        </h2>
+        <p class="text-[var(--login-muted-alt)] text-base md:text-lg mb-8 md:mb-10">
+          Sign in to access the member portal.
+        </p>
 
         <!-- Error Message Container -->
-        <div id="auth-error" class="hidden mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm"></div>
+        <div id="auth-error" class="hidden mb-5 p-3 rounded-lg bg-[var(--login-error-bg)] border border-[var(--login-error-border)] text-[var(--login-error-text)] text-sm"></div>
 
         <!-- Login Form -->
-        <form id="login-form" class="auth-form">
+        <form id="login-form" class="space-y-5">
 
-          <!-- Username Field -->
-          <div class="form-group">
-            <label for="username" class="form-label">Username</label>
+          <!-- Username -->
+          <div class="space-y-2">
+            <label for="username" class="block text-sm font-medium text-[var(--login-text-alt)]">
+              Username
+            </label>
             <div class="relative">
-              <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+              <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
               <input
                 type="text"
                 id="username"
                 name="username"
-                class="glass-input pl-10"
+                class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-4 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20"
                 placeholder="Enter your username"
                 autocomplete="username"
                 required
@@ -113,16 +181,23 @@
             </div>
           </div>
 
-          <!-- Password Field -->
-          <div class="form-group">
-            <label for="password" class="form-label">Password</label>
+          <!-- Password -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="password" class="block text-sm font-medium text-[var(--login-text-alt)]">
+                Password
+              </label>
+              <a href="#" class="text-sm text-[var(--login-accent)] hover:text-[var(--login-text-alt)] transition-colors">
+                Forgot Password?
+              </a>
+            </div>
             <div class="relative">
-              <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+              <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
               <input
                 type="password"
                 id="password"
                 name="password"
-                class="glass-input pl-10"
+                class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-11 py-4 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20"
                 placeholder="Enter your password"
                 autocomplete="current-password"
                 required
@@ -130,50 +205,72 @@
               <button
                 type="button"
                 id="toggle-password"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--login-muted-alt)] hover:text-[var(--login-text-alt)] transition-colors"
                 onclick="togglePasswordVisibility()"
+                aria-label="Toggle password visibility"
               >
                 <i data-lucide="eye" class="w-5 h-5"></i>
               </button>
             </div>
           </div>
 
-          <!-- Form Options -->
-          <div class="form-options">
-            <label class="remember-me">
-              <input type="checkbox" id="remember-me" name="remember-me">
-              <span>Remember me</span>
+          <!-- Remember me -->
+          <div class="flex items-center">
+            <label class="inline-flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                id="remember-me"
+                name="remember-me"
+                class="peer sr-only"
+              >
+              <span
+                class="w-5 h-5 rounded border border-[var(--login-checkbox-border)] bg-[var(--login-checkbox-bg)] flex items-center justify-center peer-checked:bg-[var(--login-accent)] peer-checked:border-[var(--login-accent)] transition-colors"
+              >
+                <i data-lucide="check" class="w-3.5 h-3.5 text-[var(--login-primary-text)] opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+              </span>
+              <span class="text-sm text-[var(--login-muted-alt)]">Remember me</span>
             </label>
-            <a href="#" class="forgot-password hover:text-[#d4af37] transition-colors">Forgot Password?</a>
           </div>
 
-          <!-- Login Button -->
+          <!-- Sign In Button -->
           <button
             type="submit"
-            class="btn btn-gold btn-lg w-full"
-            data-original-text="Login"
+            class="w-full bg-[var(--login-primary-bg)] hover:bg-[var(--login-primary-hover)] text-[var(--login-primary-text)] font-semibold text-base rounded-xl py-4 transition-all focus:outline-none focus:ring-2 focus:ring-[var(--login-accent)]/40"
+            data-original-text="Sign In"
           >
-            <i data-lucide="log-in" class="w-5 h-5"></i>
-            Login
+            Sign In
           </button>
 
         </form>
 
         <!-- Divider -->
-        <div class="auth-divider">
-          <span>New to the fraternity?</span>
+        <div class="relative my-8">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-[var(--login-muted-alt)]/30"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="bg-[var(--login-bg-alt)] px-3 text-[var(--login-muted-alt)]">New to the Fraternity?</span>
+          </div>
         </div>
 
-        <!-- Register Link -->
-        <a href="signup.html" class="btn btn-glass w-full">
-          <i data-lucide="user-plus" class="w-5 h-5"></i>
-          Create Account
+        <!-- Create Account Button -->
+        <a
+          href="signup.html"
+          class="block w-full text-center border border-[var(--login-secondary-border)] text-[var(--login-secondary-text)] hover:bg-[var(--login-secondary-hover)] font-semibold text-base rounded-xl py-4 transition-all focus:outline-none focus:ring-2 focus:ring-[var(--login-accent)]/40"
+        >
+          Create an Account
         </a>
 
-      </div>
-    </div>
-  </section>
+        <!-- Minimal Copyright -->
+        <p class="mt-8 text-center text-xs text-[var(--login-muted-alt)]/70">
+          © 2026 Zeta Beta Mu Medical Fraternity. All rights reserved.
+        </p>
 
+      </div>
+    </main>
+
+  </div>
+  <!-- END SPLIT SCREEN -->
 
   <!-- Scripts -->
   <script src="js/auth.js"></script>

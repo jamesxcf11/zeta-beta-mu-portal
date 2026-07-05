@@ -1,0 +1,26 @@
+const { chromium } = require('playwright-core');
+
+(async () => {
+  const browser = await chromium.launch({
+    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+
+  await page.goto('http://127.0.0.1:3000/');
+  await page.waitForLoadState('networkidle');
+
+  // Ensure dark mode explicitly
+  await page.evaluate(() => {
+    document.body.classList.remove('light-theme');
+    document.body.classList.add('dark-theme');
+  });
+  await page.waitForTimeout(500);
+
+  await page.screenshot({
+    path: 'c:\\websites\\screenshots\\landing-page-dark.png',
+    fullPage: true,
+  });
+
+  await browser.close();
+  console.log('Screenshot saved to c:\\websites\\screenshots\\landing-page-dark.png');
+})();

@@ -92,12 +92,12 @@ const LandingModule = {
       category: 'Founders Day',
       year: 2024,
       location: 'Fraternity Memorial Garden',
-      coverImage: 'image/placeholders/picsum/p301.jpg',
+      coverImage: 'sample vault/47db4c7e-009a-4261-a8e2-d7a2f6f4eb55.jpg',
       photoCount: 3,
       photos: [
-        'image/placeholders/picsum/p301.jpg',
-        'image/placeholders/picsum/p302.jpg',
-        'image/placeholders/picsum/p303.jpg'
+        'sample vault/47db4c7e-009a-4261-a8e2-d7a2f6f4eb55.jpg',
+        'sample vault/75e230e1-8c53-4397-ba14-b2606780ce41.jpg',
+        'sample vault/e74af5dd-cea2-40c6-a1f4-c7c00ad8d01f.jpg'
       ]
     },
     {
@@ -106,13 +106,13 @@ const LandingModule = {
       category: 'Induction',
       year: 2023,
       location: 'University Chapel',
-      coverImage: 'image/placeholders/picsum/p304.jpg',
+      coverImage: 'sample vault/ac6376cd-926d-4cde-881b-8038f5c14a65.jpg',
       photoCount: 4,
       photos: [
-        'image/placeholders/picsum/p304.jpg',
-        'image/placeholders/picsum/p305.jpg',
-        'image/placeholders/picsum/p306.jpg',
-        'image/placeholders/picsum/p307.jpg'
+        'sample vault/ac6376cd-926d-4cde-881b-8038f5c14a65.jpg',
+        'sample vault/be8869ff-3988-42f8-a3b4-8eff81a42ba2.jpg',
+        'sample vault/c50e3c67-1e97-4271-a61e-5ca8cb63eaac.jpg',
+        'sample vault/e680bf91-375b-40e2-854f-096cb9170daf.jpg'
       ]
     },
     {
@@ -121,12 +121,12 @@ const LandingModule = {
       category: 'Community Service',
       year: 2023,
       location: 'Community Center',
-      coverImage: 'image/placeholders/picsum/p308.jpg',
+      coverImage: 'sample vault/ceb34cb3-f492-4828-bfe2-628662bfad4f.jpg',
       photoCount: 3,
       photos: [
-        'image/placeholders/picsum/p308.jpg',
-        'image/placeholders/picsum/p309.jpg',
-        'image/placeholders/picsum/p310.jpg'
+        'sample vault/ceb34cb3-f492-4828-bfe2-628662bfad4f.jpg',
+        'sample vault/10cd9e8d-2106-42c5-996a-ba7b590fe852.jpg',
+        'sample vault/21f815ad-4772-4ed3-b327-9aa23fee294e.jpg'
       ]
     }
   ],
@@ -139,13 +139,13 @@ const LandingModule = {
       category: 'Annual Gala',
       year: 2020,
       location: 'Grand Ballroom',
-      coverImage: 'image/placeholders/picsum/p401.jpg',
+      coverImage: 'sample vault/5349e504-5814-469a-aac3-cd15565c51a8.jpg',
       photoCount: 4,
       photos: [
-        'image/placeholders/picsum/p401.jpg',
-        'image/placeholders/picsum/p402.jpg',
-        'image/placeholders/picsum/p403.jpg',
-        'image/placeholders/picsum/p404.jpg'
+        'sample vault/5349e504-5814-469a-aac3-cd15565c51a8.jpg',
+        'sample vault/542a8380-fae7-4ae4-9372-3bd5c0c42c7f.jpg',
+        'sample vault/28da8bc3-b009-46b1-a938-ff815d169cc3.jpg',
+        'sample vault/2eaf4706-2fdd-47ba-ae98-a07b479269e6.jpg'
       ]
     }
   ],
@@ -180,10 +180,11 @@ const LandingModule = {
     let ticking = false;
 
     const updateNavbar = () => {
-      const heroBottom = hero.offsetTop + hero.offsetHeight - 100;
+      const heroBottom = hero.offsetTop + hero.offsetHeight - 80;
       const scrollY = window.scrollY;
 
-      // Elevated style once scrolled away from very top
+      // Toggle hero overlay state for transparent dark nav
+      navbar.classList.toggle('navbar-over-hero', scrollY < heroBottom);
       navbar.classList.toggle('navbar-scrolled', scrollY > 40);
 
       // Hide on fast scroll down past hero, show on scroll up
@@ -207,6 +208,9 @@ const LandingModule = {
         ticking = true;
       }
     });
+
+    // Initial call to set state
+    updateNavbar();
   },
 
   /**

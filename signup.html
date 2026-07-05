@@ -5,440 +5,792 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Join Zeta Beta Mu Fraternity - Register for access to the elite medical professional network.">
   <title>Register | Zeta Beta Mu Fraternity</title>
-  
+
   <!-- Tailwind CSS -->
   <link rel="stylesheet" href="css/tailwind.css">
-  
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
-  
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.min.css">
+
+  <!-- Theme-aware color variables -->
+  <style>
+    .login-page {
+      --login-bg: var(--zbm-white);
+      --login-bg-alt: var(--zbm-forest);
+      --login-text: var(--zbm-forest);
+      --login-muted: rgba(30, 30, 30, 0.6);
+      --login-text-alt: var(--zbm-forest);
+      --login-muted-alt: rgba(30, 30, 30, 0.55);
+      --login-accent: var(--zbm-gold);
+      --login-input-bg: var(--zbm-white);
+      --login-input-border: rgba(30, 30, 30, 0.12);
+      --login-primary-bg: var(--zbm-gold);
+      --login-primary-text: var(--zbm-forest);
+      --login-primary-hover: var(--zbm-gold-hover);
+      --login-secondary-border: var(--zbm-gold);
+      --login-secondary-text: var(--zbm-forest);
+      --login-secondary-hover: rgba(195, 160, 86, 0.1);
+      --login-error-bg: rgba(239, 68, 68, 0.08);
+      --login-error-border: rgba(239, 68, 68, 0.2);
+      --login-error-text: #dc2626;
+      --login-checkbox-bg: var(--zbm-white);
+      --login-checkbox-border: rgba(30, 30, 30, 0.2);
+      --login-card-bg: rgba(255, 255, 255, 0.85);
+      --login-card-border: rgba(30, 30, 30, 0.08);
+      --login-glass-gold: rgba(195, 160, 86, 0.08);
+      --login-glass-dark: rgba(1, 74, 54, 0.05);
+    }
+
+    .dark-theme.login-page {
+      --login-bg: var(--zbm-forest-deep);
+      --login-bg-alt: var(--zbm-forest-surface);
+      --login-text: var(--zbm-white);
+      --login-muted: #9fb0a0;
+      --login-text-alt: var(--zbm-white);
+      --login-muted-alt: #b6c4b7;
+      --login-accent: var(--zbm-gold-dark);
+      --login-input-bg: rgba(255, 255, 255, 0.05);
+      --login-input-border: rgba(201, 160, 72, 0.25);
+      --login-primary-bg: var(--zbm-gold-dark);
+      --login-primary-text: var(--zbm-forest-deep);
+      --login-primary-hover: var(--zbm-gold-dark-hover);
+      --login-secondary-border: var(--zbm-gold-dark);
+      --login-secondary-text: var(--zbm-gold-dark);
+      --login-secondary-hover: rgba(201, 160, 72, 0.1);
+      --login-error-bg: rgba(239, 68, 68, 0.15);
+      --login-error-border: rgba(239, 68, 68, 0.25);
+      --login-error-text: #fca5a5;
+      --login-checkbox-bg: rgba(255, 255, 255, 0.05);
+      --login-checkbox-border: rgba(201, 160, 72, 0.4);
+      --login-card-bg: var(--zbm-forest-surface);
+      --login-card-border: rgba(201, 160, 72, 0.2);
+      --login-glass-gold: rgba(201, 160, 72, 0.06);
+      --login-glass-dark: rgba(0, 61, 46, 0.6);
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(1, 74, 54, 0.4); border-radius: 4px; }
+    .dark-theme ::-webkit-scrollbar-thumb { background: rgba(122, 139, 122, 0.4); }
+
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
+    .dark-theme input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
+
+    .dark-overlay { background: rgba(0, 0, 0, 0.05); }
+    .dark-theme .dark-overlay { background: rgba(0, 0, 0, 0.25); }
+
+    select option { background-color: var(--zbm-white); color: var(--zbm-forest); }
+    .dark-theme select option { background-color: var(--zbm-forest-surface); color: var(--zbm-white); }
+  </style>
 </head>
-<body class="dark-theme auth-page">
-  
-  <!-- ============================================
-       GOLD STARDUST BACKGROUND ANIMATION
-       ============================================ -->
-  <div class="stardust-container">
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-    <div class="stardust-particle"></div>
-  </div>
-  <!-- Gold Dust Overlay -->
-  <div class="stardust-overlay"></div>
+<body class="login-page light-theme auth-page min-h-screen flex flex-col bg-[var(--login-bg)] font-sans text-[var(--login-text)] antialiased">
 
-  <!-- Theme Toggle (Top Right) -->
-  <div class="page-theme-toggle">
-    <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
-      <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
-      <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
-    </button>
-  </div>
+  <!-- Background gradient -->
+  <div class="fixed inset-0 pointer-events-none" style="background: radial-gradient(circle at 20% 30%, var(--login-glass-gold) 0%, transparent 45%), radial-gradient(circle at 80% 80%, var(--login-glass-dark) 0%, transparent 50%);"></div>
+  <div class="fixed inset-0 bg-black/5 dark-overlay pointer-events-none"></div>
 
-  <!-- Authentication Container -->
-  <div class="auth-container min-h-screen py-8">
-    
-    <!-- Glassmorphism Registration Card -->
-    <div class="glass-heavy auth-card w-full max-w-lg">
-      
-      <!-- Logo -->
-      <div class="auth-logo">
-        <img src="image/logo1.png" alt="ZBM Logo" class="auth-logo-img">
-      </div>
-      
-      <!-- Title & Subtitle -->
-      <h1 class="auth-title">Join the Brotherhood</h1>
-      <p class="auth-motto">Apply for membership in Zeta Beta Mu</p>
-      
-      <!-- Notice Box -->
-      <div class="glass p-4 mb-6 text-left">
-        <div class="flex items-start gap-3">
-          <i data-lucide="shield-check" class="w-5 h-5 text-[#d4af37] flex-shrink-0 mt-0.5"></i>
-          <div>
-            <p class="text-sm font-medium signup-notice-title mb-1">Verification Required</p>
-            <p class="text-xs signup-notice-text">All registrations are reviewed by our administration team. You will receive an email notification once your account is verified.</p>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Error Message Container -->
-      <div id="auth-error" class="hidden mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm"></div>
-      
-      <!-- Registration Form -->
-      <form id="signup-form" class="auth-form text-left">
-        
-        <!-- Personal Information Section -->
-        <div class="mb-6">
-          <h3 class="text-[#d4af37] font-semibold mb-4 flex items-center gap-2">
-            <i data-lucide="user" class="w-4 h-4"></i>
-            Personal Information
-          </h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Full Name -->
-            <div class="form-group">
-              <label for="full-name" class="form-label">Full Name *</label>
-              <div class="relative">
-                <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="full-name" 
-                  name="full-name"
-                  class="glass-input pl-10" 
-                  placeholder="Dr. John Smith"
-                  required
-                >
-              </div>
-            </div>
-
-            <!-- Nickname -->
-            <div class="form-group">
-              <label for="nickname" class="form-label">Nickname</label>
-              <div class="relative">
-                <i data-lucide="smile" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="nickname" 
-                  name="nickname"
-                  class="glass-input pl-10" 
-                  placeholder="What the brods call you"
-                >
-              </div>
-            </div>
-
-            <!-- Email -->
-            <div class="form-group">
-              <label for="email" class="form-label">Email Address *</label>
-              <div class="relative">
-                <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email"
-                  class="glass-input pl-10" 
-                  placeholder="john@hospital.com"
-                  required
-                >
-              </div>
-            </div>
-
-            <!-- Birthday (mandatory) -->
-            <div class="form-group">
-              <label for="birthday" class="form-label">Birthday *</label>
-              <div class="relative">
-                <i data-lucide="cake" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="date" 
-                  id="birthday" 
-                  name="birthday"
-                  class="glass-input pl-10" 
-                  required
-                >
-              </div>
-            </div>
-
-            <!-- Contact Number (mandatory) -->
-            <div class="form-group md:col-span-2">
-              <label for="contact-number" class="form-label">Contact Number *</label>
-              <div class="relative">
-                <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="tel" 
-                  id="contact-number" 
-                  name="contact-number"
-                  class="glass-input pl-10" 
-                  placeholder="Cellphone, telephone, or home number"
-                  required
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Account Credentials Section -->
-        <div class="mb-6">
-          <h3 class="text-[#d4af37] font-semibold mb-4 flex items-center gap-2">
-            <i data-lucide="lock" class="w-4 h-4"></i>
-            Account Credentials
-          </h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Username -->
-            <div class="form-group">
-              <label for="username" class="form-label">Username *</label>
-              <div class="relative">
-                <i data-lucide="at-sign" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="username" 
-                  name="username"
-                  class="glass-input pl-10" 
-                  placeholder="johnsmith"
-                  autocomplete="username"
-                  required
-                >
-              </div>
-            </div>
-            
-            <!-- Placeholder for grid alignment -->
-            <div class="hidden md:block"></div>
-            
-            <!-- Password -->
-            <div class="form-group">
-              <label for="password" class="form-label">Password *</label>
-              <div class="relative">
-                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="password" 
-                  id="password" 
-                  name="password"
-                  class="glass-input pl-10" 
-                  placeholder="Min. 6 characters"
-                  autocomplete="new-password"
-                  minlength="6"
-                  required
-                >
-              </div>
-            </div>
-            
-            <!-- Confirm Password -->
-            <div class="form-group">
-              <label for="confirm-password" class="form-label">Confirm Password *</label>
-              <div class="relative">
-                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="password" 
-                  id="confirm-password" 
-                  name="confirm-password"
-                  class="glass-input pl-10" 
-                  placeholder="Confirm password"
-                  autocomplete="new-password"
-                  required
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Professional Information Section -->
-        <div class="mb-6">
-          <h3 class="text-[#d4af37] font-semibold mb-4 flex items-center gap-2">
-            <i data-lucide="stethoscope" class="w-4 h-4"></i>
-            Professional Information
-          </h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Graduation Year -->
-            <div class="form-group">
-              <label for="graduation-year" class="form-label">Graduation Year *</label>
-              <div class="relative">
-                <i data-lucide="graduation-cap" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <select 
-                  id="graduation-year" 
-                  name="graduation-year"
-                  class="glass-input pl-10 appearance-none cursor-pointer"
-                  required
-                >
-                  <option value="">Select year</option>
-                  <script>
-                    for (let year = 2026; year >= 1971; year--) {
-                      document.write(`<option value="${year}">${year}</option>`);
-                    }
-                  </script>
-                </select>
-                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
-              </div>
-            </div>
-            
-            <!-- Specialization / Subspecialization (free text) -->
-            <div class="form-group">
-              <label for="field" class="form-label">Specialization / Subspecialization *</label>
-              <div class="relative">
-                <i data-lucide="activity" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="field" 
-                  name="field"
-                  class="glass-input pl-10" 
-                  placeholder="e.g., Interventional Cardiology"
-                  required
-                >
-              </div>
-            </div>
-            
-            <!-- Hospital/Institution -->
-            <div class="form-group md:col-span-2">
-              <label for="hospital" class="form-label">Hospital / Institution *</label>
-              <div class="relative">
-                <i data-lucide="building-2" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="hospital" 
-                  name="hospital"
-                  class="glass-input pl-10" 
-                  placeholder="e.g., St. Luke's Medical Center, Johns Hopkins Medicine"
-                  required
-                >
-              </div>
-            </div>
-
-            <!-- Batch Name -->
-            <div class="form-group md:col-span-2">
-              <label for="batch" class="form-label">Batch Name *</label>
-              <div class="relative">
-                <i data-lucide="users" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="batch" 
-                  name="batch"
-                  class="glass-input pl-10" 
-                  placeholder="Name only, e.g. Ignis (no need to type 'Batch')"
-                  required
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Optional Details Section -->
-        <div class="mb-6">
-          <h3 class="text-[#d4af37] font-semibold mb-4 flex items-center gap-2">
-            <i data-lucide="share-2" class="w-4 h-4"></i>
-            Optional Details
-          </h3>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Facebook -->
-            <div class="form-group">
-              <label for="facebook" class="form-label">Facebook (link or username)</label>
-              <div class="relative">
-                <i data-lucide="facebook" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="facebook" 
-                  name="facebook"
-                  class="glass-input pl-10" 
-                  placeholder="facebook.com/yourname"
-                >
-              </div>
-            </div>
-
-            <!-- Instagram -->
-            <div class="form-group">
-              <label for="instagram" class="form-label">Instagram (link or handle)</label>
-              <div class="relative">
-                <i data-lucide="instagram" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="instagram" 
-                  name="instagram"
-                  class="glass-input pl-10" 
-                  placeholder="@yourhandle"
-                >
-              </div>
-            </div>
-
-            <!-- Home Address -->
-            <div class="form-group md:col-span-2">
-              <label for="address" class="form-label">Home Address / Current Residence</label>
-              <div class="relative">
-                <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input 
-                  type="text" 
-                  id="address" 
-                  name="address"
-                  class="glass-input pl-10" 
-                  placeholder="Optional"
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Terms Agreement -->
-        <div class="mb-6">
-          <label class="flex items-start gap-3 cursor-pointer">
-            <input 
-              type="checkbox" 
-              id="agree-terms" 
-              name="agree-terms"
-              class="w-5 h-5 rounded border-gray-500 bg-transparent text-[#d4af37] focus:ring-[#d4af37] mt-0.5"
-              required
-            >
-            <span class="text-sm text-gray-300">
-              I agree to the <a href="#" class="text-[#d4af37] hover:underline">Terms of Service</a> and 
-              <a href="#" class="text-[#d4af37] hover:underline">Privacy Policy</a>. 
-              I confirm that I am a member or alumni of Zeta Beta Mu Fraternity.
-            </span>
-          </label>
-        </div>
-        
-        <!-- Submit Button -->
-        <button 
-          type="submit" 
-          class="btn btn-gold btn-lg w-full"
-          data-original-text="Submit Application"
-        >
-          <i data-lucide="send" class="w-5 h-5"></i>
-          Submit Application
-        </button>
-        
-      </form>
-      
-      <!-- Footer -->
-      <div class="auth-footer mt-8">
-        <p>Already have an account? <a href="login.html" class="font-semibold hover:underline">Login here</a></p>
-        <p class="mt-2 text-xs opacity-60">© 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
-      </div>
-      
+  <!-- Header -->
+  <header class="relative z-10 w-full px-6 py-5 flex items-center justify-between border-b border-[var(--login-card-border)]">
+    <a href="index.html" class="inline-flex items-center gap-3 text-[var(--login-text)] hover:text-[var(--login-accent)] transition-colors">
+      <img src="image/OG logo.png" alt="Zeta Beta Mu Fraternity Seal" class="w-10 h-10 object-contain">
+      <span class="hidden sm:block font-serif text-lg font-semibold">Zeta Beta Mu</span>
+    </a>
+    <div class="flex items-center gap-4">
+      <a href="login.html" class="inline-flex items-center gap-2 text-sm font-medium text-[var(--login-muted)] hover:text-[var(--login-accent)] transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Back to Login
+      </a>
+      <button type="button" class="theme-toggle w-9 h-9 flex items-center justify-center rounded-full text-[var(--login-muted)] hover:text-[var(--login-accent)] transition-colors" aria-label="Toggle theme">
+        <i data-lucide="sun" class="theme-icon-sun absolute w-5 h-5"></i>
+        <i data-lucide="moon" class="theme-icon-moon absolute w-5 h-5"></i>
+      </button>
     </div>
-    
-  </div>
-  
+  </header>
+
+  <!-- Main content -->
+  <main class="relative z-10 flex-1 flex items-center justify-center px-6 py-8">
+    <div class="w-full max-w-2xl">
+
+      <!-- Heading -->
+      <div class="text-center mb-8">
+        <h1 class="font-serif text-3xl md:text-4xl font-semibold text-[var(--login-text)] mb-2">Member Registration</h1>
+        <p class="text-[var(--login-muted)] text-base md:text-lg">Confirm your membership information for the ZBM directory.</p>
+      </div>
+
+      <!-- Stepper -->
+      <nav aria-label="Registration progress" class="mb-8">
+        <div class="stepper flex items-center justify-between relative">
+          <div class="absolute left-0 right-0 top-5 h-0.5 bg-[var(--login-input-border)] -translate-y-1/2 z-0"></div>
+          <div class="absolute left-0 top-5 h-0.5 bg-[var(--login-accent)] -translate-y-1/2 z-0 transition-all stepper-progress" style="width: 0%"></div>
+
+          <button type="button" class="step-item z-10 flex flex-col items-center gap-2 group" data-step="1" aria-label="Step 1: Personal Info">
+            <span class="step-circle w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all bg-[var(--login-card-bg)] border-[var(--login-accent)] text-[var(--login-accent)]">
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </span>
+            <span class="hidden sm:block text-xs font-medium text-[var(--login-muted)] group-hover:text-[var(--login-text)] transition-colors">Personal Info</span>
+          </button>
+
+          <button type="button" class="step-item z-10 flex flex-col items-center gap-2 group" data-step="2" aria-label="Step 2: Medical Background">
+            <span class="step-circle w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all bg-[var(--login-card-bg)] border-[var(--login-input-border)] text-[var(--login-muted)]">
+              <i data-lucide="stethoscope" class="w-5 h-5"></i>
+            </span>
+            <span class="hidden sm:block text-xs font-medium text-[var(--login-muted)] group-hover:text-[var(--login-text)] transition-colors">Medical Background</span>
+          </button>
+
+          <button type="button" class="step-item z-10 flex flex-col items-center gap-2 group" data-step="3" aria-label="Step 3: Contact & Social">
+            <span class="step-circle w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all bg-[var(--login-card-bg)] border-[var(--login-input-border)] text-[var(--login-muted)]">
+              <i data-lucide="phone" class="w-5 h-5"></i>
+            </span>
+            <span class="hidden sm:block text-xs font-medium text-[var(--login-muted)] group-hover:text-[var(--login-text)] transition-colors">Contact & Social</span>
+          </button>
+
+          <button type="button" class="step-item z-10 flex flex-col items-center gap-2 group" data-step="4" aria-label="Step 4: Review & Submit">
+            <span class="step-circle w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all bg-[var(--login-card-bg)] border-[var(--login-input-border)] text-[var(--login-muted)]">
+              <i data-lucide="check" class="w-5 h-5"></i>
+            </span>
+            <span class="hidden sm:block text-xs font-medium text-[var(--login-muted)] group-hover:text-[var(--login-text)] transition-colors">Review & Submit</span>
+          </button>
+        </div>
+        <p class="sm:hidden text-center text-xs text-[var(--login-muted)] mt-3">Step <span class="current-step-mobile">1</span> of 4</p>
+      </nav>
+
+      <!-- Error Message -->
+      <div id="auth-error" class="hidden mb-5 p-3 rounded-lg bg-[var(--login-error-bg)] border border-[var(--login-error-border)] text-[var(--login-error-text)] text-sm"></div>
+
+      <!-- Registration Card -->
+      <div class="registration-card bg-[var(--login-card-bg)] backdrop-blur-sm border border-[var(--login-card-border)] rounded-2xl p-6 md:p-8 shadow-2xl">
+
+        <!-- Form -->
+        <form id="signup-form" class="space-y-6">
+
+          <!-- Step 1: Personal Info -->
+          <div class="step-content" data-step="1">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-8 h-8 rounded-full bg-[var(--login-accent)]/10 flex items-center justify-center text-[var(--login-accent)]">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </span>
+              <div>
+                <h2 class="text-lg font-semibold text-[var(--login-text)]">Personal Info</h2>
+                <p class="text-xs text-[var(--login-muted)]">Step 1 of 4</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="space-y-2">
+                <label for="first-name" class="block text-sm font-medium text-[var(--login-text)]">First Name <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="text" id="first-name" name="first-name" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Juan" required>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label for="middle-name" class="block text-sm font-medium text-[var(--login-text)]">Middle Name</label>
+                <div class="relative">
+                  <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="text" id="middle-name" name="middle-name" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Dela">
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label for="last-name" class="block text-sm font-medium text-[var(--login-text)]">Last Name <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="text" id="last-name" name="last-name" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Santos" required>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label for="nickname" class="block text-sm font-medium text-[var(--login-text)]">Nickname <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="smile" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="text" id="nickname" name="nickname" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="e.g., JC, Dodong, Bong" required>
+                </div>
+                <p class="text-xs text-[var(--login-muted)]">What brothers call you in the fraternity.</p>
+              </div>
+
+              <div class="space-y-2">
+                <label for="birthday" class="block text-sm font-medium text-[var(--login-text)]">Date of Birth <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="date" id="birthday" name="birthday" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" required>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-[var(--login-text)]">Email Address <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="email" id="email" name="email" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="juan.santos@email.com" required>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label for="username" class="block text-sm font-medium text-[var(--login-text)]">Username <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="at-sign" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="text" id="username" name="username" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="juansantos" autocomplete="username" required>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-[var(--login-text)]">Password <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="password" id="password" name="password" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-11 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Min. 6 characters" autocomplete="new-password" minlength="6" required>
+                  <button type="button" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-[var(--login-muted-alt)] hover:text-[var(--login-text-alt)] transition-colors" data-target="password" aria-label="Toggle password visibility">
+                    <i data-lucide="eye" class="w-5 h-5"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-2 md:col-span-2">
+                <label for="confirm-password" class="block text-sm font-medium text-[var(--login-text)]">Confirm Password <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="password" id="confirm-password" name="confirm-password" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-11 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Confirm password" autocomplete="new-password" required>
+                  <button type="button" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-[var(--login-muted-alt)] hover:text-[var(--login-text-alt)] transition-colors" data-target="confirm-password" aria-label="Toggle password visibility">
+                    <i data-lucide="eye" class="w-5 h-5"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 p-4 rounded-xl bg-[var(--login-glass-gold)] border border-[var(--login-accent)]/10">
+              <div class="flex items-start gap-3">
+                <i data-lucide="shield-check" class="w-5 h-5 text-[var(--login-accent)] flex-shrink-0 mt-0.5"></i>
+                <p class="text-xs text-[var(--login-muted)] leading-relaxed">Your personal information is protected and will only be used for fraternity records. Data is transmitted securely and stored encrypted. Access is restricted to verified officers only.</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end pt-6">
+              <button type="button" class="btn-continue w-full sm:w-auto bg-[var(--login-primary-bg)] hover:bg-[var(--login-primary-hover)] text-[var(--login-primary-text)] font-semibold text-base rounded-xl px-8 py-3.5 transition-all focus:outline-none focus:ring-2 focus:ring-[var(--login-accent)]/40" data-next="2">
+                Continue <i data-lucide="arrow-right" class="inline w-4 h-4 ml-1"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Medical Background -->
+          <div class="step-content hidden" data-step="2">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-8 h-8 rounded-full bg-[var(--login-accent)]/10 flex items-center justify-center text-[var(--login-accent)]">
+                <i data-lucide="stethoscope" class="w-4 h-4"></i>
+              </span>
+              <div>
+                <h2 class="text-lg font-semibold text-[var(--login-text)]">Medical Background</h2>
+                <p class="text-xs text-[var(--login-muted)]">Step 2 of 4</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="space-y-2">
+                <label for="graduation-year" class="block text-sm font-medium text-[var(--login-text)]">Graduation Year <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="graduation-cap" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <select id="graduation-year" name="graduation-year" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] rounded-xl pl-11 pr-10 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20 appearance-none cursor-pointer" required>
+                    <option value="">Select year...</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)] pointer-events-none"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label for="field-of-medicine" class="block text-sm font-medium text-[var(--login-text)]">Field of Medicine <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="activity" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <select id="field-of-medicine" name="field-of-medicine" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] rounded-xl pl-11 pr-10 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20 appearance-none cursor-pointer" required>
+                    <option value="">Select field...</option>
+                    <option value="Anesthesiology">Anesthesiology</option>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Dermatology">Dermatology</option>
+                    <option value="Emergency Medicine">Emergency Medicine</option>
+                    <option value="Family Medicine">Family Medicine</option>
+                    <option value="Gastroenterology">Gastroenterology</option>
+                    <option value="General Surgery">General Surgery</option>
+                    <option value="Internal Medicine">Internal Medicine</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Obstetrics and Gynecology">Obstetrics and Gynecology</option>
+                    <option value="Oncology">Oncology</option>
+                    <option value="Ophthalmology">Ophthalmology</option>
+                    <option value="Orthopedics">Orthopedics</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Psychiatry">Psychiatry</option>
+                    <option value="Radiology">Radiology</option>
+                    <option value="Urology">Urology</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)] pointer-events-none"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2 md:col-span-2">
+                <label for="specialization" class="block text-sm font-medium text-[var(--login-text)]">Specialization / Subspecialization</label>
+                <div class="relative">
+                  <i data-lucide="briefcase-medical" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="text" id="specialization" name="specialization" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="e.g., Interventional Cardiology, Pediatric Oncology, Colorectal">
+                </div>
+                <p class="text-xs text-[var(--login-muted)]">Free-text; include your subspecialty if applicable.</p>
+              </div>
+
+              <div class="space-y-2 md:col-span-2">
+                <label for="batch" class="block text-sm font-medium text-[var(--login-text)]">Batch Name <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <i data-lucide="users" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                  <input type="text" id="batch" name="batch" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="e.g., Ignis, Ventus, Lux, Aqua" required>
+                </div>
+                <p class="text-xs text-[var(--login-muted)]">Enter your batch name without the word 'Batch' — e.g., write 'Ignis' not 'Batch Ignis'.</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-6">
+              <button type="button" class="btn-back text-[var(--login-muted)] hover:text-[var(--login-text)] font-medium text-sm transition-colors" data-prev="1">
+                <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i> Back
+              </button>
+              <button type="button" class="btn-continue w-full sm:w-auto bg-[var(--login-primary-bg)] hover:bg-[var(--login-primary-hover)] text-[var(--login-primary-text)] font-semibold text-base rounded-xl px-8 py-3.5 transition-all focus:outline-none focus:ring-2 focus:ring-[var(--login-accent)]/40" data-next="3">
+                Continue <i data-lucide="arrow-right" class="inline w-4 h-4 ml-1"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Contact & Social -->
+          <div class="step-content hidden" data-step="3">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-8 h-8 rounded-full bg-[var(--login-accent)]/10 flex items-center justify-center text-[var(--login-accent)]">
+                <i data-lucide="phone" class="w-4 h-4"></i>
+              </span>
+              <div>
+                <h2 class="text-lg font-semibold text-[var(--login-text)]">Contact & Social</h2>
+                <p class="text-xs text-[var(--login-muted)]">Step 3 of 4</p>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-[var(--login-text)] mb-3">Contact Numbers <span class="text-red-400">*</span> <span class="text-xs font-normal text-[var(--login-muted)]">(at least one required)</span></label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="space-y-2">
+                  <label for="mobile" class="block text-xs font-medium text-[var(--login-muted)]">Mobile / Cellphone</label>
+                  <div class="relative">
+                    <i data-lucide="smartphone" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                    <input type="tel" id="mobile" name="mobile" class="contact-number w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="+63 9XX XXX XXXX or 09XX XXX XXXX">
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label for="telephone" class="block text-xs font-medium text-[var(--login-muted)]">Telephone (Landline)</label>
+                  <div class="relative">
+                    <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                    <input type="tel" id="telephone" name="telephone" class="contact-number w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="(02) XXXX XXXX">
+                  </div>
+                </div>
+
+                <div class="space-y-2 md:col-span-2">
+                  <label for="home-phone" class="block text-xs font-medium text-[var(--login-muted)]">Home Phone</label>
+                  <div class="relative">
+                    <i data-lucide="home" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                    <input type="tel" id="home-phone" name="home-phone" class="contact-number w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Optional home number">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-[var(--login-text)] mb-3">Social Media <span class="text-xs font-normal text-[var(--login-muted)]">(Optional)</span></label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="space-y-2">
+                  <label for="facebook" class="block text-xs font-medium text-[var(--login-muted)]">Facebook</label>
+                  <div class="relative">
+                    <i data-lucide="facebook" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                    <input type="text" id="facebook" name="facebook" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Profile link or username">
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label for="instagram" class="block text-xs font-medium text-[var(--login-muted)]">Instagram</label>
+                  <div class="relative">
+                    <i data-lucide="instagram" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                    <input type="text" id="instagram" name="instagram" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="@handle or profile link">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2 mb-6">
+              <label for="address" class="block text-sm font-medium text-[var(--login-text)]">Home Address / Current Residence <span class="text-xs font-normal text-[var(--login-muted)]">(Optional)</span></label>
+              <div class="relative">
+                <i data-lucide="map-pin" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
+                <input type="text" id="address" name="address" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="City/Municipality, Province — or full address if you wish to include it">
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-6">
+              <button type="button" class="btn-back text-[var(--login-muted)] hover:text-[var(--login-text)] font-medium text-sm transition-colors" data-prev="2">
+                <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i> Back
+              </button>
+              <button type="button" class="btn-continue w-full sm:w-auto bg-[var(--login-primary-bg)] hover:bg-[var(--login-primary-hover)] text-[var(--login-primary-text)] font-semibold text-base rounded-xl px-8 py-3.5 transition-all focus:outline-none focus:ring-2 focus:ring-[var(--login-accent)]/40" data-next="4">
+                Continue <i data-lucide="arrow-right" class="inline w-4 h-4 ml-1"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 4: Review & Submit -->
+          <div class="step-content hidden" data-step="4">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-8 h-8 rounded-full bg-[var(--login-accent)]/10 flex items-center justify-center text-[var(--login-accent)]">
+                <i data-lucide="check" class="w-4 h-4"></i>
+              </span>
+              <div>
+                <h2 class="text-lg font-semibold text-[var(--login-text)]">Review & Submit</h2>
+                <p class="text-xs text-[var(--login-muted)]">Step 4 of 4</p>
+              </div>
+            </div>
+
+            <div class="space-y-4 mb-6" id="review-content"></div>
+
+            <div class="mb-6">
+              <label class="inline-flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" id="agree-terms" name="agree-terms" class="peer sr-only" required>
+                <span class="w-5 h-5 rounded border border-[var(--login-checkbox-border)] bg-[var(--login-checkbox-bg)] flex items-center justify-center peer-checked:bg-[var(--login-accent)] peer-checked:border-[var(--login-accent)] transition-colors mt-0.5 flex-shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-[var(--login-primary-text)] opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                </span>
+                <span class="text-sm text-[var(--login-muted)]">I agree to the <a href="#" class="text-[var(--login-accent)] hover:underline">Terms of Service</a> and <a href="#" class="text-[var(--login-accent)] hover:underline">Privacy Policy</a>. I confirm that I am a member or alumni of Zeta Beta Mu Fraternity.</span>
+              </label>
+            </div>
+
+            <div class="flex items-center justify-between pt-2">
+              <button type="button" class="btn-back text-[var(--login-muted)] hover:text-[var(--login-text)] font-medium text-sm transition-colors" data-prev="3">
+                <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i> Back
+              </button>
+              <button type="submit" class="w-full sm:w-auto bg-[var(--login-primary-bg)] hover:bg-[var(--login-primary-hover)] text-[var(--login-primary-text)] font-semibold text-base rounded-xl px-8 py-3.5 transition-all focus:outline-none focus:ring-2 focus:ring-[var(--login-accent)]/40" data-original-text="Submit Application">
+                <i data-lucide="send" class="inline w-4 h-4 mr-2"></i>
+                Submit Application
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Success Screen -->
+        <div id="success-screen" class="hidden text-center py-8 md:py-12">
+          <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--login-accent)]/10 flex items-center justify-center">
+            <i data-lucide="check-circle" class="w-10 h-10 text-[var(--login-accent)]"></i>
+          </div>
+          <h2 class="font-serif text-3xl md:text-4xl font-semibold text-[var(--login-text)] mb-3">Application Submitted</h2>
+          <p class="text-[var(--login-muted)] text-base mb-6 max-w-md mx-auto">Your application has been securely submitted and routed to fraternity officers for review. You will receive a confirmation email at <span id="success-email" class="text-[var(--login-accent)]">s@email.com</span> and can expect a response within 5–7 business days.</p>
+          <div class="p-4 rounded-xl bg-[var(--login-glass-gold)] border border-[var(--login-accent)]/10 text-left mb-8 max-w-md mx-auto">
+            <p class="text-xs font-medium text-[var(--login-accent)] mb-1">Next steps:</p>
+            <p class="text-xs text-[var(--login-muted)] leading-relaxed">Officers will verify your credentials, review your application, and reach out via email or phone. If additional information is needed, you may be contacted before a decision is made.</p>
+          </div>
+          <a href="index.html" class="inline-block bg-[var(--login-primary-bg)] hover:bg-[var(--login-primary-hover)] text-[var(--login-primary-text)] font-semibold text-base rounded-xl px-8 py-3.5 transition-all">Return to Home</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-[var(--login-input-border)] text-center">
+          <p class="text-sm text-[var(--login-muted)]">Already have an account? <a href="login.html" class="font-semibold text-[var(--login-accent)] hover:underline">Login here</a></p>
+          <p class="mt-2 text-xs text-[var(--login-muted)]/70">© 2026 Zeta Beta Mu Medical Fraternity. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </main>
 
   <!-- Scripts -->
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
-  
+
   <script>
-    // Initialize icons
-    lucide.createIcons();
+    (function() {
+      const yearSelect = document.getElementById('graduation-year');
+      if (yearSelect) {
+        for (let year = 2026; year >= 1971; year--) {
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year;
+          yearSelect.appendChild(option);
+        }
+      }
+
+      let currentStep = 1;
+      const totalSteps = 4;
+      const form = document.getElementById('signup-form');
+      const errorEl = document.getElementById('auth-error');
+      const successScreen = document.getElementById('success-screen');
+      const reviewContent = document.getElementById('review-content');
+
+      function renderIcons() {
+        if (typeof lucide === 'undefined') return;
+        try {
+          requestAnimationFrame(() => lucide.createIcons());
+        } catch (e) {
+          console.warn('Lucide icon render failed:', e);
+        }
+      }
+
+      function showStep(step) {
+        currentStep = step;
+        document.querySelectorAll('.step-content').forEach(el => {
+          el.classList.add('hidden');
+          if (parseInt(el.dataset.step) === step) el.classList.remove('hidden');
+        });
+
+        document.querySelectorAll('.step-item').forEach(item => {
+          const itemStep = parseInt(item.dataset.step);
+          const circle = item.querySelector('.step-circle');
+          const label = item.querySelector('span:last-child');
+
+          circle.classList.remove('bg-[var(--login-accent)]', 'text-[var(--login-primary-text)]', 'border-[var(--login-accent)]', 'bg-[var(--login-card-bg)]', 'text-[var(--login-muted)]', 'border-[var(--login-input-border)]', 'text-[var(--login-accent)]');
+          label.classList.remove('text-[var(--login-accent)]', 'text-[var(--login-muted)]');
+
+          if (itemStep < step) {
+            circle.classList.add('bg-[var(--login-accent)]', 'text-[var(--login-primary-text)]', 'border-[var(--login-accent)]');
+            label.classList.add('text-[var(--login-accent)]');
+            circle.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+          } else if (itemStep === step) {
+            circle.classList.add('bg-[var(--login-card-bg)]', 'text-[var(--login-accent)]', 'border-[var(--login-accent)]');
+            label.classList.add('text-[var(--login-accent)]');
+            const icon = itemStep === 1 ? 'user' : itemStep === 2 ? 'stethoscope' : itemStep === 3 ? 'phone' : 'check';
+            circle.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;
+          } else {
+            circle.classList.add('bg-[var(--login-card-bg)]', 'text-[var(--login-muted)]', 'border-[var(--login-input-border)]');
+            label.classList.add('text-[var(--login-muted)]');
+            const icon = itemStep === 1 ? 'user' : itemStep === 2 ? 'stethoscope' : itemStep === 3 ? 'phone' : 'check';
+            circle.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;
+          }
+        });
+
+        const progress = document.querySelector('.stepper-progress');
+        const progressWidth = ((step - 1) / (totalSteps - 1)) * 100;
+        progress.style.width = progressWidth + '%';
+
+        const mobileStep = document.querySelector('.current-step-mobile');
+        if (mobileStep) mobileStep.textContent = step;
+
+        const card = document.querySelector('.registration-card');
+        if (card) {
+          const rect = card.getBoundingClientRect();
+          if (rect.top < 0) {
+            window.scrollTo({ top: window.scrollY + rect.top - 20, behavior: 'smooth' });
+          }
+        }
+
+        renderIcons();
+      }
+
+      function showError(message) {
+        if (errorEl) {
+          errorEl.textContent = message;
+          errorEl.classList.remove('hidden');
+        }
+      }
+
+      function clearError() {
+        if (errorEl) {
+          errorEl.classList.add('hidden');
+          errorEl.textContent = '';
+        }
+      }
+
+      function clearValidation() {
+        document.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500', 'ring-2', 'ring-red-500/20'));
+      }
+
+      function validateStep(step) {
+        clearError();
+        clearValidation();
+        const stepContent = document.querySelector(`.step-content[data-step="${step}"]`);
+        const requiredInputs = stepContent.querySelectorAll('input[required], select[required]');
+        let valid = true;
+        let firstInvalid = null;
+
+        requiredInputs.forEach(input => {
+          if (!input.value.trim()) {
+            valid = false;
+            input.classList.add('border-red-500', 'ring-2', 'ring-red-500/20');
+            if (!firstInvalid) firstInvalid = input;
+          }
+        });
+
+        if (!valid && firstInvalid) {
+          showError('Please fill in all required fields before continuing.');
+          firstInvalid.focus();
+          return false;
+        }
+
+        if (step === 1) {
+          const email = document.getElementById('email');
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email.value.trim())) {
+            showError('Please enter a valid email address.');
+            email.classList.add('border-red-500', 'ring-2', 'ring-red-500/20');
+            email.focus();
+            return false;
+          }
+          const password = document.getElementById('password');
+          const confirmPassword = document.getElementById('confirm-password');
+          if (password.value.length < 6) {
+            showError('Password must be at least 6 characters.');
+            password.classList.add('border-red-500', 'ring-2', 'ring-red-500/20');
+            password.focus();
+            return false;
+          }
+          if (password.value !== confirmPassword.value) {
+            showError('Passwords do not match.');
+            confirmPassword.classList.add('border-red-500', 'ring-2', 'ring-red-500/20');
+            confirmPassword.focus();
+            return false;
+          }
+        }
+
+        if (step === 3) {
+          const contacts = document.querySelectorAll('.contact-number');
+          const hasContact = Array.from(contacts).some(input => input.value.trim());
+          if (!hasContact) {
+            showError('Please provide at least one contact number.');
+            contacts[0].classList.add('border-red-500', 'ring-2', 'ring-red-500/20');
+            contacts[0].focus();
+            return false;
+          }
+        }
+
+        return true;
+      }
+
+      function buildReview() {
+        const fullName = `${document.getElementById('first-name').value} ${document.getElementById('middle-name').value} ${document.getElementById('last-name').value}`.replace(/\s+/g, ' ').trim();
+        const sections = [
+          { title: 'Personal Information', step: 1, rows: [
+            { label: 'Full Name', value: fullName },
+            { label: 'Nickname', value: document.getElementById('nickname').value },
+            { label: 'Birthday', value: document.getElementById('birthday').value },
+            { label: 'Email', value: document.getElementById('email').value },
+          ]},
+          { title: 'Medical Background', step: 2, rows: [
+            { label: 'Graduation Year', value: document.getElementById('graduation-year').value },
+            { label: 'Field of Medicine', value: document.getElementById('field-of-medicine').value },
+            { label: 'Specialization', value: document.getElementById('specialization').value },
+            { label: 'Batch', value: document.getElementById('batch').value },
+          ]},
+          { title: 'Contact & Social', step: 3, rows: [
+            { label: 'Mobile', value: document.getElementById('mobile').value },
+            { label: 'Telephone', value: document.getElementById('telephone').value },
+            { label: 'Home Phone', value: document.getElementById('home-phone').value },
+            { label: 'Facebook', value: document.getElementById('facebook').value },
+            { label: 'Instagram', value: document.getElementById('instagram').value },
+            { label: 'Address', value: document.getElementById('address').value },
+          ]},
+        ];
+
+        reviewContent.innerHTML = sections.map(group => `
+          <div class="p-4 rounded-xl bg-[var(--login-card-bg)] border border-[var(--login-card-border)]">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold tracking-wider uppercase text-[var(--login-accent)]">${group.title}</h3>
+              <button type="button" class="review-edit text-xs text-[var(--login-muted)] hover:text-[var(--login-text)] transition-colors flex items-center gap-1" data-step="${group.step}">
+                <i data-lucide="pencil" class="w-3 h-3"></i> Edit
+              </button>
+            </div>
+            <div class="space-y-2">
+              ${group.rows.map(row => `
+                <div class="flex items-start justify-between gap-4 text-sm">
+                  <span class="text-[var(--login-muted)]">${row.label}</span>
+                  <span class="text-[var(--login-text)] text-right font-medium">${row.value || '<span class="text-[var(--login-muted)]/50">—</span>'}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.querySelectorAll('.btn-continue').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const nextStep = parseInt(btn.dataset.next);
+          if (validateStep(currentStep)) {
+            if (nextStep === 4) buildReview();
+            showStep(nextStep);
+          }
+        });
+      });
+
+      document.querySelectorAll('.btn-back').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const prevStep = parseInt(btn.dataset.prev);
+          showStep(prevStep);
+        });
+      });
+
+      document.querySelectorAll('.step-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const targetStep = parseInt(item.dataset.step);
+          if (targetStep < currentStep) {
+            showStep(targetStep);
+          } else if (targetStep > currentStep) {
+            if (validateStep(currentStep)) showStep(targetStep);
+          }
+        });
+      });
+
+      document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.dataset.target;
+          const input = document.getElementById(targetId);
+          const icon = btn.querySelector('i');
+          if (input.type === 'password') {
+            input.type = 'text';
+            icon.setAttribute('data-lucide', 'eye-off');
+          } else {
+            input.type = 'password';
+            icon.setAttribute('data-lucide', 'eye');
+          }
+          renderIcons();
+        });
+      });
+
+      reviewContent.addEventListener('click', (e) => {
+        const editBtn = e.target.closest('.review-edit');
+        if (editBtn) {
+          showStep(parseInt(editBtn.dataset.step));
+        }
+      });
+
+      function markAllComplete() {
+        document.querySelectorAll('.step-item').forEach(item => {
+          const circle = item.querySelector('.step-circle');
+          const label = item.querySelector('span:last-child');
+          circle.classList.remove('bg-[var(--login-card-bg)]', 'text-[var(--login-muted)]', 'border-[var(--login-input-border)]', 'text-[var(--login-accent)]');
+          circle.classList.add('bg-[var(--login-accent)]', 'text-[var(--login-primary-text)]', 'border-[var(--login-accent)]');
+          label.classList.remove('text-[var(--login-muted)]');
+          label.classList.add('text-[var(--login-accent)]');
+          circle.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+        });
+        const progress = document.querySelector('.stepper-progress');
+        if (progress) progress.style.width = '100%';
+        renderIcons();
+      }
+
+      if (successScreen) {
+        const successObserver = new MutationObserver(() => {
+          if (!successScreen.classList.contains('hidden')) {
+            markAllComplete();
+            successObserver.disconnect();
+          }
+        });
+        successObserver.observe(successScreen, { attributes: true, attributeFilter: ['class'] });
+      }
+
+      showStep(1);
+    })();
   </script>
-  
+
+  <!-- Shared auth & theme scripts -->
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') {
+        requestAnimationFrame(() => lucide.createIcons());
+      }
+    });
+  </script>
 </body>
 </html>

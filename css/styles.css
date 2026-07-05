@@ -4182,6 +4182,29 @@ a:hover {
 .landing-section-inner {
   max-width: 1280px;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.landing-section::before,
+.landing-section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.landing-section::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg-primary), transparent);
+}
+
+.landing-section::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg-primary), transparent);
 }
 
 .landing-section-header {
@@ -4961,33 +4984,26 @@ a:hover {
   z-index: 2;
 }
 
-/* Background decorative elements */
+/* Subtle gradient masks to soften section transitions */
 .landing-section-about::before,
 .landing-section-about::after {
   content: '';
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.3;
+  left: 0;
+  right: 0;
+  height: 140px;
   pointer-events: none;
+  z-index: 3;
 }
 
 .landing-section-about::before {
-  top: 10%;
-  left: 5%;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.4) 0%, transparent 70%);
-  animation: float-1 8s infinite ease-in-out;
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg-primary), transparent);
 }
 
 .landing-section-about::after {
-  bottom: 15%;
-  right: 8%;
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
-  animation: float-2 10s infinite ease-in-out;
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg-primary), transparent);
 }
 
 /* Floating dots */
@@ -5202,16 +5218,6 @@ a:hover {
 .about-service-card:hover .about-service-icon > i:first-child {
   transform: rotate(-5deg) scale(1.1);
   background: rgba(212, 175, 55, 0.2);
-}
-
-.about-service-icon-accent {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 16px !important;
-  height: 16px !important;
-  color: rgba(169, 187, 200, 0.6) !important;
-  animation: spin 20s infinite linear;
 }
 
 /* Service Content */
@@ -5491,11 +5497,6 @@ a:hover {
 @keyframes pulse {
   0%, 100% { opacity: 0.5; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.2); }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 /* Scroll animations */
@@ -8732,16 +8733,24 @@ body.subpage .mobile-overlay {
   top: 1.25rem;
   right: 1.5rem;
   font-family: 'Playfair Display', serif;
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 700;
-  color: rgba(212, 175, 55, 0.18);
+  color: rgba(212, 175, 55, 0.55);
   line-height: 1;
   transition: color 0.3s ease;
   pointer-events: none;
 }
 
 .about-grid-pillars .about-service-card:hover::after {
-  color: rgba(212, 175, 55, 0.45);
+  color: rgba(212, 175, 55, 0.85);
+}
+
+.light-theme .about-grid-pillars .about-service-card::after {
+  color: rgba(146, 112, 12, 0.6);
+}
+
+.light-theme .about-grid-pillars .about-service-card:hover::after {
+  color: rgba(146, 112, 12, 0.9);
 }
 
 /* --- 5. Gallery polish --- */
@@ -9003,12 +9012,16 @@ body.subpage .mobile-overlay {
 
 /* --- 11. Sticky navbar scrolled state --- */
 .landing-navbar.navbar-scrolled {
+  background: rgba(2, 24, 18, 0.98);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
 .light-theme .landing-navbar.navbar-scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  border-bottom: 1px solid rgba(6, 78, 59, 0.12);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 }
 
@@ -9585,6 +9598,18 @@ body.subpage .mobile-overlay {
   z-index: 0;
 }
 
+.landing-hero--premium::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 180px;
+  background: linear-gradient(to bottom, transparent, var(--bg-primary));
+  pointer-events: none;
+  z-index: 3;
+}
+
 .landing-hero-glow {
   position: absolute;
   top: 40%;
@@ -9748,6 +9773,19 @@ body.subpage .mobile-overlay {
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+  z-index: 4;
+}
+
+.landing-prefooter::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  background: linear-gradient(to bottom, var(--bg-primary), transparent);
+  pointer-events: none;
+  z-index: 3;
 }
 
 .landing-prefooter-inner {
@@ -10069,7 +10107,7 @@ body.subpage .mobile-overlay {
   }
 
   .btn-legacy,
-  .btn-pillars {
+  .btn-pillars-outline {
     width: 100%;
     justify-content: center;
   }
@@ -10130,4 +10168,609 @@ body.subpage .mobile-overlay {
 .light-theme .landing-footer-social a {
   border-color: rgba(255, 255, 255, 0.25);
   color: rgba(255, 255, 255, 0.7);
+}
+
+/* ============================================
+   PREMIUM FLUID DESIGN SYSTEM
+   ============================================ */
+
+/* 1. Dark-mode mesh page background */
+body.dark-theme.landing-page {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(16, 185, 129, 0.07) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 25%, rgba(212, 175, 55, 0.035) 0%, transparent 35%),
+    radial-gradient(ellipse at 35% 65%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 90%, rgba(212, 175, 55, 0.025) 0%, transparent 35%),
+    linear-gradient(180deg, #022c22 0%, #021810 50%, #011208 100%);
+}
+
+/* 2. Transparent sections in dark mode so the mesh flows continuously */
+.dark-theme .landing-section,
+.dark-theme .landing-section-alt,
+.dark-theme .landing-section-about {
+  background: transparent;
+}
+
+.light-theme .landing-section-alt {
+  background: rgba(6, 78, 59, 0.02);
+}
+
+/* 3. Glassmorphism card overhaul (non-hovered state only) */
+.about-service-card:not(:hover),
+.landing-gallery-card.glass-card:not(:hover),
+.alumni-card.glass-card:not(:hover),
+.landing-event-card.glass-card:not(:hover) {
+  background: rgba(2, 28, 22, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.light-theme .about-service-card:not(:hover),
+.light-theme .landing-gallery-card.glass-card:not(:hover),
+.light-theme .alumni-card.glass-card:not(:hover),
+.light-theme .landing-event-card.glass-card:not(:hover) {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(6, 78, 59, 0.08);
+  box-shadow: 0 8px 32px rgba(6, 78, 59, 0.08);
+}
+
+/* 4. Metallic gold text gradients on hero headings */
+.landing-hero--premium .landing-hero-title,
+.landing-hero--premium .landing-hero-motto {
+  background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 45%, #b8860b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   LIGHT MODE TRANSITION REFINEMENTS
+   ============================================ */
+
+/* Tighten the gradient masks in light mode so they don't look smudged */
+.light-theme .landing-section::before,
+.light-theme .landing-section::after {
+  height: 40px;
+}
+
+.light-theme .landing-section-about::before,
+.light-theme .landing-section-about::after {
+  height: 40px;
+}
+
+/* Remove the large hero/prefooter fade masks in light mode for a crisp edge */
+.light-theme .landing-hero--premium::after {
+  height: 0;
+}
+
+.light-theme .landing-prefooter::after {
+  height: 0;
+}
+
+/* Add subtle drop-shadows to the dark hero and prefooter so they appear
+   to float over the light cream sections instead of bleeding into them */
+.light-theme .landing-hero--premium {
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.18);
+}
+
+.light-theme .landing-prefooter {
+  box-shadow: 0 -6px 30px rgba(0, 0, 0, 0.18);
+}
+
+.light-theme .landing-footer--premium {
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   LANDING PAGE REDESIGN — JULY 2026
+   ============================================ */
+
+/* --- Global design system --- */
+.landing-page {
+  --landing-gold: #C5A059;
+  --landing-gold-hover: #B08D46;
+  --landing-dark: #0F281E;
+  --landing-cream: #FAF9F6;
+  --landing-text: #1A1A1A;
+  --landing-body: #4A4A4A;
+  --landing-border: #E8E6E1;
+  --landing-warm-white: #F5F5F0;
+}
+
+/* Dark theme refinement */
+.dark-theme.landing-page {
+  --bg-primary: #0F281E;
+  --bg-secondary: #143326;
+  --text-primary: #F5F5F0;
+  --accent-gold: #C5A059;
+}
+
+/* Light theme redesign */
+.light-theme.landing-page {
+  --bg-primary: #FAF9F6;
+  --bg-secondary: #FAF9F6;
+  --text-primary: #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --accent-gold: #C5A059;
+}
+
+/* Focus states */
+.landing-page a:focus-visible,
+.landing-page button:focus-visible,
+.landing-page input:focus-visible,
+.landing-page textarea:focus-visible,
+.landing-page select:focus-visible {
+  outline: 2px solid var(--landing-gold);
+  outline-offset: 2px;
+}
+
+.landing-page .landing-navbar-links a:focus-visible,
+.landing-page .nav-login-btn:focus-visible,
+.landing-page .navbar-theme-toggle:focus-visible {
+  outline-offset: 4px;
+}
+
+/* Labels / badges */
+.landing-page .landing-section-badge,
+.landing-page .about-badge,
+.landing-page .landing-prefooter-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  color: var(--landing-gold);
+}
+
+.landing-page .about-badge {
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+}
+
+/* Body paragraphs */
+.landing-page p {
+  line-height: 1.7;
+}
+
+/* --- Navigation --- */
+.landing-navbar {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.landing-navbar.navbar-over-hero {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.landing-navbar.navbar-over-hero .landing-navbar-links a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.landing-navbar.navbar-over-hero .landing-navbar-links a:hover {
+  color: var(--landing-gold);
+}
+
+.landing-navbar.navbar-over-hero .landing-navbar-logo {
+  color: #ffffff;
+}
+
+.landing-navbar.navbar-over-hero .landing-mobile-toggle {
+  color: #ffffff;
+}
+
+/* Dark theme scrolled nav: glass effect */
+.dark-theme .landing-navbar.navbar-scrolled:not(.navbar-over-hero) {
+  background: rgba(15, 40, 30, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Light theme scrolled nav */
+.light-theme .landing-navbar.navbar-scrolled:not(.navbar-over-hero),
+.light-theme .landing-navbar:not(.navbar-over-hero) {
+  background: #FAF9F6;
+  border-bottom: 1px solid #E8E6E1;
+  box-shadow: 0 1px 0 #E8E6E1;
+}
+
+.light-theme .landing-navbar.navbar-scrolled:not(.navbar-over-hero) .landing-navbar-logo,
+.light-theme .landing-navbar:not(.navbar-over-hero) .landing-navbar-logo {
+  color: #1A1A1A;
+}
+
+.light-theme .landing-navbar.navbar-scrolled:not(.navbar-over-hero) .landing-navbar-links a,
+.light-theme .landing-navbar:not(.navbar-over-hero) .landing-navbar-links a {
+  color: #4A4A4A;
+}
+
+.light-theme .landing-navbar.navbar-scrolled:not(.navbar-over-hero) .landing-navbar-links a:hover,
+.light-theme .landing-navbar:not(.navbar-over-hero) .landing-navbar-links a:hover {
+  color: var(--landing-gold);
+}
+
+.light-theme .landing-navbar.navbar-scrolled:not(.navbar-over-hero) .landing-mobile-toggle,
+.light-theme .landing-navbar:not(.navbar-over-hero) .landing-mobile-toggle {
+  color: #1A1A1A;
+}
+
+/* Member Login button */
+.nav-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.navbar-over-hero .nav-login-btn {
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+}
+
+.navbar-over-hero .nav-login-btn:hover {
+  border-color: var(--landing-gold);
+  color: var(--landing-gold);
+}
+
+.light-theme .nav-login-btn,
+.light-theme .navbar-scrolled:not(.navbar-over-hero) .nav-login-btn {
+  color: #1A1A1A;
+  border: 1px solid #0F281E;
+  background: transparent;
+}
+
+.light-theme .nav-login-btn:hover,
+.light-theme .navbar-scrolled:not(.navbar-over-hero) .nav-login-btn:hover {
+  background: #0F281E;
+  color: #FAF9F6;
+}
+
+/* --- Hero Section --- */
+.landing-hero {
+  background: radial-gradient(ellipse at top left, #143326 0%, transparent 50%),
+              radial-gradient(ellipse at bottom right, #164430 0%, transparent 50%),
+              #0F281E;
+}
+
+.light-theme .landing-hero {
+  background: radial-gradient(ellipse at top left, #143326 0%, transparent 50%),
+              radial-gradient(ellipse at bottom right, #164430 0%, transparent 50%),
+              #0F281E;
+}
+
+.landing-hero-badge {
+  background: rgba(197, 160, 89, 0.15);
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  color: var(--landing-gold);
+}
+
+.landing-hero-title {
+  color: var(--landing-gold);
+}
+
+.landing-hero-motto {
+  color: var(--landing-warm-white);
+}
+
+.landing-hero-desc {
+  color: rgba(245, 245, 240, 0.75);
+}
+
+/* Hero CTA buttons */
+.hero-btn-primary,
+.hero-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.hero-btn-primary {
+  background: var(--landing-gold);
+  color: #0F281E;
+  border: none;
+}
+
+.hero-btn-primary:hover {
+  background: var(--landing-gold-hover);
+  color: #0F281E;
+}
+
+.hero-btn-secondary {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-btn-secondary:hover {
+  border-color: var(--landing-gold);
+  color: var(--landing-gold);
+}
+
+/* --- About Section --- */
+.about-title {
+  color: var(--text-primary);
+}
+
+.about-description {
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.15rem;
+  line-height: 1.85;
+}
+
+/* --- Pillars --- */
+.about-pillars-title {
+  color: var(--text-primary);
+}
+
+.about-pillars-subtitle {
+  color: var(--text-secondary);
+}
+
+/* --- Stats --- */
+.about-stat-icon {
+  color: var(--landing-gold);
+}
+
+/* --- Villa Maria Partnership --- */
+.partnership-image {
+  max-height: 460px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.partnership-media {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.partnership-media-badge {
+  background: var(--landing-gold);
+  color: #0F281E;
+}
+
+/* --- Public Gallery --- */
+.landing-section-alt {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.light-theme .landing-section-alt {
+  background: #f5f4f0;
+}
+
+.landing-gallery-card {
+  background: #FFFFFF;
+  border: 1px solid var(--landing-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dark-theme .landing-gallery-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.landing-gallery-info h3 {
+  color: var(--text-primary);
+}
+
+.landing-gallery-info p {
+  color: var(--text-secondary);
+}
+
+.gallery-see-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--landing-gold);
+  color: var(--landing-gold);
+  background: transparent;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.gallery-see-more-btn:hover {
+  background: var(--landing-gold);
+  color: #0F281E;
+}
+
+.landing-gallery-lock-note {
+  background: #FFFFFF;
+  border: 1px solid var(--landing-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  color: var(--landing-body);
+}
+
+.dark-theme .landing-gallery-lock-note {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(245, 245, 240, 0.75);
+}
+
+.landing-gallery-lock-note .btn-outline-gold {
+  border: 1px solid #0F281E;
+  color: #0F281E;
+  background: transparent;
+}
+
+.dark-theme .landing-gallery-lock-note .btn-outline-gold {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+.landing-gallery-lock-note .btn-outline-gold:hover {
+  background: var(--landing-gold);
+  color: #0F281E;
+  border-color: var(--landing-gold);
+}
+
+/* --- Events --- */
+.landing-event-card {
+  background: #FFFFFF;
+  border: 1px solid var(--landing-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.dark-theme .landing-event-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.landing-event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.landing-event-month {
+  color: var(--landing-gold);
+}
+
+.landing-event-day {
+  color: var(--text-primary);
+}
+
+.landing-event-info h3 {
+  color: var(--text-primary);
+}
+
+.landing-event-desc {
+  color: var(--text-secondary);
+}
+
+/* --- Pre-footer CTA --- */
+.landing-prefooter {
+  background: var(--landing-dark);
+  padding: 5rem 1rem;
+}
+
+.landing-prefooter-eyebrow {
+  color: var(--landing-gold);
+}
+
+.landing-prefooter-title em {
+  color: var(--landing-gold);
+}
+
+.btn-legacy {
+  background: var(--landing-gold);
+  color: #0F281E;
+  border-radius: 9999px;
+  border: none;
+}
+
+.btn-legacy:hover {
+  background: var(--landing-gold-hover);
+  color: #0F281E;
+}
+
+.btn-pillars-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+}
+
+.btn-pillars-outline:hover {
+  border-color: var(--landing-gold);
+  color: var(--landing-gold);
+}
+
+/* --- Footer --- */
+.landing-footer--premium {
+  background: var(--landing-dark);
+}
+
+.landing-footer--premium .landing-footer-bottom p {
+  color: rgba(245, 245, 240, 0.4);
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .about-story-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .about-story-media {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-hero-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .landing-hero-branding {
+    align-items: center;
+  }
+
+  .landing-hero-cta {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .landing-hero-shield {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .about-grid-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-events-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-story-grid {
+    gap: 2rem;
+  }
+
+  .about-story-lead,
+  .about-story-body {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-hero-shield {
+    max-width: 220px;
+  }
+
+  .landing-hero-title {
+    font-size: 2.25rem;
+  }
 }

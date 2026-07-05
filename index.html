@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.min.css">
+  <link rel="stylesheet" href="css/styles.min.css?v=7">
 </head>
 <body class="dark-theme landing-page">
   
@@ -49,7 +49,7 @@
           <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
           <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
         </button>
-        <a href="login.html" class="btn btn-gold btn-sm">Member Login</a>
+        <a href="login.html" class="nav-login-btn">Member Login</a>
       </div>
       <button id="landing-mobile-toggle" class="landing-mobile-toggle" aria-label="Toggle menu">
         <i data-lucide="menu" class="w-6 h-6"></i>
@@ -107,8 +107,8 @@
           Philippines and beyond.
         </p>
         <div class="landing-hero-cta">
-          <a href="#about" class="btn btn-legacy btn-lg">Discover Our Legacy</a>
-          <a href="#pillars" class="btn btn-pillars btn-lg">Our Five Pillars</a>
+          <a href="#about" class="hero-btn-primary">Discover Our Legacy</a>
+          <a href="#pillars" class="hero-btn-secondary">Our Five Pillars</a>
         </div>
       </div>
       <div class="landing-hero-shield">
@@ -116,7 +116,7 @@
           <path d="M200 8 L380 60 L380 220 C380 340 280 420 200 452 C120 420 20 340 20 220 L20 60 Z" stroke="url(#shieldStroke)" stroke-width="2" fill="url(#shieldFill)" opacity="0.18"/>
           <path d="M200 35 L350 78 L350 215 C350 315 270 385 200 415 C130 385 50 315 50 215 L50 78 Z" stroke="url(#shieldStroke)" stroke-width="1.5" fill="url(#shieldInner)" opacity="0.28"/>
           <path d="M200 70 L320 105 L320 210 C320 290 255 350 200 375 C145 350 80 290 80 210 L80 105 Z" stroke="url(#shieldStroke)" stroke-width="1" fill="url(#shieldInner)" opacity="0.22"/>
-          <text x="200" y="245" text-anchor="middle" font-family="Playfair Display, serif" font-size="98" font-weight="700" fill="url(#shieldText)" letter-spacing="0.05em">ZBM</text>
+          <text x="200" y="245" text-anchor="middle" font-family="Playfair Display, serif" font-size="98" font-weight="700" fill="url(#shieldText)" letter-spacing="0.15em">ZBM</text>
           <text x="200" y="330" text-anchor="middle" font-family="Playfair Display, serif" font-size="24" font-weight="500" fill="url(#shieldText)" letter-spacing="0.25em" opacity="0.85">EST. MCMLXXI</text>
           <defs>
             <linearGradient id="shieldStroke" x1="0" y1="0" x2="400" y2="460" gradientUnits="userSpaceOnUse">
@@ -147,7 +147,7 @@
        ============================================ -->
   <section id="about" class="landing-section-about">
     <div class="about-container">
-      
+
       <!-- Header -->
       <div class="about-header">
         <span class="about-badge">
@@ -191,7 +191,6 @@
         <div class="about-service-card" data-animate="grid-1">
           <div class="about-service-icon">
             <i data-lucide="graduation-cap" class="w-6 h-6"></i>
-            <i data-lucide="sparkles" class="about-service-icon-accent"></i>
           </div>
           <h3 class="about-service-title">Scholarship</h3>
           <p class="about-service-desc">A relentless pursuit of academic excellence and lifelong learning, fostering intellectual growth and distinction in medicine.</p>
@@ -200,7 +199,6 @@
         <div class="about-service-card" data-animate="grid-2">
           <div class="about-service-icon">
             <i data-lucide="heart-handshake" class="w-6 h-6"></i>
-            <i data-lucide="sparkles" class="about-service-icon-accent"></i>
           </div>
           <h3 class="about-service-title">Service</h3>
           <p class="about-service-desc">Giving back through medical missions, free clinics, and community work — caring for those who need us most.</p>
@@ -209,7 +207,6 @@
         <div class="about-service-card" data-animate="grid-3">
           <div class="about-service-icon">
             <i data-lucide="users" class="w-6 h-6"></i>
-            <i data-lucide="check-circle" class="about-service-icon-accent"></i>
           </div>
           <h3 class="about-service-title">Sociability</h3>
           <p class="about-service-desc">A genuine brotherhood and fellowship that connects members across generations, hospitals, and borders for life.</p>
@@ -218,7 +215,6 @@
         <div class="about-service-card" data-animate="grid-4">
           <div class="about-service-icon">
             <i data-lucide="hand-heart" class="w-6 h-6"></i>
-            <i data-lucide="star" class="about-service-icon-accent"></i>
           </div>
           <h3 class="about-service-title">Sacrifice</h3>
           <p class="about-service-desc">Selfless dedication to our patients, our brothers, and our country — putting service above self.</p>
@@ -227,7 +223,6 @@
         <div class="about-service-card" data-animate="grid-5">
           <div class="about-service-icon">
             <i data-lucide="shield-check" class="w-6 h-6"></i>
-            <i data-lucide="star" class="about-service-icon-accent"></i>
           </div>
           <h3 class="about-service-title">Idealism</h3>
           <p class="about-service-desc">Upholding the highest ethical and moral standards, serving as principled role models for future generations.</p>
@@ -244,7 +239,7 @@
           <div class="about-stat-label">Years of Excellence</div>
           <div class="about-stat-bar"></div>
         </div>
-        
+
         <div class="about-stat-card" data-animate="stat">
           <div class="about-stat-icon">
             <i data-lucide="users" class="w-6 h-6"></i>
@@ -253,7 +248,7 @@
           <div class="about-stat-label">Distinguished Alumni</div>
           <div class="about-stat-bar"></div>
         </div>
-        
+
         <div class="about-stat-card" data-animate="stat">
           <div class="about-stat-icon">
             <i data-lucide="calendar" class="w-6 h-6"></i>
@@ -274,7 +269,7 @@
     <div class="landing-section-inner">
       <div class="partnership-grid" data-reveal>
         <div class="partnership-media">
-          <img src="sample vault/012ec369-ea52-42fc-912a-d1ef7504950a.jpg" alt="Villa Maria Integrated School outreach" class="partnership-image">
+          <img src="sample vault/66ac2a3f-ed7a-44cc-9d5e-0db23b1b86d4.jpg" alt="Zeta Beta Mu brothers during a community outreach program with students" class="partnership-image">
           <div class="partnership-media-badge">
             <i data-lucide="heart-handshake" class="w-4 h-4"></i>
             Ongoing Partnership
@@ -467,7 +462,7 @@
       </p>
       <div class="landing-prefooter-cta">
         <a href="signup.html" class="btn btn-legacy btn-lg">Get in Touch</a>
-        <a href="#about" class="btn btn-pillars btn-lg">Learn More</a>
+        <a href="#about" class="btn btn-pillars-outline btn-lg">Learn More</a>
       </div>
     </div>
   </section>

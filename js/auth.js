@@ -104,20 +104,60 @@ const AuthModule = {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const formData = {
-        fullName: document.getElementById('full-name').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        username: document.getElementById('username').value.trim(),
-        password: document.getElementById('password').value,
-        confirmPassword: document.getElementById('confirm-password').value,
-        graduationYear: document.getElementById('graduation-year').value,
-        hospital: document.getElementById('hospital').value.trim(),
-        field: document.getElementById('field').value,
-        agreeTerms: document.getElementById('agree-terms')?.checked
-      };
+      const isWizard = !!document.getElementById('first-name');
+      let formData;
+
+      if (isWizard) {
+        const firstName = document.getElementById('first-name').value.trim();
+        const middleName = document.getElementById('middle-name').value.trim();
+        const lastName = document.getElementById('last-name').value.trim();
+        const fullName = `${firstName} ${middleName} ${lastName}`.replace(/\s+/g, ' ').trim();
+        const hasContact = [
+          document.getElementById('mobile'),
+          document.getElementById('telephone'),
+          document.getElementById('home-phone')
+        ].some(el => el && el.value.trim());
+
+        formData = {
+          fullName,
+          firstName,
+          middleName,
+          lastName,
+          nickname: document.getElementById('nickname').value.trim(),
+          birthday: document.getElementById('birthday').value,
+          email: document.getElementById('email').value.trim(),
+          username: document.getElementById('username').value.trim(),
+          password: document.getElementById('password').value,
+          confirmPassword: document.getElementById('confirm-password').value,
+          graduationYear: document.getElementById('graduation-year').value,
+          fieldOfMedicine: document.getElementById('field-of-medicine').value,
+          specialization: document.getElementById('specialization').value.trim(),
+          batch: document.getElementById('batch').value.trim(),
+          mobile: document.getElementById('mobile').value.trim(),
+          telephone: document.getElementById('telephone').value.trim(),
+          homePhone: document.getElementById('home-phone').value.trim(),
+          facebook: document.getElementById('facebook').value.trim(),
+          instagram: document.getElementById('instagram').value.trim(),
+          address: document.getElementById('address').value.trim(),
+          hasContact,
+          agreeTerms: document.getElementById('agree-terms')?.checked
+        };
+      } else {
+        formData = {
+          fullName: document.getElementById('full-name').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          username: document.getElementById('username').value.trim(),
+          password: document.getElementById('password').value,
+          confirmPassword: document.getElementById('confirm-password').value,
+          graduationYear: document.getElementById('graduation-year').value,
+          hospital: document.getElementById('hospital').value.trim(),
+          field: document.getElementById('field').value,
+          agreeTerms: document.getElementById('agree-terms')?.checked
+        };
+      }
 
       // Validation
-      const validationError = this.validateSignup(formData);
+      const validationError = this.validateSignup(formData, isWizard);
       if (validationError) {
         this.showError(validationError);
         return;
@@ -142,15 +182,36 @@ const AuthModule = {
         name: formData.fullName,
         email: formData.email,
         graduationYear: parseInt(formData.graduationYear),
-        hospital: formData.hospital,
-        field: formData.field,
+        hospital: isWizard ? (formData.address || 'Not provided') : formData.hospital,
+        field: isWizard ? formData.fieldOfMedicine : formData.field,
         role: 'member',
         avatar: `image/placeholders/avatars/a${[10, 13, 14, 20, 25][this.mockUsers.length % 5]}.jpg`,
-        verified: false
+        verified: false,
+        nickname: formData.nickname,
+        birthday: formData.birthday,
+        specialization: formData.specialization,
+        batch: formData.batch,
+        mobile: formData.mobile,
+        telephone: formData.telephone,
+        homePhone: formData.homePhone,
+        facebook: formData.facebook,
+        instagram: formData.instagram,
+        address: formData.address
       };
 
       this.mockUsers.push(newUser);
-      
+
+      // Use custom success screen if present
+      const successScreen = document.getElementById('success-screen');
+      const successEmail = document.getElementById('success-email');
+      if (successScreen && successEmail) {
+        successEmail.textContent = formData.email;
+        signupForm.classList.add('hidden');
+        successScreen.classList.remove('hidden');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
       this.showSuccess(
         'Registration submitted! Your account is pending admin verification. You will be notified via email once approved.',
         () => {
@@ -163,11 +224,24 @@ const AuthModule = {
   /**
    * Validate signup form data
    * @param {Object} data - Form data
+   * @param {boolean} isWizard - Whether the new wizard form is being used
    * @returns {string|null} Error message or null if valid
    */
-  validateSignup(data) {
-    if (!data.fullName || !data.email || !data.username || !data.password) {
-      return 'Please fill in all required fields';
+  validateSignup(data, isWizard = false) {
+    if (isWizard) {
+      if (!data.firstName || !data.lastName || !data.nickname || !data.birthday || !data.email || !data.username || !data.password) {
+        return 'Please fill in all required fields';
+      }
+      if (!data.graduationYear || !data.fieldOfMedicine || !data.batch) {
+        return 'Please fill in all required medical background fields';
+      }
+      if (!data.hasContact) {
+        return 'Please provide at least one contact number';
+      }
+    } else {
+      if (!data.fullName || !data.email || !data.username || !data.password) {
+        return 'Please fill in all required fields';
+      }
     }
 
     if (data.password.length < 6) {
@@ -265,12 +339,15 @@ const AuthModule = {
     const errorEl = document.getElementById('auth-error');
     if (errorEl) {
       errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
       errorEl.style.display = 'block';
+      errorEl.style.color = '';
       
       // Shake animation
-      errorEl.closest('.auth-card')?.classList.add('shake');
+      const card = errorEl.closest('.auth-card') || errorEl.closest('.bg-\\[var\\(--login-glass-dark\\)\\]');
+      card?.classList.add('shake');
       setTimeout(() => {
-        errorEl.closest('.auth-card')?.classList.remove('shake');
+        card?.classList.remove('shake');
       }, 500);
     } else {
       alert(message);
@@ -286,6 +363,7 @@ const AuthModule = {
     const errorEl = document.getElementById('auth-error');
     if (errorEl) {
       errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
       errorEl.style.display = 'block';
       errorEl.style.color = 'var(--emerald-400)';
     }

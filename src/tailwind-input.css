@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================
+   ZBM BRAND PRIMITIVES
+   Single source of truth for brand colors.
+   Consumed by login.html / signup.html tokens.
+   ============================================ */
+:root {
+  --zbm-white: #FFFFFF;
+  --zbm-forest: #014A36;
+  --zbm-forest-deep: #012A1F;
+  --zbm-forest-surface: #003D2E;
+  --zbm-charcoal: #1E1E1E;
+  --zbm-gold: #C3A056;
+  --zbm-gold-hover: #b08d45;
+  --zbm-gold-dark: #C9A048;
+  --zbm-gold-dark-hover: #b8912f;
+}
