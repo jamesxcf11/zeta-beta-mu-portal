@@ -24,11 +24,13 @@ const FeedModule = {
       author: {
         name: 'Dr. Sarah Mitchell',
         avatar: 'image/placeholders/avatars/a5.jpg',
-        title: 'Neurologist at Mount Sinai'
+        title: 'Neurologist at Mount Sinai',
+        isOfficer: true
       },
       content: 'Just published our latest research on neuroplasticity in stroke recovery. Excited to share these findings with our medical community! The study followed 200 patients over 18 months and shows remarkable improvement potential with targeted therapy protocols.',
       image: 'image/placeholders/picsum/p1.jpg',
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+      isPinned: true,
       reactions: {
         love: 8,
         celebrate: 12,
@@ -176,22 +178,25 @@ const FeedModule = {
       id: 1,
       title: 'Annual Gala 2026',
       date: 'March 25, 2026',
-      content: 'Join us for our 50th anniversary celebration',
-      icon: 'calendar'
+      content: 'Join us for our 50th anniversary celebration at The Grand Hotel.',
+      icon: 'calendar',
+      accent: 'gold'
     },
     {
       id: 2,
       title: 'New Member Induction',
       date: 'April 15, 2026',
-      content: 'Ceremony for 12 new medical professionals',
-      icon: 'award'
+      content: 'Ceremony for 12 new medical professionals joining the brotherhood.',
+      icon: 'award',
+      accent: 'emerald'
     },
     {
       id: 3,
       title: 'Medical Conference',
       date: 'May 10-12, 2026',
-      content: 'Annual medical excellence conference',
-      icon: 'heart-pulse'
+      content: 'Annual medical excellence conference — registration opens next week.',
+      icon: 'heart-pulse',
+      accent: 'info'
     }
   ],
 
@@ -278,7 +283,7 @@ const FeedModule = {
   createPostHTML(post) {
     const timeAgo = this.getTimeAgo(post.timestamp);
     const totalReactions = Object.values(post.reactions).reduce((sum, count) => sum + count, 0);
-    const reactionSummary = this.getReactionSummary(post.reactions);
+    const reactionSummary = this.getReactionSummary(post.reactions, totalReactions);
 
     const current = this.REACTIONS.find(r => r.type === post.userReaction);
     const mainLabel = current ? current.label : 'Like';
@@ -289,13 +294,21 @@ const FeedModule = {
       <button class="reaction-pick" title="${r.label}" onclick="FeedModule.toggleReaction(${post.id}, '${r.type}')">${r.icon}</button>
     `).join('');
 
+    const officerBadge = post.author.isOfficer
+      ? '<span class="officer-badge" title="Verified Officer">Officer</span>'
+      : '';
+    const pinnedLabel = post.isPinned
+      ? '<div class="pinned-label"><i data-lucide="pin" class="w-3 h-3"></i> Pinned</div>'
+      : '';
+
     return `
-      <article class="post-card" data-post-id="${post.id}">
+      <article class="post-card ${post.isPinned ? 'is-pinned' : ''}" data-post-id="${post.id}">
+        ${pinnedLabel}
         <div class="post-header">
           <img src="${post.author.avatar}" alt="${post.author.name}" class="post-avatar" loading="lazy" decoding="async" width="48" height="48">
           <div class="post-author-info">
             <div class="post-author-name">${post.author.name}</div>
-            <div class="post-author-title">${post.author.title}</div>
+            <div class="post-author-title">${post.author.title}${officerBadge}</div>
           </div>
           <div class="post-timestamp">• ${timeAgo}</div>
         </div>
@@ -320,12 +333,10 @@ const FeedModule = {
           </div>
         </div>
         
-        ${totalReactions > 0 ? `
+        ${totalReactions > 0 || post.comments.length > 0 ? `
           <div class="post-stats">
-            <div class="reaction-bar">
-              ${reactionSummary}
-            </div>
-            <div>${totalReactions} ${totalReactions === 1 ? 'reaction' : 'reactions'} • ${post.comments.length} ${post.comments.length === 1 ? 'comment' : 'comments'}</div>
+            ${totalReactions > 0 ? `<div class="reaction-bar">${reactionSummary}</div>` : ''}
+            ${post.comments.length > 0 ? `<div>${post.comments.length} ${post.comments.length === 1 ? 'comment' : 'comments'}</div>` : ''}
           </div>
         ` : ''}
         
@@ -366,17 +377,20 @@ const FeedModule = {
   },
 
   /**
-   * Get reaction summary HTML
+   * Get reaction summary HTML — compact cluster of top 2-3 reactions + count
    */
-  getReactionSummary(reactions) {
-    return this.REACTIONS
+  getReactionSummary(reactions, totalReactions) {
+    const reacted = this.REACTIONS
       .filter(r => reactions[r.type] > 0)
-      .map(r => `
-        <span class="reaction-option reaction-${r.type}" title="${reactions[r.type]} ${r.type === 'love' ? 'loves' : r.type + 's'}">
-          ${r.icon}
-        </span>
-      `)
-      .join('');
+      .sort((a, b) => reactions[b.type] - reactions[a.type]);
+
+    const topIcons = reacted.slice(0, 3).map(r => `
+      <span class="reaction-option reaction-${r.type}" title="${reactions[r.type]} ${r.type === 'love' ? 'loves' : r.type + 's'}">
+        ${r.icon}
+      </span>
+    `).join('');
+
+    return `${topIcons}<span class="reaction-count">${totalReactions}</span>`;
   },
 
   /**
@@ -498,13 +512,14 @@ const FeedModule = {
    */
   createAnnouncementHTML(announcement) {
     return `
-      <div class="widget-item">
+      <div class="widget-item announcement-item" data-accent="${announcement.accent || 'gold'}">
         <div class="widget-icon">
           <i data-lucide="${announcement.icon}" class="w-4 h-4"></i>
         </div>
         <div class="widget-content">
-          <div class="widget-label">${announcement.title}</div>
-          <div class="widget-sublabel">${announcement.date}</div>
+          <div class="announcement-title">${announcement.title}</div>
+          <div class="announcement-desc">${announcement.content}</div>
+          <div class="announcement-date">${announcement.date}</div>
         </div>
       </div>
     `;
@@ -643,8 +658,8 @@ const FeedModule = {
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(212, 175, 55, 0.9);
-      color: white;
+      background: #C9A048;
+      color: #012A1F;
       padding: 12px 24px;
       border-radius: 8px;
       backdrop-filter: blur(10px);

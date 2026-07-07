@@ -9,6 +9,9 @@
   <!-- Tailwind CSS -->
   <link rel="stylesheet" href="css/tailwind.css">
 
+  <!-- Custom Styles (navbar + design system) -->
+  <link rel="stylesheet" href="css/styles.min.css?v=8">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,12 +71,81 @@
       --login-glass-gold: rgba(201, 160, 72, 0.08);
       --login-glass-dark: rgba(0, 61, 46, 0.6);
     }
+
+    /* Make the shared landing navbar clearly visible on auth pages in dark mode */
+    .dark-theme .landing-navbar {
+      background: rgba(2, 44, 34, 0.98);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
   </style>
 </head>
-<body class="login-page light-theme min-h-screen flex flex-col bg-[var(--login-bg-alt)] font-sans text-[var(--login-text-alt)] antialiased">
+<body class="login-page light-theme min-h-screen flex flex-col bg-[var(--login-bg-alt)] font-sans text-[var(--login-text-alt)] antialiased" style="padding-top: 68px">
+
+  <!-- ===== Shared Landing Navbar ===== -->
+  <nav id="landing-navbar" class="landing-navbar">
+    <div class="landing-navbar-inner">
+      <a href="index.html#home" class="landing-navbar-logo">
+        <div class="landing-navbar-logo-icon">
+          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+        </div>
+        <div class="landing-navbar-logo-text">
+          <span class="landing-navbar-logo-title">Zeta Beta Mu</span>
+          <span class="landing-navbar-logo-subtitle">MEDICAL FRATERNITY</span>
+        </div>
+      </a>
+      <div class="landing-navbar-links">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#pillars">Pillars</a>
+        <a href="index.html#vault">Gallery</a>
+        <a href="index.html#vault">Vault</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+      <div class="landing-navbar-actions">
+        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+        </button>
+        <a href="signup.html" class="nav-login-btn">Create Account</a>
+      </div>
+      <button id="landing-mobile-toggle" class="landing-mobile-toggle" aria-label="Toggle menu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile slide-in menu -->
+  <div id="landing-mobile-overlay" class="landing-mobile-overlay"></div>
+  <aside id="landing-mobile-menu" class="landing-mobile-menu">
+    <div class="landing-mobile-menu-logo">
+      <div class="landing-mobile-menu-logo-icon">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-12 h-12 object-contain">
+      </div>
+      <div class="landing-mobile-menu-logo-text">
+        <h1 class="landing-mobile-menu-title">Zeta Beta Mu</h1>
+        <p class="landing-mobile-menu-subtitle">Medical Fraternity</p>
+      </div>
+    </div>
+    <nav class="landing-mobile-menu-nav">
+      <a href="index.html#home" class="nav-link"><i data-lucide="home"></i><span>Home</span></a>
+      <a href="index.html#about" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
+      <a href="index.html#pillars" class="nav-link"><i data-lucide="columns-3"></i><span>Pillars</span></a>
+      <a href="index.html#vault" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
+      <a href="index.html#vault" class="nav-link"><i data-lucide="archive"></i><span>Vault</span></a>
+      <a href="index.html#contact" class="nav-link"><i data-lucide="mail"></i><span>Contact</span></a>
+    </nav>
+    <div class="landing-mobile-menu-footer">
+      <a href="signup.html" class="btn btn-gold btn-sm">
+        <i data-lucide="user-plus" class="w-4 h-4"></i>
+        Create Account
+      </a>
+    </div>
+  </aside>
 
   <!-- SPLIT SCREEN -->
-  <div class="flex flex-col md:flex-row min-h-screen">
+  <div class="flex flex-col md:flex-row min-h-[calc(100vh-68px)]">
 
     <!-- LEFT PANEL: Branding -->
     <aside
@@ -85,15 +157,6 @@
         style="background: radial-gradient(circle at 20% 30%, var(--login-glass-gold) 0%, transparent 45%), radial-gradient(circle at 80% 80%, var(--login-glass-dark) 0%, transparent 50%);"
       ></div>
       <div class="absolute inset-0 bg-black/10 pointer-events-none"></div>
-
-      <!-- Back to Home -->
-      <a
-        href="index.html"
-        class="hidden md:inline-flex relative z-10 items-center gap-2 text-[var(--login-muted)] hover:text-[var(--login-accent)] transition-colors text-sm font-medium"
-      >
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        Back to Home
-      </a>
 
       <!-- Branding -->
       <div class="relative z-10 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 flex-1 md:flex-none justify-center md:justify-start">
@@ -122,15 +185,6 @@
         </p>
       </div>
 
-      <!-- Theme Toggle -->
-      <button
-        type="button"
-        class="theme-toggle relative z-10 w-9 h-9 flex items-center justify-center rounded-full text-[var(--login-muted)] hover:text-[var(--login-accent)] transition-colors"
-        aria-label="Toggle theme"
-      >
-        <i data-lucide="sun" class="theme-icon-sun absolute w-5 h-5"></i>
-        <i data-lucide="moon" class="theme-icon-moon absolute w-5 h-5"></i>
-      </button>
     </aside>
 
     <!-- RIGHT PANEL: Form -->
@@ -138,15 +192,6 @@
       class="relative w-full md:w-1/2 grow md:grow-0 flex items-center justify-center bg-[var(--login-bg-alt)] px-6 py-8 md:px-12 md:py-14 lg:px-20 shadow-[-8px_0_30px_rgba(0,0,0,0.06)]"
     >
       <div class="w-full max-w-md">
-
-        <!-- Mobile Back to Home -->
-        <a
-          href="index.html"
-          class="md:hidden inline-flex items-center gap-2 text-[var(--login-muted-alt)] hover:text-[var(--login-accent)] transition-colors text-sm font-medium mb-5"
-        >
-          <i data-lucide="arrow-left" class="w-4 h-4"></i>
-          Back to Home
-        </a>
 
         <!-- Heading -->
         <h2 class="font-serif text-4xl md:text-5xl font-semibold text-[var(--login-text-alt)] mb-2 leading-tight">
@@ -187,9 +232,6 @@
               <label for="password" class="block text-sm font-medium text-[var(--login-text-alt)]">
                 Password
               </label>
-              <a href="#" class="text-sm text-[var(--login-accent)] hover:text-[var(--login-text-alt)] transition-colors">
-                Forgot Password?
-              </a>
             </div>
             <div class="relative">
               <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
