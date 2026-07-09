@@ -31,6 +31,7 @@ const FeedModule = {
       image: 'image/placeholders/picsum/p1.jpg',
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
       isPinned: true,
+      type: 'achievement',
       reactions: {
         love: 8,
         celebrate: 12,
@@ -64,6 +65,7 @@ const FeedModule = {
       },
       content: 'Honored to be speaking at the Annual Oncology Summit next month. Looking forward to reconnecting with fellow Zeta Beta Mu brothers at the event! Who else is attending?',
       timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
+      type: 'achievement',
       reactions: {
         love: 15,
         celebrate: 20,
@@ -92,6 +94,7 @@ const FeedModule = {
       content: 'Reminder: The Annual Fraternity Gala Dinner is scheduled for March 25th at The Grand Hotel. Please RSVP by March 10th. This year\'s theme is "Honoring 50 Years of Excellence." Looking forward to seeing everyone there!',
       image: 'image/placeholders/picsum/p2.jpg',
       timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+      type: 'announcement',
       reactions: {
         love: 45,
         celebrate: 60,
@@ -112,6 +115,7 @@ const FeedModule = {
       },
       content: 'Congratulations to our newest inductees! Welcome to the brotherhood, Dr. Martinez, Dr. Patel, and Dr. Wong. Your dedication to medicine and service is truly inspiring. 🎓',
       timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+      type: 'achievement',
       reactions: {
         love: 30,
         celebrate: 45,
@@ -139,6 +143,7 @@ const FeedModule = {
       },
       content: 'Sharing a case study from yesterday: 6-hour complex cardiac surgery on a 72-year-old patient. Successful outcome thanks to the incredible team at Mayo. Grateful for the expertise honed through years of practice and the support of mentors from Zeta Beta Mu.',
       timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+      type: 'case_study',
       reactions: {
         love: 56,
         celebrate: 40,
@@ -169,7 +174,7 @@ const FeedModule = {
   birthdays: [
     { name: 'Dr. Michael Chen', date: 'Today', avatar: 'image/placeholders/avatars/a3.jpg', year: 2008, isToday: true },
     { name: 'Dr. Sarah Johnson', date: 'Tomorrow', avatar: 'image/placeholders/avatars/a6.jpg', year: 2012, isToday: false },
-    { name: 'Dr. Robert Kim', date: 'March 18', avatar: 'image/placeholders/avatars/a8.jpg', year: 2010, isToday: false }
+    { name: 'Dr. Robert Kim', date: 'Wed, March 18', avatar: 'image/placeholders/avatars/a8.jpg', year: 2010, isToday: false }
   ],
 
   // Mock announcements data
@@ -180,7 +185,8 @@ const FeedModule = {
       date: 'March 25, 2026',
       content: 'Join us for our 50th anniversary celebration at The Grand Hotel.',
       icon: 'calendar',
-      accent: 'gold'
+      accent: 'gold',
+      unread: true
     },
     {
       id: 2,
@@ -188,7 +194,8 @@ const FeedModule = {
       date: 'April 15, 2026',
       content: 'Ceremony for 12 new medical professionals joining the brotherhood.',
       icon: 'award',
-      accent: 'emerald'
+      accent: 'emerald',
+      unread: true
     },
     {
       id: 3,
@@ -196,8 +203,17 @@ const FeedModule = {
       date: 'May 10-12, 2026',
       content: 'Annual medical excellence conference — registration opens next week.',
       icon: 'heart-pulse',
-      accent: 'info'
+      accent: 'info',
+      unread: false
     }
+  ],
+
+  // Mock notifications data
+  notifications: [
+    { id: 1, type: 'reaction', icon: 'heart', text: 'Dr. Sarah Mitchell reacted to your post', time: '2h ago', unread: true },
+    { id: 2, type: 'comment', icon: 'message-circle', text: 'Dr. Michael Chen commented on your post', time: '5h ago', unread: true },
+    { id: 3, type: 'announcement', icon: 'megaphone', text: 'New announcement: Annual Gala 2026', time: '1d ago', unread: true },
+    { id: 4, type: 'birthday', icon: 'cake', text: 'Dr. Robert Kim\'s birthday is today', time: '1d ago', unread: false }
   ],
 
   // Composer state
@@ -212,6 +228,9 @@ const FeedModule = {
   PAGE_SIZE: 5,
   scrollObserver: null,
 
+  // Track which post overflow menu is open
+  activeOverflowMenu: null,
+
   /**
    * Initialize feed module
    */
@@ -219,6 +238,8 @@ const FeedModule = {
     this.renderPosts();
     this.renderBirthdays();
     this.renderAnnouncements();
+    this.renderNotifications();
+    this.updateUnreadBadges();
     this.setupEventListeners();
   },
 
@@ -237,7 +258,11 @@ const FeedModule = {
 
     this.observeSentinel();
 
-    // Initialize icons for new content
+    const loadMore = document.getElementById('feed-load-more');
+    if (loadMore) {
+      loadMore.style.display = hasMore ? '' : 'none';
+    }
+
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
@@ -258,6 +283,14 @@ const FeedModule = {
       }
     }, { rootMargin: '400px' });
     this.scrollObserver.observe(sentinel);
+  },
+
+  /**
+   * Manual load-more trigger (button click)
+   */
+  loadMore() {
+    this.visibleCount = Math.min(this.visibleCount + this.PAGE_SIZE, this.posts.length);
+    this.renderPosts();
   },
 
   /**
@@ -286,10 +319,20 @@ const FeedModule = {
     const reactionSummary = this.getReactionSummary(post.reactions, totalReactions);
 
     const current = this.REACTIONS.find(r => r.type === post.userReaction);
-    const mainLabel = current ? current.label : 'Like';
+
+    const DEFAULT_REACTIONS = {
+      achievement: { type: 'celebrate', icon: '🎉', label: 'Celebrate' },
+      announcement: { type: 'love', icon: '❤️', label: 'Love' },
+      case_study: { type: 'insightful', icon: '💡', label: 'Insightful' },
+      general: { type: 'like', icon: '👍', label: 'Like' }
+    };
+    const fallback = DEFAULT_REACTIONS[post.type] || DEFAULT_REACTIONS.general;
+
+    const mainLabel = current ? current.label : fallback.label;
     const mainIcon = current
       ? `<span class="reaction-emoji">${current.icon}</span>`
-      : '<i data-lucide="heart" class="w-4 h-4"></i>';
+      : `<span class="reaction-emoji">${fallback.icon}</span>`;
+    const defaultReactionType = current ? current.type : fallback.type;
     const picker = this.REACTIONS.map(r => `
       <button class="reaction-pick" title="${r.label}" onclick="FeedModule.toggleReaction(${post.id}, '${r.type}')">${r.icon}</button>
     `).join('');
@@ -311,6 +354,20 @@ const FeedModule = {
             <div class="post-author-title">${post.author.title}${officerBadge}</div>
           </div>
           <div class="post-timestamp">• ${timeAgo}</div>
+          <button class="post-overflow-btn" onclick="FeedModule.toggleOverflowMenu(${post.id}, event)" aria-label="Post options">
+            <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+          </button>
+          <div class="post-overflow-menu" id="overflow-menu-${post.id}">
+            <button class="overflow-menu-item" onclick="FeedModule.editPost(${post.id})">
+              <i data-lucide="pencil" class="w-4 h-4"></i> Edit Post
+            </button>
+            <button class="overflow-menu-item overflow-menu-danger" onclick="FeedModule.deletePost(${post.id})">
+              <i data-lucide="trash-2" class="w-4 h-4"></i> Delete Post
+            </button>
+            <button class="overflow-menu-item" onclick="FeedModule.reportPost(${post.id})">
+              <i data-lucide="flag" class="w-4 h-4"></i> Report
+            </button>
+          </div>
         </div>
         
         <div class="post-content">${post.content}</div>
@@ -320,7 +377,7 @@ const FeedModule = {
         <div class="post-actions">
           <div class="post-reactions">
             <div class="reaction-trigger">
-              <button class="reaction-btn ${post.userReaction ? 'liked reacted-' + post.userReaction : ''}" onclick="FeedModule.toggleReaction(${post.id}, '${post.userReaction || 'like'}')">
+              <button class="reaction-btn ${post.userReaction ? 'liked reacted-' + post.userReaction : ''}" onclick="FeedModule.toggleReaction(${post.id}, '${defaultReactionType}')">
                 ${mainIcon}
                 <span>${mainLabel}</span>
               </button>
@@ -511,8 +568,10 @@ const FeedModule = {
    * Create HTML for announcement item
    */
   createAnnouncementHTML(announcement) {
+    const unreadClass = announcement.unread ? ' unread' : '';
+    const unreadDot = announcement.unread ? '<div class="announcement-unread-dot"></div>' : '';
     return `
-      <div class="widget-item announcement-item" data-accent="${announcement.accent || 'gold'}">
+      <div class="widget-item announcement-item${unreadClass}" data-accent="${announcement.accent || 'gold'}">
         <div class="widget-icon">
           <i data-lucide="${announcement.icon}" class="w-4 h-4"></i>
         </div>
@@ -521,6 +580,7 @@ const FeedModule = {
           <div class="announcement-desc">${announcement.content}</div>
           <div class="announcement-date">${announcement.date}</div>
         </div>
+        ${unreadDot}
       </div>
     `;
   },
@@ -610,6 +670,7 @@ const FeedModule = {
       content: text,
       image: this.composerState.image,
       timestamp: new Date(),
+      type: 'general',
       reactions: { love: 0, celebrate: 0, insightful: 0, like: 0 },
       userReaction: null,
       comments: [],
@@ -647,6 +708,163 @@ const FeedModule = {
   },
 
   /**
+   * Toggle overflow menu on a post
+   */
+  toggleOverflowMenu(postId, event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById(`overflow-menu-${postId}`);
+    if (!menu) return;
+
+    const isOpen = menu.classList.contains('show');
+
+    // Close all menus
+    document.querySelectorAll('.post-overflow-menu.show').forEach(m => m.classList.remove('show'));
+
+    if (!isOpen) {
+      menu.classList.add('show');
+      this.activeOverflowMenu = postId;
+    } else {
+      this.activeOverflowMenu = null;
+    }
+  },
+
+  /**
+   * Edit post (mock)
+   */
+  editPost(postId) {
+    this.showToast('Edit functionality coming soon');
+    this.toggleOverflowMenu(postId);
+  },
+
+  /**
+   * Delete post
+   */
+  deletePost(postId) {
+    const post = this.posts.find(p => p.id === postId);
+    if (!post) return;
+    if (!confirm('Delete this post?')) return;
+    this.posts = this.posts.filter(p => p.id !== postId);
+    this.visibleCount = Math.min(this.visibleCount, this.posts.length);
+    this.renderPosts();
+    this.showToast('Post deleted');
+  },
+
+  /**
+   * Report post (mock)
+   */
+  reportPost(postId) {
+    this.showToast('Post reported for review');
+    this.toggleOverflowMenu(postId);
+  },
+
+  /**
+   * Render notifications dropdown
+   */
+  renderNotifications() {
+    const container = document.getElementById('notifications-list');
+    if (!container) return;
+
+    const unread = this.notifications.filter(n => n.unread);
+    const read = this.notifications.filter(n => !n.unread);
+
+    const renderItem = n => `
+      <div class="notification-item ${n.unread ? 'unread' : ''}" onclick="FeedModule.markNotificationRead(${n.id})">
+        <div class="notification-icon">
+          <i data-lucide="${n.icon}" class="w-4 h-4"></i>
+        </div>
+        <div class="notification-content">
+          <div class="notification-text">${n.text}</div>
+          <div class="notification-time">${n.time}</div>
+        </div>
+        ${n.unread ? '<div class="notification-dot"></div>' : ''}
+      </div>
+    `;
+
+    let html = '';
+
+    if (unread.length > 0) {
+      html += `<div class="notification-group-label">New</div>`;
+      html += unread.map(renderItem).join('');
+    }
+
+    if (read.length > 0) {
+      html += `<div class="notification-group-label">Earlier</div>`;
+      html += read.map(renderItem).join('');
+    }
+
+    if (this.notifications.length === 0) {
+      html = `
+        <div class="notification-empty">
+          <i data-lucide="check-circle" class="w-8 h-8"></i>
+          <p>You're all caught up</p>
+        </div>
+      `;
+    }
+
+    container.innerHTML = html;
+
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  },
+
+  /**
+   * Mark notification as read
+   */
+  markNotificationRead(id) {
+    const n = this.notifications.find(x => x.id === id);
+    if (n) n.unread = false;
+    this.renderNotifications();
+    this.updateUnreadBadges();
+  },
+
+  /**
+   * Mark all notifications as read
+   */
+  markAllNotificationsRead() {
+    this.notifications.forEach(n => n.unread = false);
+    this.renderNotifications();
+    this.updateUnreadBadges();
+  },
+
+  /**
+   * Toggle notification dropdown
+   */
+  toggleNotificationDropdown() {
+    const panel = document.getElementById('notification-dropdown');
+    if (!panel) return;
+    panel.classList.toggle('show');
+  },
+
+  /**
+   * Update unread count badges
+   */
+  updateUnreadBadges() {
+    const unreadAnnouncements = this.announcements.filter(a => a.unread).length;
+    const unreadNotifications = this.notifications.filter(n => n.unread).length;
+
+    const annBadge = document.getElementById('announcements-unread');
+    if (annBadge) {
+      if (unreadAnnouncements > 0) {
+        annBadge.textContent = unreadAnnouncements;
+        annBadge.style.display = 'flex';
+      } else {
+        annBadge.style.display = 'none';
+      }
+    }
+
+    const bellBadge = document.getElementById('bell-unread-count');
+    if (bellBadge) {
+      if (unreadNotifications > 0) {
+        bellBadge.textContent = unreadNotifications;
+        bellBadge.style.display = 'flex';
+      } else {
+        bellBadge.style.display = 'none';
+      }
+    }
+  },
+
+  /**
    * Show toast notification
    */
   showToast(message) {
@@ -659,7 +877,7 @@ const FeedModule = {
       left: 50%;
       transform: translateX(-50%);
       background: #C9A048;
-      color: #012A1F;
+      color: #0F281E;
       padding: 12px 24px;
       border-radius: 8px;
       backdrop-filter: blur(10px);

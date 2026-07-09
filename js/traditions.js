@@ -79,7 +79,7 @@ const TraditionsModule = {
         <div class="magazine-info">
           <div class="magazine-year">${magazine.year}</div>
           <div class="magazine-title">${magazine.title}</div>
-          <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+          <div class="flex items-center gap-2 mt-2 text-xs magazine-pages">
             <i data-lucide="file-text" class="w-3 h-3"></i>
             <span>${magazine.pages} pages</span>
           </div>

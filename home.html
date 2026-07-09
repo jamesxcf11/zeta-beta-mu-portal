@@ -50,12 +50,12 @@
     
     <!-- Logo Section -->
     <div class="sidebar-logo">
-      <div class="logo-icon">
-        <img src="image/logo1.png" alt="ZBM Logo" class="w-12 h-12 object-contain">
+      <div class="sidebar-logo-icon">
+        <img src="image/logo1.png" alt="ZBM Logo">
       </div>
-      <div class="logo-text">
-        <h1 class="text-lg font-serif font-semibold">Zeta Beta Mu</h1>
-        <p class="text-xs opacity-70">Zeal for Brotherhood among Medics</p>
+      <div class="sidebar-logo-text">
+        <span class="sidebar-logo-title">Zeta Beta <em>Mu</em></span>
+        <span class="sidebar-logo-subtitle">Est. 1971 &middot; Medical Fraternity</span>
       </div>
     </div>
 
@@ -85,6 +85,7 @@
         <i data-lucide="flame"></i>
         <span>In Memoriam</span>
       </a>
+      <div class="nav-section-divider"><span class="nav-section-mark">&#9670;</span> Officer Controls</div>
       <a href="admin.html" class="nav-link nav-link-officer" id="officer-tools-link">
         <i data-lucide="shield"></i>
         <span>Officer Tools</span>
@@ -101,12 +102,13 @@
         <div class="user-info">
           <div id="user-name" class="user-name">Dr. James Anderson</div>
           <div class="user-role">Administrator</div>
+          <div class="user-batch">Class of 2005</div>
         </div>
         <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
           <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
           <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
         </button>
-        <button id="logout-btn" class="icon-btn" title="Logout">
+        <button id="logout-btn" class="icon-btn" title="Logout" aria-label="Log out">
           <i data-lucide="log-out" class="w-4 h-4"></i>
         </button>
       </div>
@@ -125,18 +127,23 @@
       
       <!-- Header -->
       <header class="top-header mb-8">
-        <h1 id="page-title" class="header-title flex items-center gap-3">
-          <i data-lucide="home" class="w-6 h-6 text-[var(--feed-gold)]"></i>
-          Feed
-        </h1>
+        <h1 id="page-title" class="header-title">Feed</h1>
         <div class="header-actions">
-          <button class="icon-btn" title="Search">
-            <i data-lucide="search" class="w-5 h-5"></i>
-          </button>
-          <button class="icon-btn" title="Notifications">
+          <div class="header-search">
+            <i data-lucide="search" class="w-4 h-4"></i>
+            <input type="text" class="header-search-input" placeholder="Search posts, members..." aria-label="Search">
+          </div>
+          <button class="icon-btn" title="Notifications" aria-label="Notifications" onclick="FeedModule.toggleNotificationDropdown()">
             <i data-lucide="bell" class="w-5 h-5"></i>
-            <span class="absolute top-1 right-1 w-2 h-2 bg-[var(--feed-gold)] rounded-full"></span>
+            <span id="bell-unread-count" class="nav-unread-badge" style="display:none;">3</span>
           </button>
+          <div id="notification-dropdown" class="notification-dropdown">
+            <div class="notification-dropdown-header">
+              <span>Notifications</span>
+              <button class="notification-mark-all" aria-label="Mark all notifications as read" onclick="FeedModule.markAllNotificationsRead()">Mark all read</button>
+            </div>
+            <div id="notifications-list" class="notification-dropdown-body"></div>
+          </div>
         </div>
       </header>
 
@@ -156,11 +163,19 @@
             </div>
             <div class="composer-actions">
               <div class="flex gap-2">
-                <button id="add-image-btn" class="composer-btn">
+                <button id="add-image-btn" class="composer-btn" aria-label="Add photo">
                   <i data-lucide="image" class="w-4 h-4"></i>
                   Photo
                 </button>
                 <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                <button class="composer-btn" aria-label="Add video" onclick="FeedModule.showToast('Video upload coming soon')">
+                  <i data-lucide="video" class="w-4 h-4"></i>
+                  Video
+                </button>
+                <button class="composer-btn" aria-label="Add feeling" onclick="FeedModule.showToast('Feeling tags coming soon')">
+                  <i data-lucide="smile" class="w-4 h-4"></i>
+                  Feeling
+                </button>
               </div>
               <button id="post-btn" class="btn btn-gold">
                 <i data-lucide="send" class="w-4 h-4"></i>
@@ -169,7 +184,7 @@
             </div>
             <div id="image-preview" class="composer-image-preview" style="display: none;">
               <img id="preview-img" src="" alt="Preview">
-              <button id="remove-image" class="composer-image-remove">
+              <button id="remove-image" class="composer-image-remove" aria-label="Remove image">
                 <i data-lucide="x" class="w-4 h-4"></i>
               </button>
             </div>
@@ -178,6 +193,11 @@
           <!-- Posts Container -->
           <div id="posts-container"></div>
 
+          <!-- Load More -->
+          <div id="feed-load-more" class="feed-load-more">
+            <button class="btn btn-glass" onclick="FeedModule.loadMore()" aria-label="Load more posts">Load more posts</button>
+          </div>
+
         </div>
 
         <!-- Right Sidebar -->
@@ -185,9 +205,14 @@
           
           <!-- Announcements Widget (primary emphasis) -->
           <div class="sidebar-section sidebar-section-primary">
+            <span class="feed-eyebrow">&#9670; Bulletin</span>
             <div class="sidebar-header">
               <i data-lucide="megaphone" class="w-5 h-5 text-[var(--feed-gold)]"></i>
-              <h3 class="sidebar-title">Announcements</h3>
+              <h3 class="sidebar-title">Announce<em>ments</em></h3>
+              <span id="announcements-unread" class="nav-unread-badge" style="display:none;">2</span>
+              <button class="sidebar-add-btn" aria-label="Add announcement" onclick="FeedModule.showToast('Add announcement coming soon')" title="Add Announcement">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+              </button>
             </div>
             <div id="announcements-list" class="widget-list">
               <!-- Announcements rendered dynamically -->
@@ -196,9 +221,10 @@
 
           <!-- Birthdays Widget -->
           <div class="sidebar-section">
+            <span class="feed-eyebrow">&#9670; Celebrations</span>
             <div class="sidebar-header">
               <i data-lucide="cake" class="w-5 h-5 text-[var(--feed-gold)]"></i>
-              <h3 class="sidebar-title">Birthdays Today</h3>
+              <h3 class="sidebar-title">Birthdays <em>Today</em></h3>
             </div>
             <div id="birthdays-list" class="widget-list">
               <!-- Birthdays rendered dynamically -->
@@ -207,6 +233,7 @@
 
           <!-- Social Links -->
           <div class="sidebar-section">
+            <span class="feed-eyebrow">&#9670; Community</span>
             <div class="sidebar-header">
               <i data-lucide="share-2" class="w-5 h-5 text-[var(--feed-gold)]"></i>
               <h3 class="sidebar-title">Connect</h3>
@@ -327,7 +354,7 @@
       </header>
 
       <div class="memoriam-intro glass-card" style="padding: 2rem; margin-bottom: 2rem; text-align: center;">
-        <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.125rem; line-height: 1.8; font-style: italic;">
+        <p class="memoriam-intro-text">
           "In loving memory of our brothers who have passed. Their dedication to medicine, service, and brotherhood continues to inspire us. They live on in our hearts and in the legacy they left behind."
         </p>
       </div>
@@ -411,7 +438,7 @@
       </div>
 
       <div class="text-center mt-10">
-        <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; font-style: italic;">
+        <p class="memoriam-footer-text">
           <i data-lucide="heart" class="w-4 h-4 inline-block mr-1 align-middle"></i>
           Forever in our hearts, forever in our brotherhood
         </p>
@@ -441,7 +468,7 @@
       <div class="glass-heavy relative w-full max-w-lg rounded-2xl p-8 text-center border border-[#d4af37]/20 shadow-2xl" style="animation: welcomeModalIn 0.5s ease-out;">
         
         <!-- Close Button -->
-        <button onclick="closeWelcomeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+        <button onclick="closeWelcomeModal()" class="absolute top-4 right-4 welcome-modal-close transition-colors">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
 
@@ -451,7 +478,7 @@
         </div>
 
         <!-- Greeting -->
-        <h2 id="welcome-modal-greeting" class="text-2xl font-serif font-semibold text-white mb-1">Welcome!</h2>
+        <h2 id="welcome-modal-greeting" class="text-2xl font-serif font-semibold welcome-modal-title mb-1">Welcome!</h2>
         <p class="text-[#d4af37] text-sm mb-6">"Zeal for Brotherhood among Medics"</p>
 
         <!-- Divider -->
@@ -463,9 +490,9 @@
             <i data-lucide="megaphone" class="w-4 h-4 text-[#d4af37]"></i>
             <span class="text-xs font-semibold text-[#d4af37] uppercase tracking-wide">Latest Announcement</span>
           </div>
-          <h4 class="text-white text-sm font-semibold mb-1">Annual Gala 2026</h4>
-          <p class="text-gray-400 text-xs mb-1">March 25, 2026</p>
-          <p class="text-gray-300 text-xs">Join us for our 55th anniversary celebration with distinguished alumni and guest speakers at The Grand Hotel Ballroom.</p>
+          <h4 class="welcome-modal-heading text-sm font-semibold mb-1">Annual Gala 2026</h4>
+          <p class="welcome-modal-meta text-xs mb-1">March 25, 2026</p>
+          <p class="welcome-modal-body text-xs">Join us for our 55th anniversary celebration with distinguished alumni and guest speakers at The Grand Hotel Ballroom.</p>
         </div>
 
         <!-- Today's Birthdays -->
@@ -477,8 +504,8 @@
           <div class="flex items-center gap-3">
             <img src="image/placeholders/avatars/a3.jpg" alt="Birthday" class="w-10 h-10 rounded-full border-2 border-[#d4af37]/40">
             <div>
-              <h4 class="text-white text-sm font-semibold">Dr. Michael Chen</h4>
-              <p class="text-gray-400 text-xs">Class of 2008 &bull; Oncologist</p>
+              <h4 class="welcome-modal-heading text-sm font-semibold">Dr. Michael Chen</h4>
+              <p class="welcome-modal-meta text-xs">Class of 2008 &bull; Oncologist</p>
             </div>
             <i data-lucide="party-popper" class="w-5 h-5 text-[#d4af37] ml-auto"></i>
           </div>

@@ -116,7 +116,7 @@ const AdminModule = {
     if (!container) return;
 
     if (this.pendingMembers.length === 0) {
-      container.innerHTML = '<p class="text-gray-400 text-center py-4">No pending verifications</p>';
+      container.innerHTML = '<p class="admin-card-desc text-center py-4">No pending verifications</p>';
       return;
     }
 

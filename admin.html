@@ -148,37 +148,37 @@
 
       <!-- Quick Actions -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <button class="glass-card p-6 text-center hover:bg-white/10 transition-all" onclick="AdminModule.switchTab('members')">
+        <button class="glass-card p-6 text-center admin-quick-action transition-all" onclick="AdminModule.switchTab('members')">
           <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
             <i data-lucide="user-cog" class="w-7 h-7"></i>
           </div>
-          <h4 class="font-semibold text-white mb-1 flex items-center justify-center gap-2">
+          <h4 class="font-semibold admin-card-title mb-1 flex items-center justify-center gap-2">
             Manage Members
             <i data-lucide="arrow-right" class="w-4 h-4 opacity-50"></i>
           </h4>
-          <p class="text-sm text-gray-400">View, edit, and moderate member accounts</p>
+          <p class="text-sm admin-card-desc">View, edit, and moderate member accounts</p>
         </button>
         
-        <button class="glass-card p-6 text-center hover:bg-white/10 transition-all" onclick="AdminModule.switchTab('content')">
+        <button class="glass-card p-6 text-center admin-quick-action transition-all" onclick="AdminModule.switchTab('content')">
           <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-[#d4af37]/20 flex items-center justify-center text-[#d4af37]">
             <i data-lucide="upload-cloud" class="w-7 h-7"></i>
           </div>
-          <h4 class="font-semibold text-white mb-1 flex items-center justify-center gap-2">
+          <h4 class="font-semibold admin-card-title mb-1 flex items-center justify-center gap-2">
             Upload Content
             <i data-lucide="arrow-right" class="w-4 h-4 opacity-50"></i>
           </h4>
-          <p class="text-sm text-gray-400">Add magazines, photos, and documents</p>
+          <p class="text-sm admin-card-desc">Add magazines, photos, and documents</p>
         </button>
         
-        <button class="glass-card p-6 text-center hover:bg-white/10 transition-all" onclick="AdminModule.switchTab('moderation')">
+        <button class="glass-card p-6 text-center admin-quick-action transition-all" onclick="AdminModule.switchTab('moderation')">
           <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-red-500/20 flex items-center justify-center text-red-400">
             <i data-lucide="shield-alert" class="w-7 h-7"></i>
           </div>
-          <h4 class="font-semibold text-white mb-1 flex items-center justify-center gap-2">
+          <h4 class="font-semibold admin-card-title mb-1 flex items-center justify-center gap-2">
             Moderation
             <i data-lucide="arrow-right" class="w-4 h-4 opacity-50"></i>
           </h4>
-          <p class="text-sm text-gray-400">Review reported posts and comments</p>
+          <p class="text-sm admin-card-desc">Review reported posts and comments</p>
         </button>
       </div>
 
@@ -191,7 +191,7 @@
         <h2 class="text-2xl font-serif text-[#d4af37]">Member Management</h2>
         <div class="flex gap-3">
           <div class="relative">
-            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 admin-card-desc"></i>
             <input type="text" class="glass-input pl-10 pr-4 py-2 text-sm" placeholder="Search members...">
           </div>
           <button class="btn btn-emerald btn-sm">
@@ -222,7 +222,7 @@
 
       <!-- Pagination -->
       <div class="flex items-center justify-between mt-4">
-        <p class="text-sm text-gray-400">Showing 1-10 of 247 members</p>
+        <p class="text-sm admin-card-desc">Showing 1-10 of 247 members</p>
         <div class="flex gap-2">
               <button class="btn btn-glass btn-sm flex items-center gap-1">
                 <i data-lucide="chevron-left" class="w-4 h-4"></i>
@@ -246,7 +246,7 @@
         
         <!-- Magazine Upload -->
         <div class="glass-card p-6">
-          <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <h3 class="text-lg font-semibold admin-card-title mb-4 flex items-center gap-2">
             <i data-lucide="book-open" class="w-5 h-5 text-[#d4af37]"></i>
             Upload Magazine
           </h3>
@@ -268,18 +268,18 @@
             </div>
             <div>
               <label class="form-label">Cover Image</label>
-              <div class="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
-                <i data-lucide="image-plus" class="w-10 h-10 mx-auto mb-2 text-gray-400"></i>
-                <p class="text-sm text-gray-400">Drag & drop or click to upload</p>
-                <p class="text-xs text-gray-500 mt-1">PNG, JPG up to 10MB</p>
+              <div class="border-2 border-dashed admin-drop-zone rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
+                <i data-lucide="image-plus" class="w-10 h-10 mx-auto mb-2 admin-card-desc"></i>
+                <p class="text-sm admin-card-desc">Drag & drop or click to upload</p>
+                <p class="text-xs admin-card-muted mt-1">PNG, JPG up to 10MB</p>
               </div>
             </div>
             <div>
               <label class="form-label">PDF File</label>
-              <div class="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
-                <i data-lucide="file-up" class="w-10 h-10 mx-auto mb-2 text-gray-400"></i>
-                <p class="text-sm text-gray-400">Drag & drop or click to upload</p>
-                <p class="text-xs text-gray-500 mt-1">PDF up to 50MB</p>
+              <div class="border-2 border-dashed admin-drop-zone rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
+                <i data-lucide="file-up" class="w-10 h-10 mx-auto mb-2 admin-card-desc"></i>
+                <p class="text-sm admin-card-desc">Drag & drop or click to upload</p>
+                <p class="text-xs admin-card-muted mt-1">PDF up to 50MB</p>
               </div>
             </div>
             <button type="submit" class="btn btn-gold w-full flex items-center justify-center gap-2">
@@ -291,7 +291,7 @@
 
         <!-- Gallery Upload -->
         <div class="glass-card p-6">
-          <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <h3 class="text-lg font-semibold admin-card-title mb-4 flex items-center gap-2">
             <i data-lucide="images" class="w-5 h-5 text-[#d4af37]"></i>
             Upload to Vault
           </h3>
@@ -325,10 +325,10 @@
             </div>
             <div>
               <label class="form-label">Media Files</label>
-              <div class="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
-                <i data-lucide="images" class="w-10 h-10 mx-auto mb-2 text-gray-400"></i>
-                <p class="text-sm text-gray-400">Drag & drop files here</p>
-                <p class="text-xs text-gray-500 mt-1">Multiple files supported (PNG, JPG, PDF)</p>
+              <div class="border-2 border-dashed admin-drop-zone rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
+                <i data-lucide="images" class="w-10 h-10 mx-auto mb-2 admin-card-desc"></i>
+                <p class="text-sm admin-card-desc">Drag & drop files here</p>
+                <p class="text-xs admin-card-muted mt-1">Multiple files supported (PNG, JPG, PDF)</p>
               </div>
             </div>
             <button type="submit" class="btn btn-emerald w-full flex items-center justify-center gap-2">
@@ -349,18 +349,18 @@
 
       <!-- Reported Posts -->
       <div class="glass-card p-6 mb-6">
-        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <h3 class="text-lg font-semibold admin-card-title mb-4 flex items-center gap-2">
           <i data-lucide="flag" class="w-5 h-5 text-red-400"></i>
-          Reported Posts <span class="text-sm text-gray-400">(3 pending)</span>
+          Reported Posts <span class="text-sm admin-card-desc">(3 pending)</span>
         </h3>
         <div class="space-y-4">
           <div class="glass p-4 rounded-lg flex items-start justify-between">
             <div class="flex gap-3">
               <img src="image/placeholders/avatars/a20.jpg" alt="User" class="w-10 h-10 rounded-full border border-red-400/50">
               <div>
-                <p class="text-sm font-medium text-white">Reported by Dr. Emily Roberts</p>
-                <p class="text-xs text-gray-400">Reason: Inappropriate content</p>
-                <p class="text-sm text-gray-300 mt-2 italic">"Original post content preview..."</p>
+                <p class="text-sm font-medium admin-card-title">Reported by Dr. Emily Roberts</p>
+                <p class="text-xs admin-card-desc">Reason: Inappropriate content</p>
+                <p class="text-sm admin-card-body mt-2 italic">"Original post content preview..."</p>
               </div>
             </div>
             <div class="flex gap-2">
@@ -379,18 +379,18 @@
 
       <!-- Flagged Comments -->
       <div class="glass-card p-6">
-        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <h3 class="text-lg font-semibold admin-card-title mb-4 flex items-center gap-2">
           <i data-lucide="message-square-warning" class="w-5 h-5 text-orange-400"></i>
-          Flagged Comments <span class="text-sm text-gray-400">(1 pending)</span>
+          Flagged Comments <span class="text-sm admin-card-desc">(1 pending)</span>
         </h3>
         <div class="space-y-4">
           <div class="glass p-4 rounded-lg flex items-start justify-between">
             <div class="flex gap-3">
               <img src="image/placeholders/avatars/a25.jpg" alt="User" class="w-10 h-10 rounded-full border border-orange-400/50">
               <div>
-                <p class="text-sm font-medium text-white">Reported by Dr. Michael Chen</p>
-                <p class="text-xs text-gray-400">Reason: Harassment</p>
-                <p class="text-sm text-gray-300 mt-2 italic">"Comment content preview..."</p>
+                <p class="text-sm font-medium admin-card-title">Reported by Dr. Michael Chen</p>
+                <p class="text-xs admin-card-desc">Reason: Harassment</p>
+                <p class="text-sm admin-card-body mt-2 italic">"Comment content preview..."</p>
               </div>
             </div>
             <div class="flex gap-2">
