@@ -49,47 +49,54 @@
   <aside id="sidebar" class="sidebar">
     
     <!-- Logo Section -->
-    <div class="sidebar-logo">
+    <div class="sidebar-logo" title="Est. 1971 &middot; Medical Fraternity">
       <div class="sidebar-logo-icon">
         <img src="image/logo1.png" alt="ZBM Logo">
       </div>
       <div class="sidebar-logo-text">
         <span class="sidebar-logo-title">Zeta Beta <em>Mu</em></span>
-        <span class="sidebar-logo-subtitle">Est. 1971 &middot; Medical Fraternity</span>
       </div>
+      <button id="sidebar-collapse" class="sidebar-collapse" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
+        <i data-lucide="chevrons-left"></i>
+      </button>
     </div>
 
     <!-- Navigation -->
     <nav class="sidebar-nav">
-      <a href="#feed" class="nav-link active">
-        <i data-lucide="home"></i>
-        <span>Feed</span>
-      </a>
-      <a href="directory.html" class="nav-link">
-        <i data-lucide="stethoscope"></i>
-        <span>Directory</span>
-      </a>
-      <a href="traditions.html" class="nav-link">
-        <i data-lucide="book-open"></i>
-        <span>Traditions</span>
-      </a>
-      <a href="vault.html" class="nav-link">
-        <i data-lucide="archive"></i>
-        <span>Vault</span>
-      </a>
-      <a href="merchandise.html" class="nav-link">
-        <i data-lucide="shopping-bag"></i>
-        <span>Merchandise</span>
-      </a>
-      <a href="memoriam.html" class="nav-link">
-        <i data-lucide="flame"></i>
-        <span>In Memoriam</span>
-      </a>
+      <div class="nav-group">
+        <a href="#feed" class="nav-link active" title="Feed">
+          <i data-lucide="home"></i>
+          <span>Feed</span>
+        </a>
+        <a href="directory.html" class="nav-link" title="Directory">
+          <i data-lucide="stethoscope"></i>
+          <span>Directory</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <a href="traditions.html" class="nav-link" title="Traditions">
+          <i data-lucide="book-open"></i>
+          <span>Traditions</span>
+        </a>
+        <a href="vault.html" class="nav-link" title="Vault">
+          <i data-lucide="archive"></i>
+          <span>Vault</span>
+        </a>
+        <a href="merchandise.html" class="nav-link" title="Merchandise">
+          <i data-lucide="shopping-bag"></i>
+          <span>Merchandise</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <a href="memoriam.html" class="nav-link" title="In Memoriam">
+          <i data-lucide="flame"></i>
+          <span>In Memoriam</span>
+        </a>
+      </div>
       <div class="nav-section-divider"><span class="nav-section-mark">&#9670;</span> Officer Controls</div>
-      <a href="admin.html" class="nav-link nav-link-officer" id="officer-tools-link">
+      <a href="admin.html" class="nav-link nav-link-officer" id="officer-tools-link" title="Officer Tools">
         <i data-lucide="shield"></i>
         <span>Officer Tools</span>
-        <span class="nav-officer-badge">Officers</span>
       </a>
     </nav>
     
@@ -97,20 +104,19 @@
     <div class="sidebar-footer">
       
       <!-- User Card -->
-      <div class="user-card">
+      <div class="user-card" id="user-card" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Open profile menu">
         <img id="user-avatar" src="image/placeholders/avatars/a11.jpg" alt="User" class="user-avatar">
         <div class="user-info">
           <div id="user-name" class="user-name">Dr. James Anderson</div>
-          <div class="user-role">Administrator</div>
-          <div class="user-batch">Class of 2005</div>
+          <div class="user-role">Administrator · Class of 2005</div>
         </div>
-        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
-          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
-          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
-        </button>
-        <button id="logout-btn" class="icon-btn" title="Logout" aria-label="Log out">
-          <i data-lucide="log-out" class="w-4 h-4"></i>
-        </button>
+      </div>
+
+      <div class="profile-dropdown" id="profile-dropdown" aria-hidden="true">
+        <a href="#" class="profile-dropdown-item">View Profile</a>
+        <a href="#" class="profile-dropdown-item">Settings</a>
+        <div class="profile-dropdown-divider"></div>
+        <button class="profile-dropdown-item profile-dropdown-danger" id="profile-logout">Log Out</button>
       </div>
       
     </div>
@@ -133,6 +139,10 @@
             <i data-lucide="search" class="w-4 h-4"></i>
             <input type="text" class="header-search-input" placeholder="Search posts, members..." aria-label="Search">
           </div>
+          <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+            <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+            <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+          </button>
           <button class="icon-btn" title="Notifications" aria-label="Notifications" onclick="FeedModule.toggleNotificationDropdown()">
             <i data-lucide="bell" class="w-5 h-5"></i>
             <span id="bell-unread-count" class="nav-unread-badge" style="display:none;">3</span>
@@ -204,43 +214,49 @@
         <aside class="feed-sidebar">
           
           <!-- Announcements Widget (primary emphasis) -->
-          <div class="sidebar-section sidebar-section-primary">
-            <span class="feed-eyebrow">&#9670; Bulletin</span>
+          <div class="sidebar-section">
+            <span class="feed-eyebrow">Bulletin</span>
             <div class="sidebar-header">
-              <i data-lucide="megaphone" class="w-5 h-5 text-[var(--feed-gold)]"></i>
-              <h3 class="sidebar-title">Announce<em>ments</em></h3>
+              <i data-lucide="megaphone" class="w-5 h-5"></i>
+              <h3 class="sidebar-title">Announcements</h3>
               <span id="announcements-unread" class="nav-unread-badge" style="display:none;">2</span>
-              <button class="sidebar-add-btn" aria-label="Add announcement" onclick="FeedModule.showToast('Add announcement coming soon')" title="Add Announcement">
-                <i data-lucide="plus" class="w-4 h-4"></i>
-              </button>
+              <span id="announcements-add-placeholder" class="sidebar-add-placeholder"></span>
             </div>
             <div id="announcements-list" class="widget-list">
               <!-- Announcements rendered dynamically -->
             </div>
+            <a href="announcements.html" class="view-all-link">
+              View all announcements
+              <i data-lucide="arrow-right" class="w-3 h-3"></i>
+            </a>
           </div>
 
           <!-- Birthdays Widget -->
           <div class="sidebar-section">
-            <span class="feed-eyebrow">&#9670; Celebrations</span>
+            <span class="feed-eyebrow">Celebrations</span>
             <div class="sidebar-header">
-              <i data-lucide="cake" class="w-5 h-5 text-[var(--feed-gold)]"></i>
-              <h3 class="sidebar-title">Birthdays <em>Today</em></h3>
+              <i data-lucide="cake" class="w-5 h-5"></i>
+              <h3 class="sidebar-title">Birthdays</h3>
             </div>
             <div id="birthdays-list" class="widget-list">
               <!-- Birthdays rendered dynamically -->
             </div>
+            <a href="birthdays.html" class="view-all-link">
+              View all birthdays
+              <i data-lucide="arrow-right" class="w-3 h-3"></i>
+            </a>
           </div>
 
           <!-- Social Links -->
           <div class="sidebar-section">
-            <span class="feed-eyebrow">&#9670; Community</span>
+            <span class="feed-eyebrow">Community</span>
             <div class="sidebar-header">
-              <i data-lucide="share-2" class="w-5 h-5 text-[var(--feed-gold)]"></i>
+              <i data-lucide="share-2" class="w-5 h-5"></i>
               <h3 class="sidebar-title">Connect</h3>
             </div>
             <div class="social-links">
               <a href="https://www.facebook.com/ZetaBetaMuFraternity" target="_blank" rel="noopener" class="social-link facebook">
-                <i data-lucide="facebook" class="w-6 h-6"></i>
+                <i data-lucide="facebook" class="social-icon-facebook w-5 h-5"></i>
                 <div class="social-info">
                   <span class="social-name">Facebook</span>
                   <span class="social-handle">@ZetaBetaMuFraternity</span>
@@ -248,7 +264,7 @@
                 <i data-lucide="external-link" class="w-4 h-4"></i>
               </a>
               <a href="https://www.instagram.com/zetabetamufraternity/" target="_blank" rel="noopener" class="social-link instagram">
-                <i data-lucide="instagram" class="w-6 h-6"></i>
+                <i data-lucide="instagram" class="social-icon-instagram w-5 h-5"></i>
                 <div class="social-info">
                   <span class="social-name">Instagram</span>
                   <span class="social-handle">@zetabetamufraternity</span>
@@ -560,6 +576,73 @@
       }
     });
   </script>
-  
+
+  <script>
+    (function () {
+      const sidebar = document.getElementById('sidebar');
+      const collapseBtn = document.getElementById('sidebar-collapse');
+      if (!sidebar || !collapseBtn) return;
+
+      collapseBtn.addEventListener('click', function () {
+        const collapsed = sidebar.classList.toggle('is-collapsed');
+        const label = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+        collapseBtn.setAttribute('aria-label', label);
+        collapseBtn.setAttribute('title', label);
+        const iconName = collapsed ? 'chevrons-right' : 'chevrons-left';
+        collapseBtn.innerHTML = '<i data-lucide="' + iconName + '"></i>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const userCard = document.getElementById('user-card');
+      const dropdown = document.getElementById('profile-dropdown');
+      const logoutBtn = document.getElementById('profile-logout');
+      if (!userCard || !dropdown) return;
+
+      function toggleDropdown() {
+        const isOpen = dropdown.classList.toggle('open');
+        dropdown.setAttribute('aria-hidden', String(!isOpen));
+        userCard.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      function closeDropdown() {
+        dropdown.classList.remove('open');
+        dropdown.setAttribute('aria-hidden', 'true');
+        userCard.setAttribute('aria-expanded', 'false');
+      }
+
+      userCard.addEventListener('click', toggleDropdown);
+      userCard.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleDropdown();
+        }
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!userCard.contains(e.target) && !dropdown.contains(e.target)) {
+          closeDropdown();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && dropdown.classList.contains('open')) {
+          closeDropdown();
+        }
+      });
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+          if (typeof AuthHelper !== 'undefined' && confirm('Are you sure you want to log out?')) {
+            AuthHelper.logout();
+          }
+        });
+      }
+    })();
+  </script>
+
 </body>
 </html>

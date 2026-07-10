@@ -171,18 +171,31 @@ const FeedModule = {
   ],
 
   // Mock birthdays data (today, tomorrow, next)
-  birthdays: [
-    { name: 'Dr. Michael Chen', date: 'Today', avatar: 'image/placeholders/avatars/a3.jpg', year: 2008, isToday: true },
-    { name: 'Dr. Sarah Johnson', date: 'Tomorrow', avatar: 'image/placeholders/avatars/a6.jpg', year: 2012, isToday: false },
-    { name: 'Dr. Robert Kim', date: 'Wed, March 18', avatar: 'image/placeholders/avatars/a8.jpg', year: 2010, isToday: false }
-  ],
+  birthdays: (() => {
+    const today = new Date();
+    const makeDate = (offset) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() + offset);
+      return d;
+    };
+    return [
+      { name: 'Dr. Michael Chen', date: makeDate(0), avatar: 'image/placeholders/avatars/a3.jpg', year: 2008 },
+      { name: 'Dr. Sarah Johnson', date: makeDate(1), avatar: 'image/placeholders/avatars/a6.jpg', year: 2012 },
+      { name: 'Dr. Robert Kim', date: makeDate(5), avatar: 'image/placeholders/avatars/a8.jpg', year: 2010 },
+      { name: 'Dr. Emily Roberts', date: makeDate(8), avatar: 'image/placeholders/avatars/a9.jpg', year: 2015 },
+      { name: 'Dr. James Anderson', date: makeDate(12), avatar: 'image/placeholders/avatars/a11.jpg', year: 2005 },
+      { name: 'Dr. David Martinez', date: makeDate(15), avatar: 'image/placeholders/avatars/a12.jpg', year: 2011 },
+      { name: 'Dr. Lisa Wong', date: makeDate(20), avatar: 'image/placeholders/avatars/a20.jpg', year: 2014 },
+      { name: 'Dr. Brian Patel', date: makeDate(22), avatar: '', year: 2009 }
+    ];
+  })(),
 
   // Mock announcements data
   announcements: [
     {
       id: 1,
       title: 'Annual Gala 2026',
-      date: 'March 25, 2026',
+      date: new Date('2026-03-25'),
       content: 'Join us for our 50th anniversary celebration at The Grand Hotel.',
       icon: 'calendar',
       accent: 'gold',
@@ -191,7 +204,7 @@ const FeedModule = {
     {
       id: 2,
       title: 'New Member Induction',
-      date: 'April 15, 2026',
+      date: new Date('2026-04-15'),
       content: 'Ceremony for 12 new medical professionals joining the brotherhood.',
       icon: 'award',
       accent: 'emerald',
@@ -200,10 +213,46 @@ const FeedModule = {
     {
       id: 3,
       title: 'Medical Conference',
-      date: 'May 10-12, 2026',
+      date: new Date('2026-05-10'),
       content: 'Annual medical excellence conference — registration opens next week.',
       icon: 'heart-pulse',
       accent: 'info',
+      unread: false
+    },
+    {
+      id: 4,
+      title: 'Officer Elections',
+      date: new Date('2026-06-01'),
+      content: 'Nominate qualified brothers for the upcoming officer elections.',
+      icon: 'shield',
+      accent: 'gold',
+      unread: false
+    },
+    {
+      id: 5,
+      title: 'Alumni Outreach Drive',
+      date: new Date('2026-06-15'),
+      content: 'Help reconnect with alumni and update contact records before the gala.',
+      icon: 'mail',
+      accent: 'emerald',
+      unread: false
+    },
+    {
+      id: 6,
+      title: 'Community Clinic Day',
+      date: new Date('2026-07-08'),
+      content: 'Volunteer for the annual free community clinic day at St. Luke\'s.',
+      icon: 'stethoscope',
+      accent: 'info',
+      unread: true
+    },
+    {
+      id: 7,
+      title: 'Scholarship Fundraiser',
+      date: new Date('2026-08-20'),
+      content: 'Support the next generation of medical leaders through our scholarship fund.',
+      icon: 'graduation-cap',
+      accent: 'gold',
       unread: false
     }
   ],
@@ -238,6 +287,8 @@ const FeedModule = {
     this.renderPosts();
     this.renderBirthdays();
     this.renderAnnouncements();
+    this.renderBirthdaysFullList();
+    this.renderAnnouncementsFullList();
     this.renderNotifications();
     this.updateUnreadBadges();
     this.setupEventListeners();
@@ -525,6 +576,20 @@ const FeedModule = {
     const container = document.getElementById('birthdays-list');
     if (!container) return;
 
+    container.innerHTML = this.birthdays.slice(0, 3).map(birthday => this.createBirthdayHTML(birthday)).join('');
+    
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  },
+
+  /**
+   * Render full birthdays list page
+   */
+  renderBirthdaysFullList() {
+    const container = document.getElementById('birthdays-full-list');
+    if (!container) return;
+
     container.innerHTML = this.birthdays.map(birthday => this.createBirthdayHTML(birthday)).join('');
     
     if (typeof lucide !== 'undefined') {
@@ -536,18 +601,44 @@ const FeedModule = {
    * Create HTML for birthday item
    */
   createBirthdayHTML(birthday) {
+    const today = new Date();
+    const target = new Date(birthday.date);
+    const isToday = today.getMonth() === target.getMonth() && today.getDate() === target.getDate();
+    const dateLabel = this.formatSidebarDate(birthday.date);
+    const wished = birthday.wished ? ' wished' : '';
+    const avatarHTML = this.createAvatarHTML(birthday.avatar, birthday.name, 'birthday-avatar');
+
     return `
-      <div class="widget-item ${birthday.isToday ? 'today' : ''}">
-        <div class="widget-icon">
-          <i data-lucide="cake" class="w-4 h-4"></i>
-        </div>
-        <div class="widget-content">
-          <div class="widget-label">${birthday.name}</div>
-          <div class="widget-sublabel">Class of ${birthday.year} • ${birthday.date}</div>
-        </div>
-        ${birthday.isToday ? '<div class="widget-icon"><i data-lucide="cake" class="w-4 h-4"></i></div>' : ''}
+      <div class="widget-item birthday-item ${isToday ? 'today' : ''}${wished}" data-name="${birthday.name}">
+        <a href="#profile" class="birthday-row-link" aria-label="View ${birthday.name}'s profile">
+          ${avatarHTML}
+          <div class="widget-content">
+            <div class="widget-label">${birthday.name}</div>
+            <div class="widget-sublabel">Class of ${birthday.year} • ${dateLabel}</div>
+          </div>
+        </a>
+        <button class="birthday-wish-btn" aria-label="Wish ${birthday.name} a happy birthday" title="Wish them well" onclick="FeedModule.wishHappyBirthday('${birthday.name}', event)">
+          <span class="birthday-wish-emoji">🎉</span>
+          <span class="birthday-wish-label">Wish</span>
+        </button>
       </div>
     `;
+  },
+
+  /**
+   * Handle "Wish them well" birthday action
+   */
+  wishHappyBirthday(name, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const person = this.birthdays.find(b => b.name === name);
+    if (person) {
+      person.wished = true;
+      this.renderBirthdays();
+    }
+    this.showToast(`Sent birthday wishes to ${name}!`);
   },
 
   /**
@@ -555,6 +646,31 @@ const FeedModule = {
    */
   renderAnnouncements() {
     const container = document.getElementById('announcements-list');
+    if (!container) return;
+
+    container.innerHTML = this.announcements.slice(0, 3).map(announcement => this.createAnnouncementHTML(announcement)).join('');
+
+    const addPlaceholder = document.getElementById('announcements-add-placeholder');
+    if (addPlaceholder && typeof AuthModule !== 'undefined' && AuthModule.isOfficer && AuthModule.isOfficer()) {
+      addPlaceholder.innerHTML = `
+        <button class="sidebar-add-btn" aria-label="Add announcement" title="Add announcement" onclick="FeedModule.showToast('Add announcement coming soon')">
+          <i data-lucide="pencil" class="w-4 h-4"></i>
+        </button>
+      `;
+    } else if (addPlaceholder) {
+      addPlaceholder.innerHTML = '';
+    }
+    
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  },
+
+  /**
+   * Render full announcements list page
+   */
+  renderAnnouncementsFullList() {
+    const container = document.getElementById('announcements-full-list');
     if (!container) return;
 
     container.innerHTML = this.announcements.map(announcement => this.createAnnouncementHTML(announcement)).join('');
@@ -570,6 +686,7 @@ const FeedModule = {
   createAnnouncementHTML(announcement) {
     const unreadClass = announcement.unread ? ' unread' : '';
     const unreadDot = announcement.unread ? '<div class="announcement-unread-dot"></div>' : '';
+    const dateLabel = this.formatSidebarDate(announcement.date);
     return `
       <div class="widget-item announcement-item${unreadClass}" data-accent="${announcement.accent || 'gold'}">
         <div class="widget-icon">
@@ -578,7 +695,7 @@ const FeedModule = {
         <div class="widget-content">
           <div class="announcement-title">${announcement.title}</div>
           <div class="announcement-desc">${announcement.content}</div>
-          <div class="announcement-date">${announcement.date}</div>
+          <div class="announcement-date">${dateLabel}</div>
         </div>
         ${unreadDot}
       </div>
@@ -705,6 +822,63 @@ const FeedModule = {
     if (seconds < 604800) return Math.floor(seconds / 86400) + 'd';
     
     return Math.floor(seconds / 604800) + 'w';
+  },
+
+  /**
+   * Shared sidebar date formatter.
+   * - Today / Tomorrow for dates within 48 hours.
+   * - "Wed, Mar 18" for anything beyond.
+   */
+  formatSidebarDate(date) {
+    const target = new Date(date);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const targetDay = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+    const diffMs = targetDay - now;
+    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Tomorrow';
+
+    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${weekdays[target.getDay()]}, ${months[target.getMonth()]} ${target.getDate()}`;
+  },
+
+  /**
+   * Extract up to two initials from a full name.
+   */
+  getInitials(name) {
+    if (!name) return '?';
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    const first = parts[0].charAt(0).toUpperCase();
+    const last = parts[parts.length - 1].charAt(0).toUpperCase();
+    return first + last;
+  },
+
+  /**
+   * Return a deterministic color class for a name.
+   */
+  getAvatarColorClass(name) {
+    const colors = ['avatar-gold', 'avatar-emerald', 'avatar-blue', 'avatar-purple', 'avatar-rose'];
+    let hash = 0;
+    for (let i = 0; i < (name || '').length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  },
+
+  /**
+   * Build avatar HTML with initials fallback for missing avatars.
+   */
+  createAvatarHTML(avatar, name, className = '') {
+    if (avatar) {
+      return `<img src="${avatar}" alt="${name || 'User'}" class="${className}" loading="lazy" decoding="async">`;
+    }
+    const initials = this.getInitials(name);
+    const colorClass = this.getAvatarColorClass(name);
+    return `<span class="avatar-fallback ${colorClass} ${className}" aria-label="${name || 'User'}">${initials}</span>`;
   },
 
   /**

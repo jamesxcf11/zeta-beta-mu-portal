@@ -435,6 +435,15 @@ const AuthModule = {
   isAdmin() {
     const user = this.getCurrentUser();
     return user && user.role === 'admin';
+  },
+
+  /**
+   * Check if current user is an officer or admin
+   * @returns {boolean}
+   */
+  isOfficer() {
+    const user = this.getCurrentUser();
+    return user && (user.role === 'admin' || user.role === 'officer');
   }
 };
 

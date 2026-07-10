@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Zeta Beta Mu Fraternity - Tribute">
-  <title>Tribute | Zeta Beta Mu Fraternity</title>
+  <title>In Memoriam | Zeta Beta Mu Fraternity</title>
 
   <!-- Tailwind CSS -->
   <link rel="stylesheet" href="css/tailwind.css">
@@ -36,7 +36,7 @@
           <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
           <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
         </button>
-        <a href="memoriam.html" class="btn btn-glass btn-sm">
+        <a href="memoriam.html" class="btn btn-glass btn-sm internal-link">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
           Back to In Memoriam
         </a>
@@ -49,17 +49,7 @@
     <div class="memorial-container">
 
       <header class="memorial-hero glass-card">
-        <div class="memorial-candle">
-          <i data-lucide="flame" class="w-7 h-7"></i>
-        </div>
-        <img src="image/placeholders/avatars/a33.jpg" alt="Memorial portrait" class="memorial-portrait" loading="lazy" decoding="async">
-        <h1 class="memorial-name">Dr. Roberto M. Santos</h1>
-        <p class="memorial-dates">1945 — 2023</p>
-        <p class="memorial-meta">Cardiology &bull; Batch 1971 &bull; 52 years of service</p>
-        <p class="memorial-bio">
-          A founding member whose compassion and expertise touched countless lives. His legacy of
-          excellence in cardiac care continues to inspire generations of Zeta Beta Mu brothers.
-        </p>
+        <!-- Populated by MemorialModule.renderHero() -->
       </header>
 
       <!-- TWO COLUMN: Tribute wall + Gallery -->
@@ -72,52 +62,9 @@
             Tribute Wall
           </h2>
 
-          <!-- Post a tribute (mock) -->
-          <div class="memorial-composer glass-card">
-            <textarea class="composer-input" placeholder="Share a message or tribute for our brother..."></textarea>
-            <div class="memorial-composer-actions">
-              <div class="flex gap-2">
-                <button class="composer-btn" type="button"><i data-lucide="image" class="w-4 h-4"></i> Photo</button>
-                <button class="composer-btn" type="button"><i data-lucide="video" class="w-4 h-4"></i> Video</button>
-              </div>
-              <button class="btn btn-gold" type="button"><i data-lucide="send" class="w-4 h-4"></i> Post Tribute</button>
-            </div>
+          <div id="tribute-wall">
+            <!-- Populated by MemorialModule.renderTributeWall() -->
           </div>
-
-          <!-- Sample tributes -->
-          <article class="memorial-tribute glass-card">
-            <div class="memorial-tribute-head">
-              <img src="image/placeholders/avatars/a5.jpg" alt="" class="memorial-tribute-avatar" loading="lazy" decoding="async">
-              <div>
-                <div class="memorial-tribute-author">Dr. Sarah Mitchell</div>
-                <div class="memorial-tribute-time">Batch 2008 &bull; 2 days ago</div>
-              </div>
-            </div>
-            <p class="memorial-tribute-text">
-              Sir Roberto mentored me during my residency. His kindness and brilliance shaped the doctor I am today. Rest well, brother.
-            </p>
-            <div class="memorial-tribute-actions">
-              <button class="reaction-btn" type="button"><i data-lucide="heart" class="w-4 h-4"></i> <span>32</span></button>
-              <button class="reaction-btn" type="button"><i data-lucide="message-circle" class="w-4 h-4"></i> <span>Comment</span></button>
-            </div>
-          </article>
-
-          <article class="memorial-tribute glass-card">
-            <div class="memorial-tribute-head">
-              <img src="image/placeholders/avatars/a12.jpg" alt="" class="memorial-tribute-avatar" loading="lazy" decoding="async">
-              <div>
-                <div class="memorial-tribute-author">Dr. Antonio Cruz</div>
-                <div class="memorial-tribute-time">Batch 1973 &bull; 5 days ago</div>
-              </div>
-            </div>
-            <p class="memorial-tribute-text">
-              A true brother and a giant in cardiology. We shared so many memories at the frat house. You will be missed.
-            </p>
-            <div class="memorial-tribute-actions">
-              <button class="reaction-btn" type="button"><i data-lucide="heart" class="w-4 h-4"></i> <span>48</span></button>
-              <button class="reaction-btn" type="button"><i data-lucide="message-circle" class="w-4 h-4"></i> <span>Comment</span></button>
-            </div>
-          </article>
         </div>
 
         <!-- Photo / Video Gallery -->
@@ -126,11 +73,8 @@
             <i data-lucide="images" class="w-5 h-5"></i>
             Photos &amp; Videos
           </h2>
-          <div class="memorial-gallery">
-            <div class="memorial-gallery-item"><i data-lucide="image" class="w-6 h-6"></i></div>
-            <div class="memorial-gallery-item"><i data-lucide="image" class="w-6 h-6"></i></div>
-            <div class="memorial-gallery-item"><i data-lucide="play-circle" class="w-6 h-6"></i></div>
-            <div class="memorial-gallery-item"><i data-lucide="image" class="w-6 h-6"></i></div>
+          <div id="memorial-gallery" class="memorial-gallery">
+            <!-- Populated by MemorialModule.renderGallery() -->
           </div>
           <p class="landing-muted-text text-sm mt-4">
             <i data-lucide="info" class="w-4 h-4 inline-block mr-1 align-middle"></i>
@@ -145,6 +89,7 @@
 
   <!-- Scripts -->
   <script src="js/main.js"></script>
+  <script src="js/memorial.js"></script>
   <script>
     lucide.createIcons();
   </script>

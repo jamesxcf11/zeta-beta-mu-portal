@@ -670,6 +670,75 @@ const AuthHelper = {
 };
 
 // ============================================
+// PAGE TRANSITIONS
+// ============================================
+
+const PageTransitions = {
+  overlay: null,
+  duration: 350,
+
+  init() {
+    this.createOverlay();
+    this.bindLinkClicks();
+    this.animateIn();
+  },
+
+  createOverlay() {
+    let overlay = document.getElementById('page-transition-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'page-transition-overlay';
+      overlay.className = 'page-transition-overlay';
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(overlay);
+    }
+    this.overlay = overlay;
+  },
+
+  bindLinkClicks() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      // Skip anchors, external links, and modifier keys
+      if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+
+      const url = new URL(href, window.location.href);
+      if (url.origin !== window.location.origin) return;
+
+      e.preventDefault();
+      this.navigateTo(url.href);
+    });
+  },
+
+  navigateTo(href) {
+    if (!this.overlay) {
+      window.location.href = href;
+      return;
+    }
+
+    this.overlay.classList.add('page-transition-active');
+
+    setTimeout(() => {
+      window.location.href = href;
+    }, this.duration);
+  },
+
+  animateIn() {
+    if (!this.overlay) return;
+    // On page load, start solid and fade to transparent for a smooth entrance
+    this.overlay.classList.add('page-transition-enter');
+    requestAnimationFrame(() => {
+      this.overlay.classList.remove('page-transition-enter');
+    });
+  }
+};
+
+// ============================================
 // INITIALIZATION
 // ============================================
 
@@ -783,6 +852,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize effects
   Effects.init();
+
+  // Initialize page transitions
+  PageTransitions.init();
 
   // Update auth UI
   AuthHelper.updateUI();
