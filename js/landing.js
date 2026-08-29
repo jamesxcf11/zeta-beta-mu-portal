@@ -235,6 +235,19 @@ const LandingModule = {
   },
 
   /**
+   * Escape HTML special characters to prevent XSS
+   */
+  escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  },
+
+  /**
    * Reveal sections/cards on scroll
    */
   setupScrollReveal() {
@@ -261,12 +274,14 @@ const LandingModule = {
     if (!container) return;
 
     // Render main albums
-    let html = this.albums.map((album, index) => `
+    let html = this.albums.map((album, index) => {
+      const e = (s) => this.escapeHTML(s);
+      return `
       <div class="landing-gallery-card glass-card" onclick="LandingModule.openAlbum(${index})" style="cursor: pointer;">
         <div class="landing-gallery-image-wrapper">
-          <img src="${album.coverImage}" alt="${album.title}" loading="lazy">
+          <img src="${e(album.coverImage)}" alt="${e(album.title)}" loading="lazy">
           <div class="landing-gallery-overlay">
-            <span class="landing-gallery-category">${album.category}</span>
+            <span class="landing-gallery-category">${e(album.category)}</span>
           </div>
           <div class="album-photo-count">
             <i data-lucide="images" class="w-4 h-4"></i>
@@ -274,23 +289,26 @@ const LandingModule = {
           </div>
         </div>
         <div class="landing-gallery-info">
-          <h3>${album.title}</h3>
+          <h3>${e(album.title)}</h3>
           <p>
             <i data-lucide="map-pin" class="w-3 h-3"></i>
-            ${album.location} &middot; ${album.year}
+            ${e(album.location)} &middot; ${e(album.year)}
           </p>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     // Add archive albums if expanded
     if (this.showArchive) {
-      html += this.archiveAlbums.map((album, index) => `
+      html += this.archiveAlbums.map((album, index) => {
+        const e = (s) => this.escapeHTML(s);
+        return `
         <div class="landing-gallery-card glass-card archive-album" onclick="LandingModule.openArchiveAlbum(${index})" style="cursor: pointer;">
           <div class="landing-gallery-image-wrapper">
-            <img src="${album.coverImage}" alt="${album.title}" loading="lazy">
+            <img src="${e(album.coverImage)}" alt="${e(album.title)}" loading="lazy">
             <div class="landing-gallery-overlay">
-              <span class="landing-gallery-category">${album.category}</span>
+              <span class="landing-gallery-category">${e(album.category)}</span>
             </div>
             <div class="album-photo-count">
               <i data-lucide="images" class="w-4 h-4"></i>
@@ -298,14 +316,15 @@ const LandingModule = {
             </div>
           </div>
           <div class="landing-gallery-info">
-            <h3>${album.title}</h3>
+            <h3>${e(album.title)}</h3>
             <p>
               <i data-lucide="map-pin" class="w-3 h-3"></i>
-              ${album.location} &middot; ${album.year}
+              ${e(album.location)} &middot; ${e(album.year)}
             </p>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     // Add See More / Show Less button
@@ -434,29 +453,29 @@ const LandingModule = {
       
       <div class="vault-lightbox-content">
         <div class="vault-lightbox-image-wrapper">
-          <img src="${currentPhoto}" alt="${this.currentAlbum.title}" class="vault-lightbox-image">
+          <img src="${this.escapeHTML(currentPhoto)}" alt="${this.escapeHTML(this.currentAlbum.title)}" class="vault-lightbox-image">
         </div>
         
         <div class="vault-lightbox-info">
           <div class="vault-lightbox-header">
             <span class="vault-lightbox-category" style="color: #d4af37">
               <i data-lucide="folder" class="w-4 h-4"></i>
-              ${this.currentAlbum.category}
+              ${this.escapeHTML(this.currentAlbum.category)}
             </span>
             <span class="vault-lightbox-counter">${this.currentPhotoIndex + 1} / ${this.currentAlbum.photos.length}</span>
           </div>
           
-          <h2 class="vault-lightbox-title">${this.currentAlbum.title}</h2>
+          <h2 class="vault-lightbox-title">${this.escapeHTML(this.currentAlbum.title)}</h2>
           <p class="vault-lightbox-description">A glimpse into the rich history and traditions of the Zeta Beta Mu Fraternity.</p>
           
           <div class="vault-lightbox-meta">
             <div class="vault-lightbox-meta-item">
               <i data-lucide="calendar" class="w-4 h-4"></i>
-              <span>${this.currentAlbum.year}</span>
+              <span>${this.escapeHTML(this.currentAlbum.year)}</span>
             </div>
             <div class="vault-lightbox-meta-item">
               <i data-lucide="map-pin" class="w-4 h-4"></i>
-              <span>${this.currentAlbum.location}</span>
+              <span>${this.escapeHTML(this.currentAlbum.location)}</span>
             </div>
           </div>
           
@@ -494,6 +513,11 @@ const LandingModule = {
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
+  LandingModule.init();
+});
+
+// Re-init on bfcache restore (browser back/forward)
+window.addEventListener('zbm-bfcache-restore', () => {
   LandingModule.init();
 });
 

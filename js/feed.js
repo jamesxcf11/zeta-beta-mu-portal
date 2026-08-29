@@ -7,6 +7,20 @@
  */
 
 const FeedModule = {
+  /**
+   * Escape HTML special characters to prevent XSS when injecting
+   * user-provided strings via innerHTML.
+   */
+  escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  },
+
   // Available Facebook-style reactions
   REACTIONS: [
     { type: 'like', icon: '👍', label: 'Like', color: '#3b82f6' },
@@ -16,6 +30,9 @@ const FeedModule = {
     { type: 'insightful', icon: '💡', label: 'Insightful', color: '#d4af37' },
     { type: 'haha', icon: '😄', label: 'Haha', color: '#f59e0b' }
   ],
+
+  // Double-submit guard for post creation
+  isPosting: false,
 
   // Mock posts data with multiple reactions
   posts: [
@@ -91,7 +108,7 @@ const FeedModule = {
         avatar: 'image/placeholders/avatars/a11.jpg',
         title: 'Cardiologist at St. Luke\'s'
       },
-      content: 'Reminder: The Annual Fraternity Gala Dinner is scheduled for March 25th at The Grand Hotel. Please RSVP by March 10th. This year\'s theme is "Honoring 50 Years of Excellence." Looking forward to seeing everyone there!',
+      content: 'Reminder: The Annual Fraternity Gala Dinner is scheduled for March 25th at The Grand Hotel. Please RSVP by March 10th. This year\'s theme is "Honoring 55 Years of Excellence." Looking forward to seeing everyone there!',
       image: 'image/placeholders/picsum/p2.jpg',
       timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
       type: 'announcement',
@@ -196,7 +213,7 @@ const FeedModule = {
       id: 1,
       title: 'Annual Gala 2026',
       date: new Date('2026-03-25'),
-      content: 'Join us for our 50th anniversary celebration at The Grand Hotel.',
+      content: 'Join us for our 55th anniversary celebration at The Grand Hotel.',
       icon: 'calendar',
       accent: 'gold',
       unread: true
@@ -269,7 +286,16 @@ const FeedModule = {
   composerState: {
     text: '',
     image: null,
+    imageFile: null,
     imagePreview: null
+  },
+
+  /**
+   * Check if Supabase is configured
+   */
+  hasSupabase() {
+    return typeof db !== 'undefined' && db &&
+           typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT');
   },
 
   // Incremental rendering state (matches a future paginated API)
@@ -281,9 +307,54 @@ const FeedModule = {
   activeOverflowMenu: null,
 
   /**
+   * Resolve the logged-in user from the session (with safe fallbacks).
+   */
+  getCurrentUser() {
+    let session = null;
+    if (typeof AuthHelper !== 'undefined') {
+      try {
+        session = AuthHelper.getCurrentUser();
+      } catch (e) { /* invalid session */ }
+    }
+    const title = session && session.field && session.hospital
+      ? `${session.field} at ${session.hospital}`
+      : (session && session.role === 'admin' ? 'Administrator' : 'Member');
+    return {
+      name: (session && session.name) || 'Brother',
+      avatar: (session && session.avatar) || 'image/placeholders/avatars/a11.jpg',
+      title
+    };
+  },
+
+  /**
+   * Apply the logged-in user's identity to static composer UI.
+   */
+  applyUserToUI() {
+    const user = this.getCurrentUser();
+
+    const composerAvatar = document.querySelector('.composer-avatar');
+    if (composerAvatar) {
+      composerAvatar.src = user.avatar;
+      composerAvatar.alt = user.name;
+    }
+
+    const postInput = document.getElementById('post-input');
+    if (postInput) {
+      const lastName = user.name.trim().split(/\s+/).pop();
+      postInput.placeholder = `What's on your mind, Dr. ${lastName}?`;
+    }
+  },
+
+  /**
    * Initialize feed module
    */
-  init() {
+  async init() {
+    this.applyUserToUI();
+    if (this.hasSupabase()) {
+      await this.loadPosts();
+      await this.loadAnnouncements();
+      await this.loadBirthdays();
+    }
     this.renderPosts();
     this.renderBirthdays();
     this.renderAnnouncements();
@@ -292,6 +363,132 @@ const FeedModule = {
     this.renderNotifications();
     this.updateUnreadBadges();
     this.setupEventListeners();
+  },
+
+  /**
+   * Load posts from Supabase and map to the existing data structure
+   */
+  async loadPosts() {
+    const { data, error } = await db
+      .from('posts')
+      .select(`
+        id, content, image_url, is_pinned, post_type, status, created_at,
+        member_id, members:id (name, avatar_url, hospital, field_of_medicine, role)
+      `)
+      .eq('status', 'published')
+      .is('deleted_at', null)
+      .order('is_pinned', { ascending: false })
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (error || !data) return;
+
+    // Load reactions and comments for each post
+    const postIds = data.map(p => p.id);
+    const [{ data: reactions }, { data: comments }] = await Promise.all([
+      db.from('post_reactions').select('post_id, reaction_type').in('post_id', postIds),
+      db.from('comments').select('id, post_id, member_id, content, created_at, members:member_id (name, avatar_url)').eq('status', 'published').in('post_id', postIds).order('created_at', { ascending: true })
+    ]);
+
+    const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+    const currentUserId = session?.id;
+
+    this.posts = data.map(p => {
+      const postReactions = (reactions || []).filter(r => r.post_id === p.id);
+      const reactionCounts = {};
+      let userReaction = null;
+      postReactions.forEach(r => {
+        reactionCounts[r.reaction_type] = (reactionCounts[r.reaction_type] || 0) + 1;
+      });
+
+      const postComments = (comments || []).filter(c => c.post_id === p.id).map(c => ({
+        id: c.id,
+        author: {
+          name: c.members?.name || 'Unknown',
+          avatar: c.members?.avatar_url || ''
+        },
+        content: c.content,
+        timestamp: new Date(c.created_at)
+      }));
+
+      const member = p.members || {};
+      return {
+        id: p.id,
+        author: {
+          name: member.name || 'Unknown',
+          avatar: member.avatar_url || 'image/placeholders/avatars/a11.jpg',
+          title: member.field_of_medicine && member.hospital ? `${member.field_of_medicine} at ${member.hospital}` : 'Member',
+          isOfficer: member.role === 'admin' || member.role === 'officer'
+        },
+        content: p.content,
+        image: p.image_url,
+        timestamp: new Date(p.created_at),
+        isPinned: p.is_pinned,
+        type: p.post_type || 'general',
+        reactions: {
+          like: reactionCounts.like || 0,
+          love: reactionCounts.love || 0,
+          celebrate: reactionCounts.celebrate || 0,
+          insightful: reactionCounts.insightful || 0,
+          support: reactionCounts.support || 0,
+          haha: reactionCounts.haha || 0
+        },
+        userReaction,
+        comments: postComments,
+        shares: 0,
+        showComments: false
+      };
+    });
+  },
+
+  /**
+   * Load announcements from Supabase
+   */
+  async loadAnnouncements() {
+    const { data, error } = await db
+      .from('announcements')
+      .select('id, title, content, priority, is_pinned, starts_at, created_at')
+      .is('deleted_at', null)
+      .order('is_pinned', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (error || !data) return;
+
+    const iconMap = { high: 'calendar', normal: 'award', low: 'mail', urgent: 'shield' };
+    const accentMap = { high: 'gold', normal: 'emerald', low: 'info', urgent: 'gold' };
+
+    this.announcements = data.map(a => ({
+      id: a.id,
+      title: a.title,
+      date: new Date(a.starts_at || a.created_at),
+      content: a.content,
+      icon: iconMap[a.priority] || 'megaphone',
+      accent: accentMap[a.priority] || 'gold',
+      unread: false
+    }));
+  },
+
+  /**
+   * Load birthdays from Supabase
+   */
+  async loadBirthdays() {
+    const { data, error } = await db
+      .from('birthday_calendar')
+      .select(`
+        birth_date, birth_year,
+        members:member_id (id, name, avatar_url, graduation_year)
+      `)
+      .eq('show_on_calendar', true);
+
+    if (error || !data) return;
+
+    this.birthdays = data.map(b => ({
+      name: b.members?.name || 'Unknown',
+      date: new Date(b.birth_date),
+      avatar: b.members?.avatar_url || '',
+      year: b.members?.graduation_year || b.birth_year,
+      wished: false
+    }));
   },
 
   /**
@@ -366,6 +563,9 @@ const FeedModule = {
    */
   createPostHTML(post) {
     const timeAgo = this.getTimeAgo(post.timestamp);
+    const safeAuthorName = this.escapeHTML(post.author.name);
+    const safeAuthorTitle = this.escapeHTML(post.author.title);
+    const safeContent = this.escapeHTML(post.content);
     const totalReactions = Object.values(post.reactions).reduce((sum, count) => sum + count, 0);
     const reactionSummary = this.getReactionSummary(post.reactions, totalReactions);
 
@@ -399,10 +599,10 @@ const FeedModule = {
       <article class="post-card ${post.isPinned ? 'is-pinned' : ''}" data-post-id="${post.id}">
         ${pinnedLabel}
         <div class="post-header">
-          <img src="${post.author.avatar}" alt="${post.author.name}" class="post-avatar" loading="lazy" decoding="async" width="48" height="48">
+          <img src="${this.escapeHTML(post.author.avatar)}" alt="${safeAuthorName}" class="post-avatar" loading="lazy" decoding="async" width="48" height="48">
           <div class="post-author-info">
-            <div class="post-author-name">${post.author.name}</div>
-            <div class="post-author-title">${post.author.title}${officerBadge}</div>
+            <div class="post-author-name">${safeAuthorName}</div>
+            <div class="post-author-title">${safeAuthorTitle}${officerBadge}</div>
           </div>
           <div class="post-timestamp">• ${timeAgo}</div>
           <button class="post-overflow-btn" onclick="FeedModule.toggleOverflowMenu(${post.id}, event)" aria-label="Post options">
@@ -421,9 +621,9 @@ const FeedModule = {
           </div>
         </div>
         
-        <div class="post-content">${post.content}</div>
+        <div class="post-content">${safeContent}</div>
         
-        ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image" loading="lazy" decoding="async">` : ''}
+        ${post.image ? `<img src="${this.escapeHTML(post.image)}" alt="Post image" class="post-image" loading="lazy" decoding="async">` : ''}
         
         <div class="post-actions">
           <div class="post-reactions">
@@ -458,7 +658,7 @@ const FeedModule = {
           
           ${post.showComments ? `
             <div class="comment-input-wrapper">
-              <img src="image/placeholders/avatars/a11.jpg" alt="You" class="comment-avatar">
+              <img src="${this.escapeHTML(this.getCurrentUser().avatar)}" alt="You" class="comment-avatar">
               <input type="text" class="comment-input" placeholder="Add a comment..." onkeypress="FeedModule.handleCommentKeypress(event, ${post.id})">
             </div>
           ` : ''}
@@ -472,12 +672,13 @@ const FeedModule = {
    */
   createCommentHTML(comment) {
     const timeAgo = this.getTimeAgo(comment.timestamp);
+    const safeName = this.escapeHTML(comment.author.name);
     return `
       <div class="comment">
-        <img src="${comment.author.avatar}" alt="${comment.author.name}" class="comment-avatar" loading="lazy" decoding="async" width="32" height="32">
+        <img src="${this.escapeHTML(comment.author.avatar)}" alt="${safeName}" class="comment-avatar" loading="lazy" decoding="async" width="32" height="32">
         <div class="comment-content">
-          <div class="comment-author">${comment.author.name}</div>
-          <div class="comment-text">${comment.content}</div>
+          <div class="comment-author">${safeName}</div>
+          <div class="comment-text">${this.escapeHTML(comment.content)}</div>
           <div class="comment-time">${timeAgo}</div>
         </div>
       </div>
@@ -504,24 +705,43 @@ const FeedModule = {
   /**
    * Toggle reaction on post
    */
-  toggleReaction(postId, reactionType) {
+  async toggleReaction(postId, reactionType) {
     const post = this.posts.find(p => p.id === postId);
     if (!post) return;
 
     if (post.reactions[reactionType] === undefined) post.reactions[reactionType] = 0;
 
-    // If user already reacted with this type, remove it
-    if (post.userReaction === reactionType) {
-      post.reactions[reactionType] = Math.max(0, post.reactions[reactionType] - 1);
-      post.userReaction = null;
-    } else {
-      // Remove previous reaction if any
-      if (post.userReaction && post.reactions[post.userReaction] !== undefined) {
-        post.reactions[post.userReaction] = Math.max(0, post.reactions[post.userReaction] - 1);
+    if (this.hasSupabase()) {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      if (!session) { this.showToast('Please log in to react'); return; }
+
+      if (post.userReaction === reactionType) {
+        await db.from('post_reactions').delete().eq('post_id', postId).eq('member_id', session.id);
+        post.reactions[reactionType] = Math.max(0, post.reactions[reactionType] - 1);
+        post.userReaction = null;
+      } else {
+        if (post.userReaction) {
+          await db.from('post_reactions').delete().eq('post_id', postId).eq('member_id', session.id);
+          if (post.reactions[post.userReaction] !== undefined) {
+            post.reactions[post.userReaction] = Math.max(0, post.reactions[post.userReaction] - 1);
+          }
+        }
+        await db.from('post_reactions').insert({ post_id: postId, member_id: session.id, reaction_type: reactionType });
+        post.reactions[reactionType]++;
+        post.userReaction = reactionType;
       }
-      // Add new reaction
-      post.reactions[reactionType]++;
-      post.userReaction = reactionType;
+    } else {
+      // Mock fallback
+      if (post.userReaction === reactionType) {
+        post.reactions[reactionType] = Math.max(0, post.reactions[reactionType] - 1);
+        post.userReaction = null;
+      } else {
+        if (post.userReaction && post.reactions[post.userReaction] !== undefined) {
+          post.reactions[post.userReaction] = Math.max(0, post.reactions[post.userReaction] - 1);
+        }
+        post.reactions[reactionType]++;
+        post.userReaction = reactionType;
+      }
     }
 
     this.updatePost(postId);
@@ -551,15 +771,26 @@ const FeedModule = {
   /**
    * Add comment to post
    */
-  addComment(postId, content) {
+  async addComment(postId, content) {
     const post = this.posts.find(p => p.id === postId);
     if (!post) return;
+
+    const user = this.getCurrentUser();
+
+    if (this.hasSupabase()) {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      if (!session) { this.showToast('Please log in to comment'); return; }
+      const { data, error } = await db.from('comments').insert({
+        post_id: postId, member_id: session.id, content
+      }).select('id').single();
+      if (error) { this.showToast('Failed to add comment'); return; }
+    }
 
     const newComment = {
       id: Date.now(),
       author: { 
-        name: 'Dr. James Anderson', 
-        avatar: 'image/placeholders/avatars/a11.jpg' 
+        name: user.name, 
+        avatar: user.avatar 
       },
       content: content,
       timestamp: new Date()
@@ -606,18 +837,19 @@ const FeedModule = {
     const isToday = today.getMonth() === target.getMonth() && today.getDate() === target.getDate();
     const dateLabel = this.formatSidebarDate(birthday.date);
     const wished = birthday.wished ? ' wished' : '';
+    const safeName = this.escapeHTML(birthday.name);
     const avatarHTML = this.createAvatarHTML(birthday.avatar, birthday.name, 'birthday-avatar');
 
     return `
-      <div class="widget-item birthday-item ${isToday ? 'today' : ''}${wished}" data-name="${birthday.name}">
-        <a href="#profile" class="birthday-row-link" aria-label="View ${birthday.name}'s profile">
+      <div class="widget-item birthday-item ${isToday ? 'today' : ''}${wished}" data-name="${safeName}">
+        <a href="#profile" class="birthday-row-link" aria-label="View ${safeName}'s profile">
           ${avatarHTML}
           <div class="widget-content">
-            <div class="widget-label">${birthday.name}</div>
+            <div class="widget-label">${safeName}</div>
             <div class="widget-sublabel">Class of ${birthday.year} • ${dateLabel}</div>
           </div>
         </a>
-        <button class="birthday-wish-btn" aria-label="Wish ${birthday.name} a happy birthday" title="Wish them well" onclick="FeedModule.wishHappyBirthday('${birthday.name}', event)">
+        <button class="birthday-wish-btn" aria-label="Wish ${safeName} a happy birthday" title="Wish them well" onclick="FeedModule.wishHappyBirthday('${safeName}', event)">
           <span class="birthday-wish-emoji">🎉</span>
           <span class="birthday-wish-label">Wish</span>
         </button>
@@ -687,14 +919,18 @@ const FeedModule = {
     const unreadClass = announcement.unread ? ' unread' : '';
     const unreadDot = announcement.unread ? '<div class="announcement-unread-dot"></div>' : '';
     const dateLabel = this.formatSidebarDate(announcement.date);
+    const safeTitle = this.escapeHTML(announcement.title);
+    const safeContent = this.escapeHTML(announcement.content);
+    const safeIcon = this.escapeHTML(announcement.icon);
+    const safeAccent = this.escapeHTML(announcement.accent || 'gold');
     return `
-      <div class="widget-item announcement-item${unreadClass}" data-accent="${announcement.accent || 'gold'}">
+      <div class="widget-item announcement-item${unreadClass}" data-accent="${safeAccent}">
         <div class="widget-icon">
-          <i data-lucide="${announcement.icon}" class="w-4 h-4"></i>
+          <i data-lucide="${safeIcon}" class="w-4 h-4"></i>
         </div>
         <div class="widget-content">
-          <div class="announcement-title">${announcement.title}</div>
-          <div class="announcement-desc">${announcement.content}</div>
+          <div class="announcement-title">${safeTitle}</div>
+          <div class="announcement-desc">${safeContent}</div>
           <div class="announcement-date">${dateLabel}</div>
         </div>
         ${unreadDot}
@@ -718,19 +954,20 @@ const FeedModule = {
       imageUpload.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            this.composerState.image = e.target.result;
-            this.updateImagePreview();
-          };
-          reader.readAsDataURL(file);
+          this.composerState.imageFile = file;
+          this.composerState.image = URL.createObjectURL(file);
+          this.updateImagePreview();
         }
       });
     }
 
     if (removeImageBtn) {
       removeImageBtn.addEventListener('click', () => {
+        if (this.composerState.image && this.composerState.image.startsWith('blob:')) {
+          URL.revokeObjectURL(this.composerState.image);
+        }
         this.composerState.image = null;
+        this.composerState.imageFile = null;
         this.updateImagePreview();
         if (imageUpload) imageUpload.value = '';
       });
@@ -768,46 +1005,100 @@ const FeedModule = {
   /**
    * Create new post
    */
-  createPost() {
+  async createPost() {
+    if (this.isPosting) return;
+
     const postInput = document.getElementById('post-input');
     const text = postInput?.value.trim();
-    
+
     if (!text && !this.composerState.image) {
       this.showToast('Please write something or add an image');
       return;
     }
 
-    const newPost = {
-      id: Date.now(),
-      author: {
-        name: 'Dr. James Anderson',
-        avatar: 'image/placeholders/avatars/a11.jpg',
-        title: 'Cardiologist at St. Luke\'s'
-      },
-      content: text,
-      image: this.composerState.image,
-      timestamp: new Date(),
-      type: 'general',
-      reactions: { love: 0, celebrate: 0, insightful: 0, like: 0 },
-      userReaction: null,
-      comments: [],
-      shares: 0,
-      showComments: false
-    };
+    const postBtn = document.getElementById('post-btn');
+    this.isPosting = true;
+    if (postBtn) { postBtn.disabled = true; postBtn.style.opacity = '0.6'; }
 
-    this.posts.unshift(newPost);
-    this.visibleCount++;
-    this.renderPosts();
-    
-    // Reset composer
-    if (postInput) postInput.value = '';
-    this.composerState.image = null;
-    this.updateImagePreview();
-    
-    const imageUpload = document.getElementById('image-upload');
-    if (imageUpload) imageUpload.value = '';
-    
-    this.showToast('Post published successfully!');
+    try {
+      const user = this.getCurrentUser();
+      let postId = Date.now();
+      let imageUrl = this.composerState.image;
+      let imageKey = null;
+
+      // Upload image to R2 when configured
+      if (this.composerState.imageFile && typeof MediaUpload !== 'undefined' && MediaUpload.isConfigured()) {
+        const validationError = MediaUpload.validate(this.composerState.imageFile);
+        if (validationError) {
+          this.showToast(validationError);
+          return;
+        }
+        try {
+          const { full } = await MediaUpload.upload(this.composerState.imageFile, 'post', {
+            withThumbnail: false,
+          });
+          imageUrl = full.publicUrl;
+          imageKey = full.fileKey;
+        } catch (err) {
+          this.showToast(err.message || 'Image upload failed');
+          return;
+        }
+      }
+
+      if (this.hasSupabase()) {
+        const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+        if (!session) { this.showToast('Please log in to post'); return; }
+        const { data, error } = await db.from('posts').insert({
+          member_id: session.id,
+          content: text,
+          image_url: imageUrl || null,
+          image_key: imageKey,
+          post_type: 'general',
+          status: 'published'
+        }).select('id').single();
+        if (error) { this.showToast('Failed to create post'); return; }
+        postId = data.id;
+      }
+
+      const newPost = {
+        id: postId,
+        author: {
+          name: user.name,
+          avatar: user.avatar,
+          title: user.title
+        },
+        content: text,
+        image: imageUrl,
+        timestamp: new Date(),
+        type: 'general',
+        reactions: { love: 0, celebrate: 0, insightful: 0, like: 0 },
+        userReaction: null,
+        comments: [],
+        shares: 0,
+        showComments: false
+      };
+
+      this.posts.unshift(newPost);
+      this.visibleCount++;
+      this.renderPosts();
+
+      // Reset composer
+      if (postInput) postInput.value = '';
+      if (this.composerState.image && this.composerState.image.startsWith('blob:')) {
+        URL.revokeObjectURL(this.composerState.image);
+      }
+      this.composerState.image = null;
+      this.composerState.imageFile = null;
+      this.updateImagePreview();
+
+      const imageUpload = document.getElementById('image-upload');
+      if (imageUpload) imageUpload.value = '';
+
+      this.showToast('Post published successfully!');
+    } finally {
+      this.isPosting = false;
+      if (postBtn) { postBtn.disabled = false; postBtn.style.opacity = ''; }
+    }
   },
 
   /**
@@ -817,7 +1108,7 @@ const FeedModule = {
     const seconds = Math.floor((new Date() - date) / 1000);
     
     if (seconds < 60) return 'just now';
-    if (seconds < 3600) return Math.floor(seconds / 60) + 'h';
+    if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
     if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
     if (seconds < 604800) return Math.floor(seconds / 86400) + 'd';
     
@@ -873,12 +1164,13 @@ const FeedModule = {
    * Build avatar HTML with initials fallback for missing avatars.
    */
   createAvatarHTML(avatar, name, className = '') {
+    const safeName = this.escapeHTML(name || 'User');
     if (avatar) {
-      return `<img src="${avatar}" alt="${name || 'User'}" class="${className}" loading="lazy" decoding="async">`;
+      return `<img src="${this.escapeHTML(avatar)}" alt="${safeName}" class="${className}" loading="lazy" decoding="async">`;
     }
     const initials = this.getInitials(name);
     const colorClass = this.getAvatarColorClass(name);
-    return `<span class="avatar-fallback ${colorClass} ${className}" aria-label="${name || 'User'}">${initials}</span>`;
+    return `<span class="avatar-fallback ${colorClass} ${className}" aria-label="${safeName}">${initials}</span>`;
   },
 
   /**
@@ -913,10 +1205,18 @@ const FeedModule = {
   /**
    * Delete post
    */
-  deletePost(postId) {
+  async deletePost(postId) {
     const post = this.posts.find(p => p.id === postId);
     if (!post) return;
     if (!confirm('Delete this post?')) return;
+
+    if (this.hasSupabase()) {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      if (!session) { this.showToast('Please log in'); return; }
+      const { error } = await db.from('posts').delete().eq('id', postId).eq('member_id', session.id);
+      if (error) { this.showToast('Failed to delete post'); return; }
+    }
+
     this.posts = this.posts.filter(p => p.id !== postId);
     this.visibleCount = Math.min(this.visibleCount, this.posts.length);
     this.renderPosts();
@@ -947,7 +1247,7 @@ const FeedModule = {
           <i data-lucide="${n.icon}" class="w-4 h-4"></i>
         </div>
         <div class="notification-content">
-          <div class="notification-text">${n.text}</div>
+          <div class="notification-text">${this.escapeHTML(n.text)}</div>
           <div class="notification-time">${n.time}</div>
         </div>
         ${n.unread ? '<div class="notification-dot"></div>' : ''}
@@ -1067,6 +1367,11 @@ const FeedModule = {
     }, 3000);
   }
 };
+
+// Re-init on bfcache restore (browser back/forward)
+window.addEventListener('zbm-bfcache-restore', () => {
+  FeedModule.init();
+});
 
 // Expose globally
 window.FeedModule = FeedModule;

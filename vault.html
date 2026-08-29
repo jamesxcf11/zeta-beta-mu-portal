@@ -15,10 +15,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
   
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/styles.min.css">
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <!-- Preconnect to R2 media domain -->
+  <link rel="preconnect" href="https://pub-751c6c343551429a8558c1260d49b887.r2.dev" crossorigin>
 </head>
 <body class="dark-theme subpage">
 
@@ -212,16 +219,8 @@
           <h3><i data-lucide="clipboard-check" class="w-5 h-5"></i> Pending Approvals</h3>
           <span class="vault-approval-note">Officers review uploads before they appear in the Vault</span>
         </div>
-        <div class="vault-approval-item">
-          <div class="vault-approval-thumb"><i data-lucide="image" class="w-5 h-5"></i></div>
-          <div class="vault-approval-info">
-            <strong>Medical Mission — Batangas (12 photos, 2 videos)</strong>
-            <span>Submitted by Dr. Sarah Mitchell &bull; New album &bull; Aug 2024 &bull; Brgy. San Isidro</span>
-          </div>
-          <div class="vault-approval-controls">
-            <button class="btn btn-gold btn-sm"><i data-lucide="check" class="w-4 h-4"></i> Approve</button>
-            <button class="btn btn-glass btn-sm"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>
-          </div>
+        <div id="pending-approvals-list">
+          <!-- Pending uploads rendered dynamically by VaultModule.renderPendingApprovals() -->
         </div>
       </div>
 
@@ -323,18 +322,18 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Files (photos &amp; videos)</label>
+        <label class="form-label">Files (photos)</label>
         <div class="vault-dropzone">
           <i data-lucide="cloud-upload" class="w-8 h-8"></i>
           <p>Drag &amp; drop or click to browse</p>
-          <span>JPG, PNG, MP4, MOV</span>
-          <input type="file" accept="image/*,video/*" multiple>
+          <span>JPG, PNG, WebP</span>
+          <input type="file" accept="image/jpeg,image/png,image/webp" multiple>
         </div>
       </div>
 
       <div class="vault-modal-actions">
         <button class="btn btn-glass" onclick="VaultModule.closeUploadModal()">Cancel</button>
-        <button class="btn btn-gold" onclick="VaultModule.closeUploadModal()">
+        <button class="btn btn-gold" onclick="VaultModule.submitUploadForApproval()">
           <i data-lucide="send" class="w-4 h-4"></i>
           Submit for Approval
         </button>
@@ -344,6 +343,7 @@
 
   <!-- Scripts -->
   <script src="js/main.js"></script>
+  <script src="js/media-upload.js"></script>
   <script src="js/vault.js"></script>
   
   <script>
@@ -353,6 +353,9 @@
       lucide.createIcons();
     });
   </script>
+  
+  <!-- Dev Inspector -->
+  <script src="js/dev-inspector.js"></script>
   
 </body>
 </html>

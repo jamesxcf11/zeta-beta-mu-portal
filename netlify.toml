@@ -1,0 +1,33 @@
+[build]
+  publish = "."
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Presigned-URL API. Must precede the catch-all root rule below.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    # connect-src MUST include the R2 media origin: presigned uploads are
+    # fetch/XHR PUTs, so without it the browser refuses them before they are
+    # ever sent. Note img-src is permissive enough to DISPLAY R2 images even
+    # when connect-src blocks uploading them, which makes that failure mode
+    # confusing to diagnose.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https://*.r2.dev https://media.zetabetamu.com; connect-src 'self' https://*.supabase.co https://*.r2.dev https://media.zetabetamu.com https://*.r2.cloudflarestorage.com; frame-ancestors 'none'"

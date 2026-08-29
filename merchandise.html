@@ -15,10 +15,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
   
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/styles.min.css">
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
 </head>
 <body class="dark-theme subpage">
 
@@ -157,7 +161,7 @@
           <div class="merch-image-container">
             <img src="image/merch-black-cap.png" alt="ZBM Embroidered Cap (Black)" class="merch-image" loading="lazy" decoding="async">
             <div class="merch-overlay">
-              <button class="merch-view-btn">
+              <button class="merch-view-btn" onclick="viewDetails(this)">
                 <i data-lucide="eye" class="w-5 h-5"></i>
                 View Details
               </button>
@@ -181,7 +185,7 @@
           <div class="merch-image-container">
             <img src="image/merch-green-cap.png" alt="ZBM Embroidered Cap (Green)" class="merch-image" loading="lazy" decoding="async">
             <div class="merch-overlay">
-              <button class="merch-view-btn">
+              <button class="merch-view-btn" onclick="viewDetails(this)">
                 <i data-lucide="eye" class="w-5 h-5"></i>
                 View Details
               </button>
@@ -205,7 +209,7 @@
           <div class="merch-image-container">
             <img src="image/merch-coaster.png" alt="ZBM Coaster (4 Pieces)" class="merch-image" loading="lazy" decoding="async">
             <div class="merch-overlay">
-              <button class="merch-view-btn">
+              <button class="merch-view-btn" onclick="viewDetails(this)">
                 <i data-lucide="eye" class="w-5 h-5"></i>
                 View Details
               </button>
@@ -229,7 +233,7 @@
           <div class="merch-image-container">
             <img src="image/merch-fridge-magnet.png" alt="ZBM Fridge Magnet" class="merch-image" loading="lazy" decoding="async">
             <div class="merch-overlay">
-              <button class="merch-view-btn">
+              <button class="merch-view-btn" onclick="viewDetails(this)">
                 <i data-lucide="eye" class="w-5 h-5"></i>
                 View Details
               </button>
@@ -253,7 +257,7 @@
           <div class="merch-image-container">
             <img src="image/merch-stickers.png" alt="ZBM Stickers" class="merch-image" loading="lazy" decoding="async">
             <div class="merch-overlay">
-              <button class="merch-view-btn">
+              <button class="merch-view-btn" onclick="viewDetails(this)">
                 <i data-lucide="eye" class="w-5 h-5"></i>
                 View Details
               </button>
@@ -393,6 +397,31 @@
   </div>
 
 
+  <!-- ============================================
+       PRODUCT DETAIL MODAL (UI mock)
+       ============================================ -->
+  <div id="product-modal" class="vault-modal hidden">
+    <div class="vault-modal-backdrop" onclick="closeProductModal()"></div>
+    <div class="vault-modal-card glass-heavy">
+      <button class="vault-modal-close" onclick="closeProductModal()"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <div class="merch-image-container" style="margin-bottom: 1rem;">
+        <img id="product-modal-image" src="" alt="" class="merch-image">
+      </div>
+      <h3 class="vault-modal-title" id="product-modal-title"></h3>
+      <p class="vault-modal-sub" id="product-modal-desc"></p>
+      <div class="merch-footer" style="margin-top: 1rem;">
+        <span class="merch-price" id="product-modal-price"></span>
+      </div>
+      <div class="vault-modal-actions">
+        <button class="btn btn-glass" onclick="closeProductModal()">Close</button>
+        <button class="btn btn-gold" id="product-modal-add-btn">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div id="toast-container" class="toast-container"></div>
 
@@ -475,6 +504,34 @@
       document.getElementById('cart-modal').classList.add('hidden');
     }
 
+    function viewDetails(btn) {
+      const card = btn.closest('.merch-card');
+      const name = card.querySelector('.merch-title').textContent.trim();
+      const desc = card.querySelector('.merch-description').textContent.trim();
+      const price = card.querySelector('.merch-price').textContent.trim();
+      const imgSrc = card.querySelector('.merch-image').src;
+
+      document.getElementById('product-modal-title').textContent = name;
+      document.getElementById('product-modal-desc').textContent = desc;
+      document.getElementById('product-modal-price').textContent = price;
+      document.getElementById('product-modal-image').src = imgSrc;
+      document.getElementById('product-modal-image').alt = name;
+
+      const addBtn = document.getElementById('product-modal-add-btn');
+      addBtn.onclick = () => {
+        const inquireBtn = card.querySelector('.merch-inquire-btn');
+        if (inquireBtn) addToCart(inquireBtn);
+        closeProductModal();
+      };
+
+      document.getElementById('product-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeProductModal() {
+      document.getElementById('product-modal').classList.add('hidden');
+    }
+
     function toggleAddress() {
       const isDelivery = document.querySelector('input[name="fulfillment"]:checked').value === 'delivery';
       document.getElementById('delivery-address-group').style.display = isDelivery ? 'block' : 'none';
@@ -485,10 +542,29 @@
       document.getElementById('pay-gcash').style.display = method === 'gcash' ? 'block' : 'none';
     }
 
-    function placeOrder() {
+    // TODO(cloud): once Supabase is configured and an `orders` table exists
+    // (it does not exist in sql/schema-postgres.sql yet — add one with
+    // columns like member_id, items jsonb, total, fulfillment, payment_method,
+    // status, created_at), replace the local-only flow below with:
+    //   const { error } = await db.from('orders').insert({
+    //     member_id: session.id, items: cart, total: cartTotal(),
+    //     fulfillment, payment_method: method, status: 'pending'
+    //   });
+    // For now the order is only simulated client-side (no backend call).
+    async function placeOrder() {
       if (cart.length === 0) { showToast('Your cart is empty'); return; }
+
+      const fulfillment = document.querySelector('input[name="fulfillment"]:checked').value;
       const method = document.querySelector('input[name="payment"]:checked').value;
-      showToast('Order placed! (Demo • ' + (method === 'gcash' ? 'GCash' : 'Card') + ')');
+
+      if (typeof db !== 'undefined' && db && typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT')) {
+        // Cloud is configured but no `orders` table exists yet — surface
+        // this clearly instead of pretending the order was saved.
+        showToast('Cloud is connected, but the orders table isn\'t set up yet. Order not saved.');
+        return;
+      }
+
+      showToast('Order placed! (Demo • ' + (method === 'gcash' ? 'GCash' : 'Card') + ' • ' + fulfillment + ')');
       cart.length = 0;
       updateCartUI();
       closeCart();
@@ -506,6 +582,9 @@
 
     lucide.createIcons();
   </script>
+  
+  <!-- Dev Inspector -->
+  <script src="js/dev-inspector.js"></script>
   
 </body>
 </html>

@@ -1,7 +1,16 @@
 -- ============================================================================
 -- Zeta Beta Mu Fraternity Portal Database Schema
 -- ============================================================================
--- 
+--
+-- ** DEPRECATED / LEGACY REFERENCE ONLY — NOT THE DEPLOYED SCHEMA **
+-- This is the original MySQL draft. The project runs on Supabase (Postgres);
+-- the canonical, up-to-date schema is sql/schema-postgres.sql. This file is
+-- kept only for historical reference and is missing several columns/enum
+-- values that exist in schema-postgres.sql (e.g. members.middle_name,
+-- nickname, specialization, batch, mobile, telephone, home_phone, facebook,
+-- instagram, address, birthday; extra enum values on member_role,
+-- vault_category, reaction_type). Do not run this against Supabase.
+--
 -- Description:
 --   SQL database schema for the Zeta Beta Mu Fraternity medical professional
 --   portal. Includes tables for members, posts, comments, alumni directory,

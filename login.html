@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
 
   <!-- Theme-aware color variables -->
   <style>
@@ -26,9 +26,9 @@
       --login-bg: var(--zbm-forest);
       --login-bg-alt: var(--zbm-white);
       --login-text: var(--zbm-white);
-      --login-muted: rgba(255, 255, 255, 0.7);
+      --login-muted: rgba(255, 255, 255, 0.75);
       --login-text-alt: var(--zbm-forest);
-      --login-muted-alt: rgba(30, 30, 30, 0.6);
+      --login-muted-alt: rgba(30, 30, 30, 0.65);
       --login-accent: var(--zbm-gold);
       --login-input-bg: var(--zbm-white);
       --login-input-border: rgba(30, 30, 30, 0.12);
@@ -51,9 +51,9 @@
       --login-bg: var(--zbm-forest-deep);
       --login-bg-alt: var(--zbm-forest-surface);
       --login-text: var(--zbm-white);
-      --login-muted: rgba(255, 255, 255, 0.7);
+      --login-muted: rgba(255, 255, 255, 0.75);
       --login-text-alt: var(--zbm-white);
-      --login-muted-alt: #9fb0a0;
+      --login-muted-alt: #b8c8b8;
       --login-accent: var(--zbm-gold-dark);
       --login-input-bg: rgba(255, 255, 255, 0.05);
       --login-input-border: rgba(201, 160, 72, 0.25);
@@ -80,6 +80,10 @@
       -webkit-backdrop-filter: blur(12px);
     }
   </style>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
 </head>
 <body class="login-page light-theme min-h-screen flex flex-col bg-[var(--login-bg-alt)] font-sans text-[var(--login-text-alt)] antialiased" style="padding-top: 68px">
 
@@ -338,6 +342,9 @@
     // Initialize icons
     lucide.createIcons();
   </script>
+
+  <!-- Dev Inspector -->
+  <script src="js/dev-inspector.js"></script>
 
 </body>
 </html>

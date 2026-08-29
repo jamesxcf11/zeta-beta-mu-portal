@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
 
   <!-- Theme-aware color variables -->
   <style>
@@ -26,9 +26,9 @@
       --login-bg: var(--zbm-white);
       --login-bg-alt: var(--zbm-forest);
       --login-text: var(--zbm-forest);
-      --login-muted: rgba(30, 30, 30, 0.6);
+      --login-muted: rgba(30, 30, 30, 0.65);
       --login-text-alt: var(--zbm-forest);
-      --login-muted-alt: rgba(30, 30, 30, 0.55);
+      --login-muted-alt: rgba(30, 30, 30, 0.6);
       --login-accent: var(--zbm-gold);
       --login-input-bg: var(--zbm-white);
       --login-input-border: rgba(30, 30, 30, 0.12);
@@ -53,9 +53,9 @@
       --login-bg: var(--zbm-forest-deep);
       --login-bg-alt: var(--zbm-forest-surface);
       --login-text: var(--zbm-white);
-      --login-muted: #9fb0a0;
+      --login-muted: #b8c8b8;
       --login-text-alt: var(--zbm-white);
-      --login-muted-alt: #b6c4b7;
+      --login-muted-alt: #c4d2c4;
       --login-accent: var(--zbm-gold-dark);
       --login-input-bg: rgba(255, 255, 255, 0.05);
       --login-input-border: rgba(201, 160, 72, 0.25);
@@ -98,6 +98,10 @@
     select option { background-color: var(--zbm-white); color: var(--zbm-forest); }
     .dark-theme select option { background-color: var(--zbm-forest-surface); color: var(--zbm-white); }
   </style>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
 </head>
 <body class="login-page light-theme auth-page min-h-screen flex flex-col bg-[var(--login-bg)] font-sans text-[var(--login-text)] antialiased" style="padding-top: 68px">
 
@@ -296,7 +300,7 @@
                 <label for="password" class="block text-sm font-medium text-[var(--login-text)]">Password <span class="text-red-400">*</span></label>
                 <div class="relative">
                   <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
-                  <input type="password" id="password" name="password" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-11 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Min. 6 characters" autocomplete="new-password" minlength="6" required>
+                  <input type="password" id="password" name="password" class="w-full bg-[var(--login-input-bg)] border border-[var(--login-input-border)] text-[var(--login-text-alt)] placeholder:text-[var(--login-muted-alt)] rounded-xl pl-11 pr-11 py-3.5 outline-none transition-all focus:border-[var(--login-accent)]/70 focus:ring-2 focus:ring-[var(--login-accent)]/20" placeholder="Min. 8 chars, 1 uppercase, 1 number" autocomplete="new-password" minlength="8" required>
                   <button type="button" class="password-toggle absolute right-4 top-1/2 -translate-y-1/2 text-[var(--login-muted-alt)] hover:text-[var(--login-text-alt)] transition-colors" data-target="password" aria-label="Toggle password visibility">
                     <i data-lucide="eye" class="w-5 h-5"></i>
                   </button>
@@ -683,8 +687,14 @@
           }
           const password = document.getElementById('password');
           const confirmPassword = document.getElementById('confirm-password');
-          if (password.value.length < 6) {
-            showError('Password must be at least 6 characters.');
+          if (password.value.length < 8) {
+            showError('Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number.');
+            password.classList.add('border-red-500', 'ring-2', 'ring-red-500/20');
+            password.focus();
+            return false;
+          }
+          if (!/[A-Z]/.test(password.value) || !/[a-z]/.test(password.value) || !/[0-9]/.test(password.value)) {
+            showError('Password must contain at least one uppercase letter, one lowercase letter, and one number.');
             password.classList.add('border-red-500', 'ring-2', 'ring-red-500/20');
             password.focus();
             return false;
@@ -846,5 +856,8 @@
       }
     });
   </script>
+
+  <!-- Dev Inspector -->
+  <script src="js/dev-inspector.js"></script>
 </body>
 </html>

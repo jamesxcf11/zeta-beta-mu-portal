@@ -644,10 +644,16 @@ const AuthHelper = {
   },
 
   /**
-   * Mock logout
+   * Logout current user — clears both local session and Supabase auth
    */
-  logout() {
+  async logout() {
+    if (typeof db !== 'undefined' && db && db.auth &&
+        typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT')) {
+      await db.auth.signOut();
+    }
     localStorage.removeItem(CONFIG.sessionStorageKey);
+    localStorage.removeItem('zbm-remember');
+    localStorage.removeItem('zbm-show-welcome');
     window.location.href = 'index.html';
   },
 
@@ -658,6 +664,7 @@ const AuthHelper = {
     const user = this.getCurrentUser();
     const userNameEl = document.getElementById('user-name');
     const userAvatarEl = document.getElementById('user-avatar');
+    const userRoleEl = document.querySelector('.user-card .user-role');
     
     if (user && userNameEl) {
       userNameEl.textContent = user.name || 'Brother';
@@ -665,6 +672,12 @@ const AuthHelper = {
     
     if (user && userAvatarEl && user.avatar) {
       userAvatarEl.src = user.avatar;
+    }
+
+    if (user && userRoleEl) {
+      const roleLabel = user.role === 'admin' ? 'Administrator' : 'Member';
+      const classYear = user.graduationYear ? ' · Class of ' + user.graduationYear : '';
+      userRoleEl.textContent = roleLabel + classYear;
     }
   }
 };
@@ -798,24 +811,81 @@ const LandingNav = {
 /**
  * Route guard (client-side shell placeholder for real server middleware):
  * portal pages (any page with the sidebar) require a session.
+ * Also enforces session expiry (24h max age) and clears corrupted sessions.
  */
 (function guardPortalPages() {
   if (!document.getElementById('sidebar')) return;
-  const session = localStorage.getItem(CONFIG.sessionStorageKey);
-  if (!session) {
+  const raw = localStorage.getItem(CONFIG.sessionStorageKey);
+  if (!raw) {
     window.location.replace('login.html');
+    return;
+  }
+  // Validate session structure and expiry
+  try {
+    const session = JSON.parse(raw);
+    if (session.loginTime) {
+      const ageMs = Date.now() - new Date(session.loginTime).getTime();
+      const maxAgeMs = 24 * 60 * 60 * 1000; // 24 hours
+      if (ageMs > maxAgeMs) {
+        localStorage.removeItem(CONFIG.sessionStorageKey);
+        localStorage.removeItem('zbm-remember');
+        localStorage.removeItem('zbm-show-welcome');
+        window.location.replace('login.html');
+        return;
+      }
+    }
+  } catch (e) {
+    // Corrupted session JSON — clear and redirect
+    localStorage.removeItem(CONFIG.sessionStorageKey);
+    localStorage.removeItem('zbm-remember');
+    window.location.replace('login.html');
+    return;
   }
 })();
 
 /**
  * Role gating (UI-level): hide officer/admin-only controls for members.
- * Real enforcement happens server-side once the backend exists.
+ * Real enforcement happens server-side via Supabase RLS policies.
+ * Also syncs the role from Supabase if configured, to prevent stale-role
+ * privilege escalation (e.g., user demoted in DB but localStorage still says admin).
  */
 (function applyRoleVisibility() {
   let session = null;
   try {
     session = JSON.parse(localStorage.getItem(CONFIG.sessionStorageKey) || 'null');
   } catch (e) { /* invalid session */ }
+  if (!session) return;
+
+  // Sync role from Supabase if available
+  if (typeof db !== 'undefined' && db &&
+      typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT') &&
+      session.email) {
+    db.from('members').select('role, status').eq('email', session.email).single()
+      .then(({ data }) => {
+        if (data) {
+          if (data.status === 'suspended' || data.status === 'inactive') {
+            // Account suspended/inactive — force logout
+            localStorage.removeItem(CONFIG.sessionStorageKey);
+            localStorage.removeItem('zbm-remember');
+            window.location.replace('login.html');
+            return;
+          }
+          if (data.role !== session.role) {
+            session.role = data.role;
+            localStorage.setItem(CONFIG.sessionStorageKey, JSON.stringify(session));
+            // Re-evaluate visibility with updated role
+            const isAdmin = data.role === 'admin';
+            if (!isAdmin) {
+              document.querySelectorAll('#officer-tools-link, .directory-admin-toolbar').forEach(el => {
+                el.style.display = 'none';
+              });
+            }
+          }
+        }
+      })
+      .catch(() => { /* network error — keep existing session */ });
+  }
+
   const isAdmin = !!session && session.role === 'admin';
   if (!isAdmin) {
     document.querySelectorAll('#officer-tools-link, .directory-admin-toolbar').forEach(el => {
@@ -871,11 +941,68 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      AuthHelper.logout();
+      if (confirm('Are you sure you want to log out?')) {
+        AuthHelper.logout();
+      }
     });
   }
 
+  // Give "coming soon" feedback for stubbed sidebar/profile links and
+  // header icon-buttons that don't have a wired handler yet, instead of
+  // leaving them silently dead on click.
+  const notify = (msg) => {
+    if (typeof FeedModule !== 'undefined' && FeedModule.showToast) {
+      FeedModule.showToast(msg);
+    } else {
+      alert(msg);
+    }
+  };
+
+  document.querySelectorAll('.profile-dropdown-item[href="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      notify(link.textContent.trim() + ' — coming soon');
+    });
+  });
+
+  document.querySelectorAll('.admin-page .top-header .icon-btn[title="Notifications"], .admin-page .top-header .icon-btn[title="Settings"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      notify((btn.getAttribute('title') || 'This feature') + ' — coming soon');
+    });
+  });
+
   console.log('🎓 Zeta Beta Mu Portal initialized successfully');
+});
+
+// ============================================
+// BFCACHE RESTORE (back/forward navigation)
+// ============================================
+// When the browser restores a page from the back/forward cache (bfcache),
+// DOMContentLoaded does NOT fire. This handler ensures the page-transition
+// overlay is removed, icons are re-rendered, auth UI is refreshed, and a
+// custom event is dispatched so page-specific modules can re-initialize.
+window.addEventListener('pageshow', (e) => {
+  if (!e.persisted) return;
+
+  // Remove any stuck page-transition overlay
+  const overlay = document.getElementById('page-transition-overlay');
+  if (overlay) {
+    overlay.classList.remove('page-transition-active');
+    overlay.classList.remove('page-transition-enter');
+  }
+
+  // Re-render Lucide icons (can be lost on bfcache restore)
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+
+  // Refresh auth-dependent UI
+  if (typeof AuthHelper !== 'undefined') {
+    AuthHelper.updateUI();
+  }
+
+  // Notify page-specific modules to re-init
+  window.dispatchEvent(new CustomEvent('zbm-bfcache-restore'));
 });
 
 // Expose modules globally for other scripts

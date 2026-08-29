@@ -1,1 +1,8 @@
 node_modules/
+js/supabase-config.js
+.env
+.netlify-env.txt
+.netlify/
+config.local.json
+.aider*
+test-results/

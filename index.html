@@ -15,10 +15,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.min.css?v=7">
+  <link rel="stylesheet" href="css/styles.min.css?v=10">
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
 </head>
 <body class="dark-theme landing-page">
   
@@ -75,7 +79,6 @@
       <a href="#about" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
       <a href="#pillars" class="nav-link"><i data-lucide="columns-3"></i><span>Pillars</span></a>
       <a href="#vault" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
-      <a href="#vault" class="nav-link"><i data-lucide="archive"></i><span>Vault</span></a>
       <a href="#contact" class="nav-link"><i data-lucide="mail"></i><span>Contact</span></a>
     </nav>
 
@@ -192,6 +195,7 @@
           <div class="about-service-icon">
             <i data-lucide="graduation-cap" class="w-6 h-6"></i>
           </div>
+          <div class="about-service-divider"></div>
           <h3 class="about-service-title">Scholarship</h3>
           <p class="about-service-desc">A relentless pursuit of academic excellence and lifelong learning, fostering intellectual growth and distinction in medicine.</p>
         </div>
@@ -200,6 +204,7 @@
           <div class="about-service-icon">
             <i data-lucide="heart-handshake" class="w-6 h-6"></i>
           </div>
+          <div class="about-service-divider"></div>
           <h3 class="about-service-title">Service</h3>
           <p class="about-service-desc">Giving back through medical missions, free clinics, and community work — caring for those who need us most.</p>
         </div>
@@ -208,6 +213,7 @@
           <div class="about-service-icon">
             <i data-lucide="users" class="w-6 h-6"></i>
           </div>
+          <div class="about-service-divider"></div>
           <h3 class="about-service-title">Sociability</h3>
           <p class="about-service-desc">A genuine brotherhood and fellowship that connects members across generations, hospitals, and borders for life.</p>
         </div>
@@ -216,6 +222,7 @@
           <div class="about-service-icon">
             <i data-lucide="hand-heart" class="w-6 h-6"></i>
           </div>
+          <div class="about-service-divider"></div>
           <h3 class="about-service-title">Sacrifice</h3>
           <p class="about-service-desc">Selfless dedication to our patients, our brothers, and our country — putting service above self.</p>
         </div>
@@ -224,6 +231,7 @@
           <div class="about-service-icon">
             <i data-lucide="shield-check" class="w-6 h-6"></i>
           </div>
+          <div class="about-service-divider"></div>
           <h3 class="about-service-title">Idealism</h3>
           <p class="about-service-desc">Upholding the highest ethical and moral standards, serving as principled role models for future generations.</p>
         </div>
@@ -329,58 +337,6 @@
           <i data-lucide="log-in" class="w-4 h-4"></i>
           Member Login
         </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       DISTINGUISHED ALUMNI SECTION (placeholder)
-       ============================================ -->
-  <section id="alumni" class="landing-section">
-    <div class="landing-section-inner">
-      <div class="landing-section-header" data-reveal>
-        <span class="landing-section-badge">
-          <i data-lucide="star" class="w-4 h-4"></i>
-          Our Pride
-        </span>
-        <h2 class="landing-section-title">Distinguished Alumni</h2>
-        <p class="landing-section-subtitle">
-          Brothers who carry the name of Zeta Beta Mu with distinction across medicine and beyond.
-        </p>
-      </div>
-
-      <div class="alumni-grid" data-reveal>
-        <div class="alumni-card glass-card">
-          <div class="alumni-photo-placeholder">
-            <i data-lucide="user" class="w-10 h-10"></i>
-          </div>
-          <h3 class="alumni-name">Distinguished Brother</h3>
-          <p class="alumni-field">Specialty / Field</p>
-          <p class="alumni-quote">"Photos, names, and quotes to be provided by the fraternity."</p>
-        </div>
-        <div class="alumni-card glass-card">
-          <div class="alumni-photo-placeholder">
-            <i data-lucide="user" class="w-10 h-10"></i>
-          </div>
-          <h3 class="alumni-name">Distinguished Brother</h3>
-          <p class="alumni-field">Specialty / Field</p>
-          <p class="alumni-quote">"Photos, names, and quotes to be provided by the fraternity."</p>
-        </div>
-        <div class="alumni-card glass-card">
-          <div class="alumni-photo-placeholder">
-            <i data-lucide="user" class="w-10 h-10"></i>
-          </div>
-          <h3 class="alumni-name">Distinguished Brother</h3>
-          <p class="alumni-field">Specialty / Field</p>
-          <p class="alumni-quote">"Photos, names, and quotes to be provided by the fraternity."</p>
-        </div>
-      </div>
-
-      <div class="text-center mt-10">
-        <p class="landing-muted-text text-sm">
-          <i data-lucide="info" class="w-4 h-4 inline-block mr-1 align-middle"></i>
-          Placeholder section — the official list of distinguished alumni will be added soon.
-        </p>
       </div>
     </div>
   </section>
@@ -500,7 +456,6 @@
         <a href="#about">About Us</a>
         <a href="#pillars">The Five Pillars</a>
         <a href="#partnership">Community Partnerships</a>
-        <a href="vault.html">Historical Vault</a>
         <a href="#vault">Gallery</a>
         <a href="login.html">Member Login</a>
       </div>
@@ -530,6 +485,9 @@
     // Initialize icons
     lucide.createIcons();
   </script>
+  
+  <!-- Dev Inspector -->
+  <script src="js/dev-inspector.js"></script>
   
 </body>
 </html>

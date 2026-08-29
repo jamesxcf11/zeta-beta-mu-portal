@@ -106,6 +106,20 @@ const MemorialModule = {
 
   currentBrother: null,
 
+  // Tributes the current visitor has already liked (prevents double-likes
+  // in this session; not persisted across reloads until backend exists)
+  likedTributeIds: new Set(),
+
+  /**
+   * Check if Supabase is configured (mirrors the pattern used by other
+   * modules, kept here as a ready-made shell for when a `memorial_tributes`
+   * table exists — it does not exist in sql/schema-postgres.sql yet).
+   */
+  hasSupabase() {
+    return typeof db !== 'undefined' && db &&
+           typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT');
+  },
+
   /**
    * Initialize the memorial page
    */
@@ -128,15 +142,20 @@ const MemorialModule = {
     const hero = document.querySelector('.memorial-hero');
     if (!hero) return;
 
+    const safeName = this.escapeHTML(brother.name);
+    const safePhoto = this.escapeHTML(brother.photo);
+    const safeSpecialty = this.escapeHTML(brother.specialty);
+    const safeYears = this.escapeHTML(brother.years);
+    const safeBio = this.escapeHTML(brother.bio);
     hero.innerHTML = `
       <div class="memorial-candle">
         <i data-lucide="flame" class="w-7 h-7"></i>
       </div>
-      <img src="${brother.photo}" alt="${brother.name}" class="memorial-portrait" loading="lazy" decoding="async">
-      <h1 class="memorial-name">${brother.name}</h1>
-      <p class="memorial-dates">${brother.dates.replace('-', '—')}</p>
-      <p class="memorial-meta">${brother.specialty} &bull; ${brother.years}</p>
-      <p class="memorial-bio">${brother.bio}</p>
+      <img src="${safePhoto}" alt="${safeName}" class="memorial-portrait" loading="lazy" decoding="async">
+      <h1 class="memorial-name">${safeName}</h1>
+      <p class="memorial-dates">${this.escapeHTML(brother.dates).replace('-', '—')}</p>
+      <p class="memorial-meta">${safeSpecialty} &bull; ${safeYears}</p>
+      <p class="memorial-bio">${safeBio}</p>
     `;
 
     document.title = `${brother.name} | In Memoriam | Zeta Beta Mu Fraternity`;
@@ -179,26 +198,41 @@ const MemorialModule = {
   /**
    * Create HTML for a single tribute
    */
+  escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  },
+
   createTributeHTML(tribute) {
+    const safeAuthorName = this.escapeHTML(tribute.author.name);
+    const safeAuthorAvatar = this.escapeHTML(tribute.author.avatar);
+    const safeAuthorBatch = this.escapeHTML(tribute.author.batch);
+    const safeTime = this.escapeHTML(tribute.time);
+    const safeContent = this.escapeHTML(tribute.content);
     const commentsHTML = tribute.comments.map(c => `
       <div class="memorial-comment">
-        <span class="memorial-comment-author">${c.author}</span>
-        <span class="memorial-comment-text">${c.text}</span>
+        <span class="memorial-comment-author">${this.escapeHTML(c.author)}</span>
+        <span class="memorial-comment-text">${this.escapeHTML(c.text)}</span>
       </div>
     `).join('');
 
     return `
       <article class="memorial-tribute glass-card">
         <div class="memorial-tribute-head">
-          <img src="${tribute.author.avatar}" alt="" class="memorial-tribute-avatar" loading="lazy" decoding="async">
+          <img src="${safeAuthorAvatar}" alt="" class="memorial-tribute-avatar" loading="lazy" decoding="async">
           <div>
-            <div class="memorial-tribute-author">${tribute.author.name}</div>
-            <div class="memorial-tribute-time">${tribute.author.batch} &bull; ${tribute.time}</div>
+            <div class="memorial-tribute-author">${safeAuthorName}</div>
+            <div class="memorial-tribute-time">${safeAuthorBatch} &bull; ${safeTime}</div>
           </div>
         </div>
-        <p class="memorial-tribute-text">${tribute.content}</p>
+        <p class="memorial-tribute-text">${safeContent}</p>
         <div class="memorial-tribute-actions">
-          <button class="reaction-btn" type="button" data-action="like-tribute" data-id="${tribute.id}">
+          <button class="reaction-btn ${this.likedTributeIds.has(tribute.id) ? 'liked' : ''}" type="button" data-action="like-tribute" data-id="${tribute.id}">
             <i data-lucide="heart" class="w-4 h-4"></i> <span>${tribute.likes}</span>
           </button>
           <button class="reaction-btn" type="button" data-action="comment-tribute" data-id="${tribute.id}">
@@ -211,6 +245,85 @@ const MemorialModule = {
   },
 
   /**
+   * Post a new tribute to the wall.
+   * TODO(cloud): once a `memorial_tributes` table exists, replace the
+   * local push below with:
+   *   await db.from('memorial_tributes').insert({
+   *     memorial_id: this.currentBrother.id, member_id: session.id, content: text
+   *   });
+   */
+  postTribute(input) {
+    const text = input.value.trim();
+    if (!text) {
+      this.showToast('Please write something before posting');
+      return;
+    }
+
+    let author = { name: 'Brother', avatar: 'image/placeholders/avatars/a11.jpg', batch: '' };
+    try {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      if (session) {
+        author = {
+          name: session.name || 'Brother',
+          avatar: session.avatar || 'image/placeholders/avatars/a11.jpg',
+          batch: session.graduationYear ? `Batch ${session.graduationYear}` : ''
+        };
+      }
+    } catch (e) { /* no session */ }
+
+    this.tributes.unshift({
+      id: Date.now(),
+      author,
+      content: text,
+      time: 'Just now',
+      likes: 0,
+      comments: []
+    });
+
+    input.value = '';
+    this.renderTributeWall();
+    this.showToast('Tribute posted');
+  },
+
+  /**
+   * Like/unlike a tribute (local-only until backend exists — see TODO in postTribute)
+   */
+  toggleLikeTribute(id) {
+    const tribute = this.tributes.find(t => t.id === id);
+    if (!tribute) return;
+
+    if (this.likedTributeIds.has(id)) {
+      this.likedTributeIds.delete(id);
+      tribute.likes = Math.max(0, tribute.likes - 1);
+    } else {
+      this.likedTributeIds.add(id);
+      tribute.likes++;
+    }
+
+    this.renderTributeWall();
+  },
+
+  /**
+   * Add a comment to a tribute (local-only until backend exists — see TODO in postTribute)
+   */
+  addTributeComment(id) {
+    const tribute = this.tributes.find(t => t.id === id);
+    if (!tribute) return;
+
+    const text = prompt('Add a comment:');
+    if (!text || !text.trim()) return;
+
+    let authorName = 'Brother';
+    try {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      if (session?.name) authorName = session.name;
+    } catch (e) { /* no session */ }
+
+    tribute.comments.push({ author: authorName, text: text.trim() });
+    this.renderTributeWall();
+  },
+
+  /**
    * Render the photo/video gallery
    */
   renderGallery() {
@@ -219,7 +332,7 @@ const MemorialModule = {
 
     container.innerHTML = this.gallery.map((item, index) => `
       <div class="memorial-gallery-item" data-index="${index}">
-        <i data-lucide="${item.icon}" class="w-6 h-6"></i>
+        <i data-lucide="${this.escapeHTML(item.icon)}" class="w-6 h-6"></i>
       </div>
     `).join('');
 
@@ -247,12 +360,14 @@ const MemorialModule = {
       }
 
       if (action === 'like-tribute') {
-        this.showToast('Reaction saved locally — backend sync coming soon');
+        const id = parseInt(button.dataset.id, 10);
+        this.toggleLikeTribute(id);
         return;
       }
 
       if (action === 'comment-tribute') {
-        this.showToast('Comments will be enabled once the tribute backend is connected');
+        const id = parseInt(button.dataset.id, 10);
+        this.addTributeComment(id);
         return;
       }
     });
@@ -261,15 +376,7 @@ const MemorialModule = {
     const input = document.getElementById('tribute-input');
 
     if (postBtn && input) {
-      postBtn.addEventListener('click', () => {
-        const text = input.value.trim();
-        if (!text) {
-          this.showToast('Please write something before posting');
-          return;
-        }
-        this.showToast('Tribute submitted — backend storage coming soon');
-        input.value = '';
-      });
+      postBtn.addEventListener('click', () => this.postTribute(input));
     }
 
     const gallery = document.getElementById('memorial-gallery');
@@ -308,6 +415,11 @@ if (document.readyState === 'loading') {
 } else {
   MemorialModule.init();
 }
+
+// Re-init on bfcache restore (browser back/forward)
+window.addEventListener('zbm-bfcache-restore', () => {
+  MemorialModule.init();
+});
 
 // Expose globally for debugging / external hooks
 window.MemorialModule = MemorialModule;

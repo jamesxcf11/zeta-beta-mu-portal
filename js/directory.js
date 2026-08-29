@@ -7,8 +7,8 @@
  */
 
 const DirectoryModule = {
-  // Mock member database
-  members: [
+  // Mock member database (fallback when Supabase is not configured)
+  mockMembers: [
     { id: 1, name: 'Dr. James Anderson', year: 1995, hospital: 'St. Luke\'s Medical Center', field: 'Cardiology', avatar: 'image/placeholders/avatars/a11.jpg' },
     { id: 2, name: 'Dr. Sarah Mitchell', year: 2008, hospital: 'Mount Sinai Hospital', field: 'Neurology', avatar: 'image/placeholders/avatars/a5.jpg' },
     { id: 3, name: 'Dr. Michael Chen', year: 2012, hospital: 'Johns Hopkins Medicine', field: 'Oncology', avatar: 'image/placeholders/avatars/a3.jpg' },
@@ -23,15 +23,55 @@ const DirectoryModule = {
     { id: 12, name: 'Dr. Michelle Park', year: 2014, hospital: 'UCSF Medical Center', field: 'Radiology', avatar: 'image/placeholders/avatars/a15.jpg' }
   ],
 
+  // Active member data (loaded from Supabase or mock)
+  members: [],
+
   currentFilter: 'All',
   searchQuery: '',
 
   /**
+   * Check if Supabase is configured
+   */
+  hasSupabase() {
+    return typeof db !== 'undefined' && db &&
+           typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT');
+  },
+
+  /**
    * Initialize directory module
    */
-  init() {
+  async init() {
+    await this.loadMembers();
     this.renderMembers();
     this.setupEventListeners();
+  },
+
+  /**
+   * Load members from Supabase or fall back to mock data
+   */
+  async loadMembers() {
+    if (this.hasSupabase()) {
+      const { data, error } = await db
+        .from('members')
+        .select('id, name, graduation_year, hospital, field_of_medicine, avatar_url')
+        .eq('status', 'active')
+        .is('deleted_at', null)
+        .order('name', { ascending: true });
+
+      if (!error && data) {
+        this.members = data.map(m => ({
+          id: m.id,
+          name: m.name,
+          year: m.graduation_year,
+          hospital: m.hospital,
+          field: m.field_of_medicine,
+          avatar: m.avatar_url
+        }));
+        return;
+      }
+    }
+    // Fallback to mock
+    this.members = [...this.mockMembers];
   },
 
   /**
@@ -77,20 +117,34 @@ const DirectoryModule = {
    * @param {Object} member - Member data
    * @returns {string} HTML string
    */
+  escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  },
+
   createMemberCardHTML(member) {
+    const safeName = this.escapeHTML(member.name);
+    const safeHospital = this.escapeHTML(member.hospital);
+    const safeField = this.escapeHTML(member.field);
+    const safeAvatar = this.escapeHTML(member.avatar);
     return `
       <article class="glass-card member-card" data-member-id="${member.id}">
-        <img src="${member.avatar}" alt="${member.name}" class="member-avatar">
-        <h3 class="member-name">${member.name}</h3>
+        <img src="${safeAvatar}" alt="${safeName}" class="member-avatar">
+        <h3 class="member-name">${safeName}</h3>
         <p class="member-year flex items-center justify-center gap-1">
           <i data-lucide="graduation-cap" class="w-3 h-3"></i>
-          Class of ${member.year}
+          Class of ${this.escapeHTML(member.year)}
         </p>
         <p class="member-hospital flex items-center justify-center gap-1">
           <i data-lucide="building-2" class="w-3 h-3"></i>
-          ${member.hospital}
+          ${safeHospital}
         </p>
-        <span class="member-field">${member.field}</span>
+        <span class="member-field">${safeField}</span>
       </article>
     `;
   },
@@ -127,12 +181,14 @@ const DirectoryModule = {
     // Filter chips
     document.querySelectorAll('.filter-chip').forEach(chip => {
       chip.addEventListener('click', (e) => {
+        const btn = e.currentTarget;
+
         // Update active state
         document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        e.target.classList.add('active');
+        btn.classList.add('active');
 
-        // Update filter
-        this.currentFilter = e.target.textContent;
+        // Update filter (trim to strip whitespace around the icon)
+        this.currentFilter = btn.textContent.trim();
         this.renderMembers();
       });
     });
@@ -151,15 +207,40 @@ const DirectoryModule = {
    * Show member details modal (mock)
    * @param {number} memberId - Member ID
    */
-  showMemberDetails(memberId) {
+  async showMemberDetails(memberId) {
     const member = this.members.find(m => m.id === memberId);
     if (!member) return;
 
-    // For demo, show alert with member info
-    // In production, this would open a modal
-    alert(`Contact ${member.name}\n\nHospital: ${member.hospital}\nField: ${member.field}\nClass of: ${member.year}`);
+    let profile = member;
+
+    // Fetch full profile from Supabase if available
+    if (this.hasSupabase()) {
+      const { data } = await db
+        .from('members')
+        .select('*')
+        .eq('id', memberId)
+        .single();
+      if (data) {
+        profile = {
+          name: data.name,
+          hospital: data.hospital,
+          field: data.field_of_medicine,
+          year: data.graduation_year,
+          email: data.email,
+          phone: data.phone || data.mobile,
+          bio: data.bio
+        };
+      }
+    }
+
+    alert(`Contact ${profile.name}\n\nHospital: ${profile.hospital}\nField: ${profile.field}\nClass of: ${profile.year}${profile.email ? '\nEmail: ' + profile.email : ''}${profile.phone ? '\nPhone: ' + profile.phone : ''}`);
   }
 };
+
+// Re-init on bfcache restore (browser back/forward)
+window.addEventListener('zbm-bfcache-restore', () => {
+  DirectoryModule.init();
+});
 
 // Expose globally
 window.DirectoryModule = DirectoryModule;

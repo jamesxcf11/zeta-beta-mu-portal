@@ -15,10 +15,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.min.css">
+  <link rel="stylesheet" href="css/styles.min.css?v=8">
+
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <!-- Preconnect to R2 media domain -->
+  <link rel="preconnect" href="https://pub-751c6c343551429a8558c1260d49b887.r2.dev" crossorigin>
 </head>
 <body class="dark-theme">
 
@@ -145,7 +153,7 @@
           </button>
           <button class="icon-btn" title="Notifications" aria-label="Notifications" onclick="FeedModule.toggleNotificationDropdown()">
             <i data-lucide="bell" class="w-5 h-5"></i>
-            <span id="bell-unread-count" class="nav-unread-badge" style="display:none;">3</span>
+            <span id="bell-unread-count" class="nav-unread-badge" style="display:none;"></span>
           </button>
           <div id="notification-dropdown" class="notification-dropdown">
             <div class="notification-dropdown-header">
@@ -177,7 +185,7 @@
                   <i data-lucide="image" class="w-4 h-4"></i>
                   Photo
                 </button>
-                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp" style="display: none;">
                 <button class="composer-btn" aria-label="Add video" onclick="FeedModule.showToast('Video upload coming soon')">
                   <i data-lucide="video" class="w-4 h-4"></i>
                   Video
@@ -219,7 +227,7 @@
             <div class="sidebar-header">
               <i data-lucide="megaphone" class="w-5 h-5"></i>
               <h3 class="sidebar-title">Announcements</h3>
-              <span id="announcements-unread" class="nav-unread-badge" style="display:none;">2</span>
+              <span id="announcements-unread" class="nav-unread-badge" style="display:none;"></span>
               <span id="announcements-add-placeholder" class="sidebar-add-placeholder"></span>
             </div>
             <div id="announcements-list" class="widget-list">
@@ -278,187 +286,6 @@
 
       </div>
 
-    </section>
-
-    <!-- ==================== SCREEN 2: MEDICAL DIRECTORY ==================== -->
-    <section id="screen-directory" class="screen hidden">
-      
-      <header class="top-header">
-        <h1 class="header-title">Medical Directory</h1>
-      </header>
-      
-      <div class="search-container">
-        <i data-lucide="search" class="search-icon w-5 h-5"></i>
-        <input type="text" id="directory-search" class="glass-input search-input" 
-               placeholder="Search by name, hospital, or specialty...">
-      </div>
-      
-      <div class="filter-chips">
-        <button class="filter-chip active flex items-center gap-1"><i data-lucide="layout-grid" class="w-3 h-3"></i> All</button>
-        <button class="filter-chip flex items-center gap-1"><i data-lucide="heart-pulse" class="w-3 h-3"></i> Cardiology</button>
-        <button class="filter-chip flex items-center gap-1"><i data-lucide="brain" class="w-3 h-3"></i> Neurology</button>
-        <button class="filter-chip flex items-center gap-1"><i data-lucide="ribbon" class="w-3 h-3"></i> Oncology</button>
-        <button class="filter-chip flex items-center gap-1"><i data-lucide="baby" class="w-3 h-3"></i> Pediatrics</button>
-        <button class="filter-chip flex items-center gap-1"><i data-lucide="scissors" class="w-3 h-3"></i> Surgery</button>
-      </div>
-      
-      <div id="directory-grid" class="directory-grid">
-        <!-- Members loaded dynamically -->
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 3: TRADITIONS LIBRARY ==================== -->
-    <section id="screen-traditions" class="screen hidden">
-      <header class="top-header">
-        <h1 class="header-title">Traditions Library</h1>
-      </header>
-      
-      <div id="magazines-grid" class="magazines-grid">
-        <!-- Magazines loaded dynamically -->
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 4: HISTORICAL VAULT ==================== -->
-    <section id="screen-vault" class="screen hidden">
-      <header class="top-header">
-        <h1 class="header-title">Historical Vault</h1>
-      </header>
-
-      <!-- Vault Stats -->
-      <div id="vault-stats" class="vault-stats">
-        <!-- Stats rendered dynamically -->
-      </div>
-
-      <!-- Category Filter -->
-      <div id="vault-categories" class="vault-categories">
-        <!-- Categories rendered dynamically -->
-      </div>
-
-      <!-- Search & Timeline Row -->
-      <div class="flex flex-col lg:flex-row gap-4 mb-6">
-        <div class="vault-search-wrapper">
-          <i data-lucide="search" class="w-5 h-5"></i>
-          <input type="text" id="vault-search" class="glass-input" placeholder="Search photos by title, location, or description...">
-        </div>
-      </div>
-      
-      <!-- Year Timeline -->
-      <div id="vault-timeline" class="vault-timeline">
-        <!-- Timeline rendered dynamically -->
-      </div>
-      
-      <!-- Gallery Layout with Info Panel -->
-      <div class="vault-layout">
-        <div id="vault-gallery" class="vault-gallery">
-          <!-- Gallery items rendered dynamically -->
-        </div>
-        
-        <!-- Info Panel -->
-        <aside id="vault-info" class="vault-info">
-          <!-- Info panel rendered dynamically -->
-        </aside>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 5: IN MEMORIAM ==================== -->
-    <section id="screen-memoriam" class="screen hidden">
-      <header class="top-header">
-        <h1 class="header-title flex items-center gap-3">
-          <i data-lucide="candle" class="w-6 h-6 text-[#d4af37]"></i>
-          In Memoriam
-        </h1>
-      </header>
-
-      <div class="memoriam-intro glass-card" style="padding: 2rem; margin-bottom: 2rem; text-align: center;">
-        <p class="memoriam-intro-text">
-          "In loving memory of our brothers who have passed. Their dedication to medicine, service, and brotherhood continues to inspire us. They live on in our hearts and in the legacy they left behind."
-        </p>
-      </div>
-
-      <div class="memoriam-grid">
-        <!-- Memorial Card 1 -->
-        <div class="memoriam-card glass-card">
-          <div class="memoriam-candle">
-            <i data-lucide="flame" class="w-6 h-6"></i>
-          </div>
-          <div class="memoriam-photo">
-            <img src="image/placeholders/avatars/a33.jpg" alt="Memorial" class="memoriam-image" loading="lazy" decoding="async">
-          </div>
-          <div class="memoriam-info">
-            <h3 class="memoriam-name">Dr. Roberto M. Santos</h3>
-            <p class="memoriam-dates">1945 - 2023</p>
-            <p class="memoriam-specialty">Cardiology</p>
-            <p class="memoriam-years">Batch 1971 • 52 years of service</p>
-            <p class="memoriam-tribute">
-              A founding member whose compassion and expertise touched countless lives. His legacy of excellence in cardiac care continues to inspire.
-            </p>
-          </div>
-        </div>
-
-        <!-- Memorial Card 2 -->
-        <div class="memoriam-card glass-card">
-          <div class="memoriam-candle">
-            <i data-lucide="flame" class="w-6 h-6"></i>
-          </div>
-          <div class="memoriam-photo">
-            <img src="image/placeholders/avatars/a12.jpg" alt="Memorial" class="memoriam-image" loading="lazy" decoding="async">
-          </div>
-          <div class="memoriam-info">
-            <h3 class="memoriam-name">Dr. Antonio L. Cruz</h3>
-            <p class="memoriam-dates">1948 - 2022</p>
-            <p class="memoriam-specialty">Neurosurgery</p>
-            <p class="memoriam-years">Batch 1973 • 49 years of service</p>
-            <p class="memoriam-tribute">
-              A brilliant surgeon and mentor who dedicated his life to advancing neurosurgical techniques and training the next generation.
-            </p>
-          </div>
-        </div>
-
-        <!-- Memorial Card 3 -->
-        <div class="memoriam-card glass-card">
-          <div class="memoriam-candle">
-            <i data-lucide="flame" class="w-6 h-6"></i>
-          </div>
-          <div class="memoriam-photo">
-            <img src="image/placeholders/avatars/a68.jpg" alt="Memorial" class="memoriam-image" loading="lazy" decoding="async">
-          </div>
-          <div class="memoriam-info">
-            <h3 class="memoriam-name">Dr. Manuel P. Reyes</h3>
-            <p class="memoriam-dates">1950 - 2021</p>
-            <p class="memoriam-specialty">Pediatrics</p>
-            <p class="memoriam-years">Batch 1975 • 46 years of service</p>
-            <p class="memoriam-tribute">
-              His gentle spirit and unwavering commitment to children's health made him beloved by patients and colleagues alike.
-            </p>
-          </div>
-        </div>
-
-        <!-- Memorial Card 4 -->
-        <div class="memoriam-card glass-card">
-          <div class="memoriam-candle">
-            <i data-lucide="flame" class="w-6 h-6"></i>
-          </div>
-          <div class="memoriam-photo">
-            <img src="image/placeholders/avatars/a52.jpg" alt="Memorial" class="memoriam-image" loading="lazy" decoding="async">
-          </div>
-          <div class="memoriam-info">
-            <h3 class="memoriam-name">Dr. Francisco J. Mendoza</h3>
-            <p class="memoriam-dates">1952 - 2020</p>
-            <p class="memoriam-specialty">Internal Medicine</p>
-            <p class="memoriam-years">Batch 1977 • 43 years of service</p>
-            <p class="memoriam-tribute">
-              A pillar of our community whose wisdom and kindness left an indelible mark on all who knew him.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-10">
-        <p class="memoriam-footer-text">
-          <i data-lucide="heart" class="w-4 h-4 inline-block mr-1 align-middle"></i>
-          Forever in our hearts, forever in our brotherhood
-        </p>
-      </div>
     </section>
 
   </main>
@@ -545,10 +372,8 @@
 
   <!-- JavaScript Modules -->
   <script src="js/main.js"></script>
+  <script src="js/media-upload.js"></script>
   <script src="js/feed.js"></script>
-  <script src="js/directory.js"></script>
-  <script src="js/traditions.js"></script>
-  <script src="js/vault.js"></script>
 
   <script>
     // Welcome modal logic
@@ -643,6 +468,9 @@
       }
     })();
   </script>
+
+  <!-- Dev Inspector -->
+  <script src="js/dev-inspector.js"></script>
 
 </body>
 </html>

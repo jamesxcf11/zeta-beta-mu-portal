@@ -15,10 +15,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
   
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/styles.min.css">
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
 </head>
 <body class="dark-theme">
   
@@ -229,7 +233,7 @@
 
     <!-- Enter Community CTA -->
     <div class="text-center mt-12">
-      <a href="index.html#feed" class="btn btn-gold btn-lg btn-enter-community">
+      <a href="home.html#feed" class="btn btn-gold btn-lg btn-enter-community">
         <i data-lucide="arrow-right" class="w-5 h-5"></i>
         Enter the Community
       </a>
@@ -248,6 +252,9 @@
     // Initialize icons
     lucide.createIcons();
   </script>
+  
+  <!-- Dev Inspector -->
+  <script src="js/dev-inspector.js"></script>
   
 </body>
 </html>

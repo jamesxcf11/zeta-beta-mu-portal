@@ -14,161 +14,8 @@ const VaultModule = {
     'Research'
   ],
 
-  // Sample vault images from the folder
-  sampleImages: [
-    '012ec369-ea52-42fc-912a-d1ef7504950a.jpg',
-    '10cd9e8d-2106-42c5-996a-ba7b590fe852.jpg',
-    '21f815ad-4772-4ed3-b327-9aa23fee294e.jpg',
-    '28da8bc3-b009-46b1-a938-ff815d169cc3.jpg',
-    '2eaf4706-2fdd-47ba-ae98-a07b479269e6.jpg',
-    '2f8a6a33-7bd4-4672-9cdf-3cd4449d616e.jpg',
-    '47db4c7e-009a-4261-a8e2-d7a2f6f4eb55.jpg',
-    '5349e504-5814-469a-aac3-cd15565c51a8.jpg',
-    '542a8380-fae7-4ae4-9372-3bd5c0c42c7f.jpg',
-    '6525a973-34cf-40e0-b1e0-417e675d8d41.jpg',
-    '66ac2a3f-ed7a-44cc-9d5e-0db23b1b86d4.jpg',
-    '75e230e1-8c53-4397-ba14-b2606780ce41.jpg',
-    '8ecbf87d-4371-4e5d-8f92-4976f4500daf.jpg',
-    'ac6376cd-926d-4cde-881b-8038f5c14a65.jpg',
-    'be8869ff-3988-42f8-a3b4-8eff81a42ba2.jpg',
-    'c50e3c67-1e97-4271-a61e-5ca8cb63eaac.jpg',
-    'cc5273a3-24ce-414a-82dc-d54406d977bf.jpg',
-    'ceb34cb3-f492-4828-bfe2-628662bfad4f.jpg',
-    'e680bf91-375b-40e2-854f-096cb9170daf.jpg',
-    'e74af5dd-cea2-40c6-a1f4-c7c00ad8d01f.jpg'
-  ],
-
-  // Photo Albums
-  albums: [
-    {
-      id: 'villa-maria-2025',
-      isPublic: true,
-      title: 'Annual Gift Giving 2025: Villa Maria Integrated School',
-      description: 'ZBM fraternity members bringing joy and educational supplies to students at Villa Maria Integrated School. A heartwarming day of giving back to the community.',
-      date: 'December 15, 2025',
-      location: 'Villa Maria Integrated School',
-      coverImage: 'sample vault/012ec369-ea52-42fc-912a-d1ef7504950a.jpg',
-      category: 'Charity Mission',
-      categoryIcon: 'heart-handshake',
-      categoryColor: '#ef4444',
-      photos: [
-        { src: 'sample vault/012ec369-ea52-42fc-912a-d1ef7504950a.jpg', caption: 'Fraternity members arriving with gifts and supplies' },
-        { src: 'sample vault/10cd9e8d-2106-42c5-996a-ba7b590fe852.jpg', caption: 'Distributing school supplies to eager students' },
-        { src: 'sample vault/21f815ad-4772-4ed3-b327-9aa23fee294e.jpg', caption: 'Group photo with Villa Maria students and faculty' },
-        { src: 'sample vault/28da8bc3-b009-46b1-a938-ff815d169cc3.jpg', caption: 'Interactive activities and games with the children' },
-        { src: 'sample vault/2eaf4706-2fdd-47ba-ae98-a07b479269e6.jpg', caption: 'Setting up the donation station' },
-        { src: 'sample vault/2f8a6a33-7bd4-4672-9cdf-3cd4449d616e.jpg', caption: 'Students receiving new backpacks' },
-        { src: 'sample vault/47db4c7e-009a-4261-a8e2-d7a2f6f4eb55.jpg', caption: 'Reading session with the younger students' },
-        { src: 'sample vault/5349e504-5814-469a-aac3-cd15565c51a8.jpg', caption: 'Fraternity brothers with school principal' },
-        { src: 'sample vault/542a8380-fae7-4ae4-9372-3bd5c0c42c7f.jpg', caption: 'Organizing donated books for the library' },
-        { src: 'sample vault/6525a973-34cf-40e0-b1e0-417e675d8d41.jpg', caption: 'Sports equipment distribution' },
-        { src: 'sample vault/66ac2a3f-ed7a-44cc-9d5e-0db23b1b86d4.jpg', caption: 'Art supplies handover ceremony' },
-        { src: 'sample vault/75e230e1-8c53-4397-ba14-b2606780ce41.jpg', caption: 'Students showcasing their new materials' },
-        { src: 'sample vault/8ecbf87d-4371-4e5d-8f92-4976f4500daf.jpg', caption: 'Brotherhood members teaching basic first aid' },
-        { src: 'sample vault/ac6376cd-926d-4cde-881b-8038f5c14a65.jpg', caption: 'Lunch break with the students' },
-        { src: 'sample vault/be8869ff-3988-42f8-a3b4-8eff81a42ba2.jpg', caption: 'Musical performance by ZBM members' },
-        { src: 'sample vault/c50e3c67-1e97-4271-a61e-5ca8cb63eaac.jpg', caption: 'Thank you ceremony from the students' },
-        { src: 'sample vault/cc5273a3-24ce-414a-82dc-d54406d977bf.jpg', caption: 'Final group photo with all participants' },
-        { src: 'sample vault/ceb34cb3-f492-4828-bfe2-628662bfad4f.jpg', caption: 'Packing up after a successful event' },
-        { src: 'sample vault/e680bf91-375b-40e2-854f-096cb9170daf.jpg', caption: 'Students waving goodbye' },
-        { src: 'sample vault/e74af5dd-cea2-40c6-a1f4-c7c00ad8d01f.jpg', caption: 'Commemorative plaque presentation' }
-      ]
-    },
-    {
-      id: 'annual-gala-2024',
-      title: 'Annual Fraternity Gala 2024',
-      description: 'A prestigious evening celebrating excellence in medicine with distinguished alumni, guest speakers, and awards ceremony.',
-      date: 'November 20, 2024',
-      location: 'The Grand Hotel Ballroom',
-      coverImage: 'image/placeholders/photos/u-1511795409834-ef04bbd61622.jpg',
-      category: 'Annual Gala',
-      categoryIcon: 'party-popper',
-      categoryColor: '#f59e0b',
-      photos: [
-        { src: 'image/placeholders/photos/u-1511795409834-ef04bbd61622.jpg', caption: 'Grand ballroom setup with elegant decorations' },
-        { src: 'image/placeholders/photos/u-1519167758481-83f29da8c2b0.jpg', caption: 'Guests arriving at the red carpet entrance' },
-        { src: 'image/placeholders/photos/u-1464366400600-7168b8af9bc3.jpg', caption: 'Opening remarks by the fraternity president' },
-        { src: 'image/placeholders/photos/u-1478145046317-39f10e56b5e9.jpg', caption: 'Award presentation to distinguished alumni' },
-        { src: 'image/placeholders/photos/u-1530103862676-de8c9debad1d.jpg', caption: 'Keynote speaker addressing the audience' },
-        { src: 'image/placeholders/photos/u-1505236858219-8359eb29e329.jpg', caption: 'Formal dinner service' },
-        { src: 'image/placeholders/photos/u-1519225421980-715cb0215aed.jpg', caption: 'Live orchestra performance' },
-        { src: 'image/placeholders/photos/u-1492684223066-81342ee5ff30.jpg', caption: 'Dancing and celebration' }
-      ]
-    },
-    {
-      id: 'medical-mission-2024',
-      title: 'Rural Medical Mission 2024',
-      description: 'Providing essential healthcare services to underserved communities in remote areas, embodying our commitment to service.',
-      date: 'August 10-12, 2024',
-      location: 'Barangay San Isidro, Batangas',
-      coverImage: 'image/placeholders/photos/u-1576091160399-112ba8d25d1d.jpg',
-      category: 'Charity Mission',
-      categoryIcon: 'heart-handshake',
-      categoryColor: '#ef4444',
-      photos: [
-        { src: 'image/placeholders/photos/u-1576091160399-112ba8d25d1d.jpg', caption: 'Medical team setting up the clinic' },
-        { src: 'image/placeholders/photos/u-1584982751601-97dcc096659c.jpg', caption: 'Free consultation and check-ups' },
-        { src: 'image/placeholders/photos/u-1631815588090-d4bfec5b1ccb.jpg', caption: 'Distributing free medicines' },
-        { src: 'image/placeholders/photos/u-1579684385127-1ef15d508118.jpg', caption: 'Dental services for children' },
-        { src: 'image/placeholders/photos/u-1582750433449-648ed127bb54.jpg', caption: 'Health education seminar' },
-        { src: 'image/placeholders/photos/u-1516549655169-df83a0774514.jpg', caption: 'Team photo with community members' }
-      ]
-    },
-    {
-      id: 'induction-ceremony-2024',
-      title: 'New Member Induction Ceremony 2024',
-      description: 'The sacred tradition of welcoming new brothers into the fraternity, complete with the oath and ceremonial regalia.',
-      date: 'March 15, 2024',
-      location: 'University Great Hall',
-      coverImage: 'image/placeholders/photos/u-1523050854058-8df90110c9f1.jpg',
-      category: 'Induction',
-      categoryIcon: 'award',
-      categoryColor: '#10b981',
-      photos: [
-        { src: 'image/placeholders/photos/u-1523050854058-8df90110c9f1.jpg', caption: 'Inductees taking the fraternity oath' },
-        { src: 'image/placeholders/photos/u-1517486808906-6ca8b3f04846.jpg', caption: 'Ceremonial candle lighting' },
-        { src: 'image/placeholders/photos/u-1541339907198-e08756dedf3f.jpg', caption: 'Presentation of fraternity pins' },
-        { src: 'image/placeholders/photos/u-1524178232363-1fb2b075b655.jpg', caption: 'Senior members welcoming new brothers' },
-        { src: 'image/placeholders/photos/u-1529070538774-1843cb3265df.jpg', caption: 'Group photo of the new batch' }
-      ]
-    },
-    {
-      id: 'founders-day-2023',
-      title: 'Founders Day Commemoration 2023',
-      description: 'Paying tribute to the visionary founders who established our fraternity in 1971, celebrating 52 years of brotherhood.',
-      date: 'October 8, 2023',
-      location: 'Fraternity Memorial Garden',
-      coverImage: 'image/placeholders/photos/u-1511578314322-379afb476865.jpg',
-      category: 'Founders Day',
-      categoryIcon: 'crown',
-      categoryColor: '#f97316',
-      photos: [
-        { src: 'image/placeholders/photos/u-1511578314322-379afb476865.jpg', caption: 'Wreath laying ceremony at founders monument' },
-        { src: 'image/placeholders/photos/u-1475721027785-f74eccf877e2.jpg', caption: 'Historical photo exhibition' },
-        { src: 'image/placeholders/photos/u-1556761175-4b46a572b786.jpg', caption: 'Founding members sharing stories' },
-        { src: 'image/placeholders/photos/u-1515187029135-18ee286d815b.jpg', caption: 'Memorial service and prayer' },
-        { src: 'image/placeholders/photos/u-1522071820081-009f0129c71c.jpg', caption: 'All generations of members together' }
-      ]
-    },
-    {
-      id: 'research-symposium-2023',
-      title: 'Medical Research Symposium 2023',
-      description: 'Presenting groundbreaking research findings and innovations in medical science to peers and mentors.',
-      date: 'June 22, 2023',
-      location: 'Medical School Auditorium',
-      coverImage: 'image/placeholders/photos/u-1576091160550-2173dba999ef.jpg',
-      category: 'Research',
-      categoryIcon: 'microscope',
-      categoryColor: '#14b8a6',
-      photos: [
-        { src: 'image/placeholders/photos/u-1576091160550-2173dba999ef.jpg', caption: 'Research presentation on stage' },
-        { src: 'image/placeholders/photos/u-1532094349884-543bc11b234d.jpg', caption: 'Poster session and networking' },
-        { src: 'image/placeholders/photos/u-1581093458791-9d42e1e4b8f3.jpg', caption: 'Panel discussion with experts' },
-        { src: 'image/placeholders/photos/u-1582560475093-ba66accbc424.jpg', caption: 'Laboratory demonstrations' },
-        { src: 'image/placeholders/photos/u-1581594549595-35f6edc7b762.jpg', caption: 'Award ceremony for best research' }
-      ]
-    }
-  ],
+  // Albums loaded from Supabase; empty until loadVaultItems() populates it
+  albums: [],
 
   // State
   currentAlbum: null,
@@ -181,16 +28,181 @@ const VaultModule = {
   yearDropdownOpen: false,
   officerView: false,  // Officer-only public/private controls (UI mock)
 
+  // Uploads awaiting officer review (in-memory only until cloud storage exists)
+  pendingUploads: [],
+
+  // Category mapping between DB enum and display names
+  CATEGORY_MAP: {
+    'mission': 'Charity Mission',
+    'charity_mission': 'Charity Mission',
+    'gala': 'Annual Gala',
+    'annual_gala': 'Annual Gala',
+    'induction': 'Induction',
+    'founders_day': 'Founders Day',
+    'research': 'Research',
+    'conference': 'Conference',
+    'reunion': 'Reunion',
+    'graduation': 'Graduation',
+    'other': 'Other'
+  },
+
+  // Reverse mapping: display name → DB enum value
+  CATEGORY_TO_ENUM: {
+    'Charity Mission': 'charity_mission',
+    'Annual Gala': 'annual_gala',
+    'Induction': 'induction',
+    'Founders Day': 'founders_day',
+    'Research': 'research',
+    'Conference': 'conference',
+    'Reunion': 'reunion',
+    'Graduation': 'graduation',
+    'Other': 'other'
+  },
+
+  CATEGORY_META: {
+    'Charity Mission': { icon: 'heart-handshake', color: '#ef4444' },
+    'Annual Gala': { icon: 'party-popper', color: '#f59e0b' },
+    'Induction': { icon: 'award', color: '#10b981' },
+    'Founders Day': { icon: 'crown', color: '#f97316' },
+    'Research': { icon: 'microscope', color: '#14b8a6' },
+    'Conference': { icon: 'mic', color: '#3b82f6' },
+    'Reunion': { icon: 'users', color: '#a855f7' },
+    'Graduation': { icon: 'graduation-cap', color: '#d4af37' },
+    'Other': { icon: 'folder', color: '#6b7280' }
+  },
+
+  escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  },
+
+  /**
+   * Check if Supabase is configured
+   */
+  hasSupabase() {
+    return typeof db !== 'undefined' && db &&
+           typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT');
+  },
+
   /**
    * Initialize vault module
    */
-  init() {
+  async init() {
     this.applyRoleGating();
+    if (this.hasSupabase()) {
+      await this.loadVaultItems();
+      await this.loadPendingUploads();
+    }
     this.renderFilters();
     this.populateUploadCategories();
     this.renderAlbumGrid();
+    this.renderPendingApprovals();
     this.setupEventListeners();
     this.renderStats();
+  },
+
+  /**
+   * Load vault items from Supabase and group into albums
+   */
+  async loadVaultItems() {
+    const { data, error } = await db
+      .from('vault_items')
+      .select('id, album_id, year, title, caption, media_url, thumbnail_url, file_key, thumb_key, category, event_date, location, is_featured, is_public')
+      .eq('approval_status', 'approved')
+      .is('deleted_at', null)
+      .order('year', { ascending: false })
+      .order('id', { ascending: true });
+
+    if (error) {
+      console.error('vault: loadVaultItems error', error);
+      return;
+    }
+    if (!data || data.length === 0) {
+      this.albums = [];
+      return;
+    }
+
+    // Group items by album_id
+    const albumMap = {};
+    data.forEach(item => {
+      const albumId = item.album_id || `album-${item.year}-${item.title}`;
+      if (!albumMap[albumId]) {
+        const displayCategory = this.CATEGORY_MAP[item.category] || 'Other';
+        const meta = this.CATEGORY_META[displayCategory] || this.CATEGORY_META['Other'];
+        const dateStr = item.event_date
+          ? new Date(item.event_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+          : String(item.year);
+        albumMap[albumId] = {
+          id: albumId,
+          title: item.title,
+          description: item.caption || '',
+          date: dateStr,
+          location: item.location || 'Unknown',
+          coverImage: item.thumbnail_url || item.media_url,
+          category: displayCategory,
+          categoryIcon: meta.icon,
+          categoryColor: meta.color,
+          isPublic: item.is_public,
+          photos: []
+        };
+      }
+      albumMap[albumId].photos.push({
+        src: item.media_url,
+        thumb: item.thumbnail_url || item.media_url,
+        caption: item.caption || '',
+        fileKey: item.file_key,
+        thumbKey: item.thumb_key
+      });
+    });
+
+    this.albums = Object.values(albumMap);
+  },
+
+  /**
+   * Load pending vault uploads from Supabase for officer review
+   */
+  async loadPendingUploads() {
+    const { data, error } = await db
+      .from('vault_items')
+      .select('id, album_id, title, category, event_date, location, is_public, created_at, uploaded_by, file_key, thumb_key')
+      .eq('approval_status', 'pending')
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false });
+
+    if (error || !data) return;
+
+    // Group by album_id to count files per submission
+    const albumMap = {};
+    data.forEach(item => {
+      const albumId = item.album_id || `album-${item.id}`;
+      if (!albumMap[albumId]) {
+        albumMap[albumId] = {
+          id: item.id,
+          albumId,
+          albumName: item.title,
+          date: item.event_date || '',
+          location: item.location || '',
+          visibility: item.is_public ? 'public' : 'private',
+          category: this.CATEGORY_MAP[item.category] || 'Other',
+          fileCount: 1,
+          submittedBy: 'Member #' + item.uploaded_by,
+          submittedAt: item.created_at,
+          r2Keys: [item.file_key, item.thumb_key].filter(Boolean)
+        };
+      } else {
+        albumMap[albumId].fileCount++;
+        albumMap[albumId].id = item.id;
+        if (item.file_key) albumMap[albumId].r2Keys.push(item.file_key);
+        if (item.thumb_key) albumMap[albumId].r2Keys.push(item.thumb_key);
+      }
+    });
+
+    this.pendingUploads = Object.values(albumMap);
   },
 
   /**
@@ -206,12 +218,12 @@ const VaultModule = {
    * Hide officer-only controls unless the session role is admin (UI-level gate)
    */
   applyRoleGating() {
-    let isAdmin = false;
+    let isOfficer = false;
     try {
       const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
-      isAdmin = !!session && session.role === 'admin';
+      isOfficer = !!session && (session.role === 'admin' || session.role === 'officer');
     } catch (e) { /* no session */ }
-    if (!isAdmin) {
+    if (!isOfficer) {
       const btn = document.getElementById('officer-view-btn');
       if (btn) btn.style.display = 'none';
     }
@@ -219,18 +231,12 @@ const VaultModule = {
 
   /**
    * Resolve a thumbnail URL for grid/cover usage (full-size stays for lightbox).
-   * Local vault files map to the pre-generated thumbs folder; Unsplash URLs
-   * get a smaller width parameter. Maps 1:1 to future R2 thumb keys.
+   * R2 photos carry a dedicated thumbnail_url; legacy paths fall back to src.
    */
-  thumb(src) {
-    if (!src) return src;
-    if (src.startsWith('sample vault/') && !src.includes('/thumbs/')) {
-      return src.replace('sample vault/', 'sample vault/thumbs/');
-    }
-    if (src.startsWith('image/placeholders/photos/') && !src.includes('/thumbs/')) {
-      return src.replace('image/placeholders/photos/', 'image/placeholders/photos/thumbs/');
-    }
-    return src.replace(/w=\d+/, 'w=400').replace(/h=\d+/, 'h=300');
+  thumb(photo) {
+    if (!photo) return '';
+    if (typeof photo === 'string') return photo;
+    return photo.thumb || photo.src || '';
   },
 
   /**
@@ -358,6 +364,7 @@ const VaultModule = {
     }
 
     gallery.innerHTML = filteredAlbums.map(album => {
+      const e = (s) => this.escapeHTML(s);
       const isPublic = album.isPublic === true;
       const likes = album.likes != null ? album.likes : album.photos.length * 7;
       const comments = album.comments != null ? album.comments : album.photos.length * 2;
@@ -365,15 +372,15 @@ const VaultModule = {
         ? `<span class="album-visibility album-visibility-public"><i data-lucide="globe" class="w-3 h-3"></i> Public</span>`
         : `<span class="album-visibility album-visibility-private"><i data-lucide="lock" class="w-3 h-3"></i> Members</span>`;
       const officerToggle = this.officerView
-        ? `<button class="album-vis-toggle" onclick="VaultModule.toggleAlbumVisibility('${album.id}', event)" title="Officer: toggle public viewing">
+        ? `<button class="album-vis-toggle" onclick="VaultModule.toggleAlbumVisibility('${e(album.id)}', event)" title="Officer: toggle public viewing">
              <i data-lucide="${isPublic ? 'eye' : 'eye-off'}" class="w-3 h-3"></i>
              ${isPublic ? 'Set Private' : 'Make Public'}
            </button>`
         : '';
       return `
-      <div class="album-card glass-card" onclick="VaultModule.openAlbum('${album.id}')">
+      <div class="album-card glass-card" onclick="VaultModule.openAlbum('${e(album.id)}')">
         <div class="album-cover">
-          <img src="${this.thumb(album.coverImage)}" alt="${album.title}" class="album-cover-image" loading="lazy" decoding="async">
+          <img src="${e(this.thumb(album.coverImage))}" alt="${e(album.title)}" class="album-cover-image" loading="lazy" decoding="async">
           <div class="album-cover-badges">${visBadge}</div>
           <div class="album-overlay">
             <div class="album-photo-count">
@@ -383,19 +390,19 @@ const VaultModule = {
           </div>
         </div>
         <div class="album-info">
-          <div class="album-category" style="color: ${album.categoryColor}">
-            <i data-lucide="${album.categoryIcon}" class="w-4 h-4"></i>
-            <span>${album.category}</span>
+          <div class="album-category" style="color: ${e(album.categoryColor)}">
+            <i data-lucide="${e(album.categoryIcon)}" class="w-4 h-4"></i>
+            <span>${e(album.category)}</span>
           </div>
-          <h3 class="album-title">${album.title}</h3>
+          <h3 class="album-title">${e(album.title)}</h3>
           <div class="album-meta">
             <span class="album-date">
               <i data-lucide="calendar" class="w-3 h-3"></i>
-              ${album.date}
+              ${e(album.date)}
             </span>
             <span class="album-location">
               <i data-lucide="map-pin" class="w-3 h-3"></i>
-              ${album.location}
+              ${e(album.location)}
             </span>
           </div>
           <div class="album-engagement">
@@ -426,14 +433,301 @@ const VaultModule = {
   },
 
   /**
-   * Toggle an album's public/private visibility (officer-only) - UI mock
+   * Toggle an album's public/private visibility (officer-only).
+   * Persists to Supabase when configured; otherwise stays local-only
+   * so this is a drop-in shell for when the cloud backend is connected.
    */
-  toggleAlbumVisibility(albumId, event) {
+  async toggleAlbumVisibility(albumId, event) {
     if (event) event.stopPropagation();
     const album = this.albums.find(a => a.id === albumId);
     if (!album) return;
-    album.isPublic = !album.isPublic;
+
+    const newVisibility = !album.isPublic;
+
+    if (this.hasSupabase()) {
+      const { error } = await db.from('vault_items')
+        .update({ is_public: newVisibility })
+        .eq('album_id', albumId);
+      if (error) {
+        this.showToast('Failed to update visibility');
+        return;
+      }
+    }
+
+    album.isPublic = newVisibility;
     this.renderAlbumGrid();
+    this.showToast(`Album is now ${newVisibility ? 'public' : 'members only'}`);
+  },
+
+  /**
+   * Submit the upload modal's form as a pending item for officer review.
+   * Uploads files to Supabase Storage and inserts rows into vault_items
+   * with approval_status = 'pending'. Falls back to in-memory mock for local dev.
+   */
+  async submitUploadForApproval() {
+    const nameInput = document.getElementById('upload-album-name');
+    const dateInput = document.getElementById('upload-date');
+    const locationInput = document.getElementById('upload-location');
+    const visibilitySelect = document.getElementById('upload-visibility');
+    const categorySelect = document.getElementById('upload-category');
+    const fileInput = document.querySelector('#vault-upload-modal input[type="file"]');
+
+    const albumName = nameInput?.value.trim();
+    if (!albumName) {
+      this.showToast('Please enter an album/event name before submitting');
+      return;
+    }
+
+    let memberId = null;
+    try {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      if (session?.id) memberId = session.id;
+    } catch (e) { /* no session */ }
+
+    const files = fileInput?.files ? Array.from(fileInput.files) : [];
+    if (files.length === 0) {
+      this.showToast('Please select at least one image to upload');
+      return;
+    }
+
+    const categoryValue = categorySelect?.value || this.CATEGORIES[0];
+    const visibility = visibilitySelect?.value || 'private';
+    const dateValue = dateInput?.value || '';
+    const locationValue = locationInput?.value.trim() || '';
+
+    // R2 upload path (production)
+    if (this.hasSupabase() && memberId && typeof MediaUpload !== 'undefined' && MediaUpload.isConfigured()) {
+      const albumId = `album-${Date.now()}`;
+      const year = dateValue ? new Date(dateValue).getFullYear() : new Date().getFullYear();
+      const categoryEnum = this.CATEGORY_TO_ENUM[categoryValue] || 'other';
+      const isPublic = visibility === 'public';
+
+      let uploaded = 0;
+      for (const file of files) {
+        const validationError = MediaUpload.validate(file);
+        if (validationError) {
+          this.showToast(validationError);
+          return;
+        }
+      }
+
+      for (const file of files) {
+        try {
+          const { full, thumb } = await MediaUpload.upload(file, 'vault', {
+            albumId,
+            withThumbnail: true,
+            onProgress: (stage) => {
+              if (stage === 'compressing') this.showToast('Processing image…');
+              else if (stage === 'uploading') this.showToast('Uploading to storage…');
+            },
+          });
+
+          const { error: insertError } = await db.from('vault_items').insert({
+            album_id: albumId,
+            year: year,
+            title: albumName,
+            caption: '',
+            media_url: full.publicUrl,
+            thumbnail_url: thumb ? thumb.publicUrl : full.publicUrl,
+            file_key: full.fileKey,
+            thumb_key: thumb ? thumb.fileKey : null,
+            item_type: 'photo',
+            category: categoryEnum,
+            event_date: dateValue || null,
+            location: locationValue || null,
+            uploaded_by: memberId,
+            is_public: isPublic,
+            approval_status: 'pending'
+          });
+
+          if (insertError) {
+            this.showToast('Failed to save vault item: ' + insertError.message);
+            return;
+          }
+          uploaded++;
+        } catch (err) {
+          this.showToast(err.message || 'Upload failed');
+          return;
+        }
+      }
+
+      await this.loadPendingUploads();
+      this.closeUploadModal();
+      this.showToast(`${uploaded} image${uploaded === 1 ? '' : 's'} submitted for officer approval`);
+    } else if (this.hasSupabase() && memberId) {
+      // Supabase configured but R2 not available (local dev / Playwright)
+      const albumId = `album-${Date.now()}`;
+      const year = dateValue ? new Date(dateValue).getFullYear() : new Date().getFullYear();
+      const categoryEnum = this.CATEGORY_TO_ENUM[categoryValue] || 'other';
+      const isPublic = visibility === 'public';
+
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) {
+          this.showToast(`"${file.name}" is not an image`);
+          continue;
+        }
+        const { error: insertError } = await db.from('vault_items').insert({
+          album_id: albumId,
+          year: year,
+          title: albumName,
+          caption: '',
+          media_url: '',
+          thumbnail_url: '',
+          item_type: 'photo',
+          category: categoryEnum,
+          event_date: dateValue || null,
+          location: locationValue || null,
+          uploaded_by: memberId,
+          is_public: isPublic,
+          approval_status: 'pending'
+        });
+        if (insertError) {
+          this.showToast('Failed to save vault item: ' + insertError.message);
+          return;
+        }
+      }
+
+      await this.loadPendingUploads();
+      this.closeUploadModal();
+      this.showToast('Upload submitted for officer approval (R2 not configured)');
+    } else {
+      // No Supabase — in-memory mock for local dev
+      this.pendingUploads.push({
+        id: 'pending-' + Date.now(),
+        albumName,
+        date: dateValue,
+        location: locationValue,
+        visibility,
+        category: categoryValue,
+        fileCount: files.length,
+        submittedBy: 'Local dev',
+        submittedAt: new Date()
+      });
+
+      this.renderPendingApprovals();
+      this.closeUploadModal();
+      this.showToast('Upload submitted for officer approval');
+    }
+
+    if (nameInput) nameInput.value = '';
+    if (dateInput) dateInput.value = '';
+    if (locationInput) locationInput.value = '';
+    if (fileInput) fileInput.value = '';
+  },
+
+  /**
+   * Render the officer approval panel's pending uploads list
+   */
+  renderPendingApprovals() {
+    const list = document.getElementById('pending-approvals-list');
+    if (!list) return;
+
+    if (this.pendingUploads.length === 0) {
+      list.innerHTML = '<p class="vault-approval-empty">No pending uploads awaiting review.</p>';
+    } else {
+      list.innerHTML = this.pendingUploads.map(item => {
+        const e = (s) => this.escapeHTML(s);
+        return `
+        <div class="vault-approval-item" data-pending-id="${item.id}">
+          <div class="vault-approval-thumb"><i data-lucide="image" class="w-5 h-5"></i></div>
+          <div class="vault-approval-info">
+            <strong>${e(item.albumName)} (${item.fileCount} file${item.fileCount === 1 ? '' : 's'})</strong>
+            <span>Submitted by ${e(item.submittedBy)} &bull; ${e(item.category)}${item.date ? ' &bull; ' + e(item.date) : ''}${item.location ? ' &bull; ' + e(item.location) : ''}</span>
+          </div>
+          <div class="vault-approval-controls">
+            <button class="btn btn-gold btn-sm" onclick="VaultModule.approvePendingUpload('${e(item.id)}')"><i data-lucide="check" class="w-4 h-4"></i> Approve</button>
+            <button class="btn btn-glass btn-sm" onclick="VaultModule.rejectPendingUpload('${e(item.id)}')"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>
+          </div>
+        </div>
+      `;
+      }).join('');
+    }
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Approve a pending upload. Sets approval_status to 'approved' in Supabase
+   * so the items become visible in the public gallery.
+   */
+  async approvePendingUpload(id) {
+    const idx = this.pendingUploads.findIndex(p => p.id === id || p.albumId === id);
+    if (idx === -1) return;
+    const item = this.pendingUploads[idx];
+
+    if (this.hasSupabase() && item.albumId) {
+      const { error } = await db.from('vault_items')
+        .update({ approval_status: 'approved' })
+        .eq('album_id', item.albumId)
+        .eq('approval_status', 'pending');
+      if (error) { this.showToast('Failed to approve upload'); return; }
+      await this.loadVaultItems();
+      this.renderAlbumGrid();
+    }
+
+    this.pendingUploads.splice(idx, 1);
+    this.renderPendingApprovals();
+    this.showToast(`"${item.albumName}" approved and published to the Vault`);
+  },
+
+  /**
+   * Reject a pending upload (destructive — confirms first).
+   * Sets approval_status to 'rejected' in Supabase.
+   */
+  async rejectPendingUpload(id) {
+    const idx = this.pendingUploads.findIndex(p => p.id === id || p.albumId === id);
+    if (idx === -1) return;
+    if (!confirm('Reject this upload? The submission will be discarded and files deleted from storage.')) return;
+    const item = this.pendingUploads[idx];
+
+    if (this.hasSupabase() && item.albumId) {
+      const { error } = await db.from('vault_items')
+        .update({ approval_status: 'rejected' })
+        .eq('album_id', item.albumId)
+        .eq('approval_status', 'pending');
+      if (error) { this.showToast('Failed to reject upload'); return; }
+
+      // Clean up R2 objects so rejected media doesn't consume storage
+      if (item.r2Keys && item.r2Keys.length > 0 && typeof MediaUpload !== 'undefined' && MediaUpload.isConfigured()) {
+        try {
+          await MediaUpload.deleteKeys(item.r2Keys);
+        } catch (err) {
+          console.error('vault: R2 cleanup failed for rejected upload', err);
+        }
+      }
+    }
+
+    this.pendingUploads.splice(idx, 1);
+    this.renderPendingApprovals();
+    this.showToast(`"${item.albumName}" rejected`);
+  },
+
+  /**
+   * Lightweight toast (vault.html doesn't load feed.js, so this is
+   * self-contained rather than depending on FeedModule.showToast)
+   */
+  showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #C9A048;
+      color: #0F281E;
+      padding: 12px 24px;
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      animation: slideUp 0.3s ease;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.animation = 'slideDown 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   },
 
   /**
@@ -467,6 +761,7 @@ const VaultModule = {
     const gallery = document.getElementById('vault-gallery');
     if (!gallery || !this.currentAlbum) return;
 
+    const e = (s) => this.escapeHTML(s);
     const related = this.albums
       .filter(a => a.id !== this.currentAlbum.id && a.category === this.currentAlbum.category)
       .slice(0, 3);
@@ -475,20 +770,20 @@ const VaultModule = {
       <nav class="vault-breadcrumb">
         <a href="#" onclick="VaultModule.closeAlbum(); return false;">Vault</a>
         <span class="vault-breadcrumb-sep">/</span>
-        <a href="#" onclick="VaultModule.filterByCategory('${this.currentAlbum.category.replace(/'/g, "\\'")}'); VaultModule.closeAlbum(); return false;">${this.currentAlbum.category}</a>
+        <a href="#" onclick="VaultModule.filterByCategory('${e(this.currentAlbum.category)}'); VaultModule.closeAlbum(); return false;">${e(this.currentAlbum.category)}</a>
         <span class="vault-breadcrumb-sep">/</span>
-        <span class="vault-breadcrumb-current">${this.currentAlbum.title}</span>
+        <span class="vault-breadcrumb-current">${e(this.currentAlbum.title)}</span>
       </nav>
       <div class="album-hero-card album-hero-clickable" onclick="VaultModule.closeAlbum()">
-        <div class="album-hero-badge" style="color: ${this.currentAlbum.categoryColor}">
-          <i data-lucide="${this.currentAlbum.categoryIcon}" class="w-4 h-4"></i>
-          ${this.currentAlbum.category}
+        <div class="album-hero-badge" style="color: ${e(this.currentAlbum.categoryColor)}">
+          <i data-lucide="${e(this.currentAlbum.categoryIcon)}" class="w-4 h-4"></i>
+          ${e(this.currentAlbum.category)}
         </div>
-        <h1 class="album-hero-title">${this.currentAlbum.title}</h1>
-        <p class="album-hero-desc">${this.currentAlbum.description}</p>
+        <h1 class="album-hero-title">${e(this.currentAlbum.title)}</h1>
+        <p class="album-hero-desc">${e(this.currentAlbum.description)}</p>
         <div class="album-hero-info">
-          <span><i data-lucide="calendar" class="w-4 h-4"></i> ${this.currentAlbum.date}</span>
-          <span><i data-lucide="map-pin" class="w-4 h-4"></i> ${this.currentAlbum.location}</span>
+          <span><i data-lucide="calendar" class="w-4 h-4"></i> ${e(this.currentAlbum.date)}</span>
+          <span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>
           <span><i data-lucide="images" class="w-4 h-4"></i> ${this.currentAlbum.photos.length} photos</span>
         </div>
       </div>
@@ -496,25 +791,25 @@ const VaultModule = {
       <div class="album-grid-container">
         ${this.currentAlbum.photos.map((photo, index) => `
           <div class="album-grid-item" onclick="VaultModule.openLightbox(${index})">
-            <img src="${this.thumb(photo.src)}" alt="${photo.caption}" class="album-grid-img" loading="lazy" decoding="async">
+            <img src="${e(this.thumb(photo))}" alt="${e(photo.caption)}" class="album-grid-img" loading="lazy" decoding="async">
             <div class="album-grid-overlay">
               <i data-lucide="maximize-2" class="w-6 h-6"></i>
             </div>
-            <div class="album-grid-label">${photo.caption}</div>
+            <div class="album-grid-label">${e(photo.caption)}</div>
           </div>
         `).join('')}
       </div>
 
       ${related.length > 0 ? `
         <div class="vault-related">
-          <h3 class="vault-related-title">More from ${this.currentAlbum.category}</h3>
+          <h3 class="vault-related-title">More from ${e(this.currentAlbum.category)}</h3>
           <div class="vault-related-row">
             ${related.map(a => `
-              <div class="vault-related-card glass-card" onclick="VaultModule.openAlbum('${a.id}')">
-                <img src="${this.thumb(a.coverImage)}" alt="${a.title}" loading="lazy" decoding="async">
+              <div class="vault-related-card glass-card" onclick="VaultModule.openAlbum('${e(a.id)}')">
+                <img src="${e(this.thumb(a.coverImage))}" alt="${e(a.title)}" loading="lazy" decoding="async">
                 <div class="vault-related-info">
-                  <span class="vault-related-name">${a.title}</span>
-                  <span class="vault-related-date">${a.date}</span>
+                  <span class="vault-related-name">${e(a.title)}</span>
+                  <span class="vault-related-date">${e(a.date)}</span>
                 </div>
               </div>
             `).join('')}
@@ -582,6 +877,7 @@ const VaultModule = {
   renderLightbox() {
     if (!this.currentAlbum) return;
     
+    const e = (s) => this.escapeHTML(s);
     const photo = this.currentAlbum.photos[this.currentPhotoIndex];
     
     let lightbox = document.getElementById('vault-lightbox');
@@ -613,18 +909,18 @@ const VaultModule = {
       
       <div class="vault-lightbox-content">
         <div class="vault-lightbox-image-wrapper">
-          <img src="${photo.src}" alt="${photo.caption}" class="vault-lightbox-image">
+          <img src="${e(photo.src)}" alt="${e(photo.caption)}" class="vault-lightbox-image">
         </div>
         
         <div class="vault-lightbox-info">
           <div class="vault-lightbox-header">
-            <h3 class="vault-lightbox-title">${this.currentAlbum.title}</h3>
+            <h3 class="vault-lightbox-title">${e(this.currentAlbum.title)}</h3>
             <span class="vault-lightbox-counter">${this.currentPhotoIndex + 1} / ${this.currentAlbum.photos.length}</span>
           </div>
-          <p class="vault-lightbox-caption">${photo.caption}</p>
+          <p class="vault-lightbox-caption">${e(photo.caption)}</p>
           <div class="vault-lightbox-meta">
-            <span><i data-lucide="calendar" class="w-4 h-4"></i> ${this.currentAlbum.date}</span>
-            <span><i data-lucide="map-pin" class="w-4 h-4"></i> ${this.currentAlbum.location}</span>
+            <span><i data-lucide="calendar" class="w-4 h-4"></i> ${e(this.currentAlbum.date)}</span>
+            <span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>
           </div>
         </div>
       </div>
@@ -787,6 +1083,11 @@ const VaultModule = {
     });
   }
 };
+
+// Re-init on bfcache restore (browser back/forward)
+window.addEventListener('zbm-bfcache-restore', () => {
+  VaultModule.init();
+});
 
 // Expose globally
 window.VaultModule = VaultModule;

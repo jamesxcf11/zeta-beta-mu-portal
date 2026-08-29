@@ -15,18 +15,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.min.css">
+  <link rel="stylesheet" href="css/styles.min.css?v=8">
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
 </head>
 <body class="dark-theme admin-page">
   
   <!-- Mobile Header -->
   <header class="mobile-header">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 bg-gradient-to-br from-[#d4af37] to-[#b8941f] rounded-lg flex items-center justify-center text-[#064e3b] font-bold">
-        <i data-lucide="shield" class="w-5 h-5"></i>
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-10 h-10 object-contain">
       </div>
       <span class="font-serif text-lg font-semibold">Admin Panel</span>
     </div>
@@ -47,60 +51,64 @@
   <!-- Sidebar Navigation -->
   <aside id="sidebar" class="sidebar">
     
-    <!-- Sidebar Header -->
-    <div class="sidebar-header">
-      <div class="sidebar-logo">
-        <div class="sidebar-logo-icon">
-          <i data-lucide="shield"></i>
-        </div>
-        <div>
-          <div class="sidebar-logo-text">Admin Portal</div>
-          <div class="sidebar-logo-subtitle">Zeta Beta Mu</div>
-        </div>
+    <!-- Logo Section -->
+    <div class="sidebar-logo" title="Admin Portal · Zeta Beta Mu">
+      <div class="sidebar-logo-icon">
+        <img src="image/logo1.png" alt="ZBM Logo">
       </div>
+      <div class="sidebar-logo-text">
+        <span class="sidebar-logo-title">Admin <em>Portal</em></span>
+      </div>
+      <button id="sidebar-collapse" class="sidebar-collapse" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
+        <i data-lucide="chevrons-left"></i>
+      </button>
     </div>
-    
-    <!-- Navigation Links -->
+
+    <!-- Navigation -->
     <nav class="sidebar-nav">
-      <a href="index.html#feed" class="nav-link">
-        <i data-lucide="home"></i>
-        <span>Back to Portal</span>
-      </a>
-      <a href="#overview" class="nav-link active admin-tab" data-tab="overview">
-        <i data-lucide="layout-dashboard"></i>
-        <span>Overview</span>
-      </a>
-      <a href="#members" class="nav-link admin-tab" data-tab="members">
-        <i data-lucide="users"></i>
-        <span>Member Management</span>
-      </a>
-      <a href="#content" class="nav-link admin-tab" data-tab="content">
-        <i data-lucide="upload"></i>
-        <span>Content Upload</span>
-      </a>
-      <a href="#moderation" class="nav-link admin-tab" data-tab="moderation">
-        <i data-lucide="shield-alert"></i>
-        <span>Moderation</span>
-      </a>
+      <div class="nav-group">
+        <a href="home.html#feed" class="nav-link" title="Back to Feed">
+          <i data-lucide="home"></i>
+          <span>Back to Feed</span>
+        </a>
+        <a href="#overview" class="nav-link active admin-tab" data-tab="overview" title="Overview">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <a href="#members" class="nav-link admin-tab" data-tab="members" title="Member Management">
+          <i data-lucide="users"></i>
+          <span>Member Management</span>
+        </a>
+        <a href="#content" class="nav-link admin-tab" data-tab="content" title="Content Upload">
+          <i data-lucide="upload"></i>
+          <span>Content Upload</span>
+        </a>
+        <a href="#moderation" class="nav-link admin-tab" data-tab="moderation" title="Moderation">
+          <i data-lucide="shield-alert"></i>
+          <span>Moderation</span>
+        </a>
+      </div>
     </nav>
     
     <!-- Sidebar Footer -->
     <div class="sidebar-footer">
       
       <!-- User Card -->
-      <div class="user-card">
+      <div class="user-card" id="user-card" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Open profile menu">
         <img id="user-avatar" src="image/placeholders/avatars/a11.jpg" alt="User" class="user-avatar">
         <div class="user-info">
           <div id="user-name" class="user-name">Dr. James Anderson</div>
           <div class="user-role">Administrator</div>
         </div>
-        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
-          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
-          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
-        </button>
-        <button id="logout-btn" class="icon-btn" title="Logout">
-          <i data-lucide="log-out" class="w-4 h-4"></i>
-        </button>
+      </div>
+
+      <div class="profile-dropdown" id="profile-dropdown" aria-hidden="true">
+        <a href="#" class="profile-dropdown-item">View Profile</a>
+        <a href="#" class="profile-dropdown-item">Settings</a>
+        <div class="profile-dropdown-divider"></div>
+        <button class="profile-dropdown-item profile-dropdown-danger" id="profile-logout">Log Out</button>
       </div>
       
     </div>
@@ -114,6 +122,10 @@
     <header class="top-header">
       <h1 class="header-title">Admin Dashboard</h1>
       <div class="header-actions">
+        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+        </button>
         <button class="icon-btn" title="Notifications">
           <i data-lucide="bell" class="w-5 h-5"></i>
           <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -192,9 +204,9 @@
         <div class="flex gap-3">
           <div class="relative">
             <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 admin-card-desc"></i>
-            <input type="text" class="glass-input pl-10 pr-4 py-2 text-sm" placeholder="Search members...">
+            <input id="member-search" type="text" class="glass-input pl-10 pr-4 py-2 text-sm" placeholder="Search members...">
           </div>
-          <button class="btn btn-emerald btn-sm">
+          <button id="add-member-btn" class="btn btn-emerald btn-sm">
             <i data-lucide="plus" class="w-4 h-4"></i>
             Add Member
           </button>
@@ -222,13 +234,13 @@
 
       <!-- Pagination -->
       <div class="flex items-center justify-between mt-4">
-        <p class="text-sm admin-card-desc">Showing 1-10 of 247 members</p>
+        <p id="member-count-text" class="text-sm admin-card-desc">Showing 0-0 of 0 members</p>
         <div class="flex gap-2">
-              <button class="btn btn-glass btn-sm flex items-center gap-1">
+              <button id="member-prev" class="btn btn-glass btn-sm flex items-center gap-1">
                 <i data-lucide="chevron-left" class="w-4 h-4"></i>
                 Previous
               </button>
-              <button class="btn btn-glass btn-sm flex items-center gap-1">
+              <button id="member-next" class="btn btn-glass btn-sm flex items-center gap-1">
                 Next
                 <i data-lucide="chevron-right" class="w-4 h-4"></i>
               </button>
@@ -251,9 +263,16 @@
             Upload Magazine
           </h3>
           <form id="upload-form" class="space-y-4">
+            <div class="admin-drop-zone" id="magazine-drop-zone">
+              <div class="admin-drop-zone-icon">
+                <i data-lucide="file-plus" class="w-6 h-6"></i>
+              </div>
+              <p class="admin-drop-zone-text">Drop magazine files here or click to browse</p>
+              <p class="admin-drop-zone-hint">PDF & cover image · or paste URLs below</p>
+            </div>
             <div>
               <label class="form-label">Year</label>
-              <select class="glass-input w-full">
+              <select id="magazine-year" class="glass-input w-full">
                 <option value="">Select year</option>
                 <script>
                   for (let year = 2026; year >= 1971; year--) {
@@ -264,23 +283,16 @@
             </div>
             <div>
               <label class="form-label">Title</label>
-              <input type="text" class="glass-input w-full" placeholder="e.g., Traditions 2026">
+              <input id="magazine-title" type="text" class="glass-input w-full" placeholder="e.g., Traditions 2026">
             </div>
             <div>
-              <label class="form-label">Cover Image</label>
-              <div class="border-2 border-dashed admin-drop-zone rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
-                <i data-lucide="image-plus" class="w-10 h-10 mx-auto mb-2 admin-card-desc"></i>
-                <p class="text-sm admin-card-desc">Drag & drop or click to upload</p>
-                <p class="text-xs admin-card-muted mt-1">PNG, JPG up to 10MB</p>
-              </div>
+              <label class="form-label">Cover Image URL</label>
+              <input id="magazine-cover-url" type="url" class="glass-input w-full" placeholder="https://your-cloud-storage/cover.jpg">
+              <p class="text-xs admin-card-muted mt-1">Paste a link from your cloud storage (image upload coming later)</p>
             </div>
             <div>
-              <label class="form-label">PDF File</label>
-              <div class="border-2 border-dashed admin-drop-zone rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
-                <i data-lucide="file-up" class="w-10 h-10 mx-auto mb-2 admin-card-desc"></i>
-                <p class="text-sm admin-card-desc">Drag & drop or click to upload</p>
-                <p class="text-xs admin-card-muted mt-1">PDF up to 50MB</p>
-              </div>
+              <label class="form-label">PDF URL</label>
+              <input id="magazine-pdf-url" type="url" class="glass-input w-full" placeholder="https://your-cloud-storage/magazine.pdf">
             </div>
             <button type="submit" class="btn btn-gold w-full flex items-center justify-center gap-2">
               <i data-lucide="upload" class="w-5 h-5"></i>
@@ -295,10 +307,17 @@
             <i data-lucide="images" class="w-5 h-5 text-[#d4af37]"></i>
             Upload to Vault
           </h3>
-          <form class="space-y-4">
+          <form id="vault-upload-form" class="space-y-4">
+            <div class="admin-drop-zone" id="vault-drop-zone">
+              <div class="admin-drop-zone-icon">
+                <i data-lucide="image-plus" class="w-6 h-6"></i>
+              </div>
+              <p class="admin-drop-zone-text">Drop photos or documents here or click to browse</p>
+              <p class="admin-drop-zone-hint">Images, PDFs & documents · or paste URL below</p>
+            </div>
             <div>
               <label class="form-label">Year</label>
-              <select class="glass-input w-full">
+              <select id="vault-year" class="glass-input w-full">
                 <option value="">Select year</option>
                 <script>
                   for (let year = 2026; year >= 1971; year--) {
@@ -309,7 +328,7 @@
             </div>
             <div>
               <label class="form-label">Category</label>
-              <select class="glass-input w-full">
+              <select id="vault-category" class="glass-input w-full">
                 <option value="">Select category</option>
                 <option value="gala">Annual Gala</option>
                 <option value="induction">Induction Ceremony</option>
@@ -320,16 +339,17 @@
               </select>
             </div>
             <div>
-              <label class="form-label">Caption</label>
-              <textarea class="glass-input w-full" rows="3" placeholder="Describe this photo or document..."></textarea>
+              <label class="form-label">Title</label>
+              <input id="vault-title" type="text" class="glass-input w-full" placeholder="e.g., Annual Gala 2026">
             </div>
             <div>
-              <label class="form-label">Media Files</label>
-              <div class="border-2 border-dashed admin-drop-zone rounded-lg p-8 text-center hover:border-[#d4af37]/50 transition-colors cursor-pointer">
-                <i data-lucide="images" class="w-10 h-10 mx-auto mb-2 admin-card-desc"></i>
-                <p class="text-sm admin-card-desc">Drag & drop files here</p>
-                <p class="text-xs admin-card-muted mt-1">Multiple files supported (PNG, JPG, PDF)</p>
-              </div>
+              <label class="form-label">Caption</label>
+              <textarea id="vault-caption" class="glass-input w-full" rows="3" placeholder="Describe this photo or document..."></textarea>
+            </div>
+            <div>
+              <label class="form-label">Media URL</label>
+              <input id="vault-media-url" type="url" class="glass-input w-full" placeholder="https://your-cloud-storage/photo.jpg">
+              <p class="text-xs admin-card-muted mt-1">Paste a link from your cloud storage (file upload coming later)</p>
             </div>
             <button type="submit" class="btn btn-emerald w-full flex items-center justify-center gap-2">
               <i data-lucide="upload" class="w-5 h-5"></i>
@@ -351,29 +371,10 @@
       <div class="glass-card p-6 mb-6">
         <h3 class="text-lg font-semibold admin-card-title mb-4 flex items-center gap-2">
           <i data-lucide="flag" class="w-5 h-5 text-red-400"></i>
-          Reported Posts <span class="text-sm admin-card-desc">(3 pending)</span>
+          Reported Posts <span id="reported-posts-count" class="text-sm admin-card-desc">(0 pending)</span>
         </h3>
-        <div class="space-y-4">
-          <div class="glass p-4 rounded-lg flex items-start justify-between">
-            <div class="flex gap-3">
-              <img src="image/placeholders/avatars/a20.jpg" alt="User" class="w-10 h-10 rounded-full border border-red-400/50">
-              <div>
-                <p class="text-sm font-medium admin-card-title">Reported by Dr. Emily Roberts</p>
-                <p class="text-xs admin-card-desc">Reason: Inappropriate content</p>
-                <p class="text-sm admin-card-body mt-2 italic">"Original post content preview..."</p>
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <button class="btn btn-glass btn-sm flex items-center gap-1">
-                <i data-lucide="x-circle" class="w-4 h-4"></i>
-                Dismiss
-              </button>
-              <button class="btn btn-emerald btn-sm flex items-center gap-1">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                Remove Post
-              </button>
-            </div>
-          </div>
+        <div id="reported-posts" class="space-y-4">
+          <!-- Reported posts rendered dynamically -->
         </div>
       </div>
 
@@ -381,29 +382,10 @@
       <div class="glass-card p-6">
         <h3 class="text-lg font-semibold admin-card-title mb-4 flex items-center gap-2">
           <i data-lucide="message-square-warning" class="w-5 h-5 text-orange-400"></i>
-          Flagged Comments <span class="text-sm admin-card-desc">(1 pending)</span>
+          Flagged Comments <span id="flagged-comments-count" class="text-sm admin-card-desc">(0 pending)</span>
         </h3>
-        <div class="space-y-4">
-          <div class="glass p-4 rounded-lg flex items-start justify-between">
-            <div class="flex gap-3">
-              <img src="image/placeholders/avatars/a25.jpg" alt="User" class="w-10 h-10 rounded-full border border-orange-400/50">
-              <div>
-                <p class="text-sm font-medium admin-card-title">Reported by Dr. Michael Chen</p>
-                <p class="text-xs admin-card-desc">Reason: Harassment</p>
-                <p class="text-sm admin-card-body mt-2 italic">"Comment content preview..."</p>
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <button class="btn btn-glass btn-sm flex items-center gap-1">
-                <i data-lucide="x-circle" class="w-4 h-4"></i>
-                Dismiss
-              </button>
-              <button class="btn btn-emerald btn-sm flex items-center gap-1">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                Remove Comment
-              </button>
-            </div>
-          </div>
+        <div id="flagged-comments" class="space-y-4">
+          <!-- Flagged comments rendered dynamically -->
         </div>
       </div>
 
@@ -424,6 +406,76 @@
   <script src="js/main.js"></script>
   <script src="js/feed.js"></script>
   <script src="js/admin.js"></script>
+
+  <script>
+    (function () {
+      const sidebar = document.getElementById('sidebar');
+      const collapseBtn = document.getElementById('sidebar-collapse');
+      if (!sidebar || !collapseBtn) return;
+
+      collapseBtn.addEventListener('click', function () {
+        const collapsed = sidebar.classList.toggle('is-collapsed');
+        const label = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+        collapseBtn.setAttribute('aria-label', label);
+        collapseBtn.setAttribute('title', label);
+        const iconName = collapsed ? 'chevrons-right' : 'chevrons-left';
+        collapseBtn.innerHTML = '<i data-lucide="' + iconName + '"></i>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const userCard = document.getElementById('user-card');
+      const dropdown = document.getElementById('profile-dropdown');
+      const logoutBtn = document.getElementById('profile-logout');
+      if (!userCard || !dropdown) return;
+
+      function toggleDropdown() {
+        const isOpen = dropdown.classList.toggle('open');
+        dropdown.setAttribute('aria-hidden', String(!isOpen));
+        userCard.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      function closeDropdown() {
+        dropdown.classList.remove('open');
+        dropdown.setAttribute('aria-hidden', 'true');
+        userCard.setAttribute('aria-expanded', 'false');
+      }
+
+      userCard.addEventListener('click', toggleDropdown);
+      userCard.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleDropdown();
+        }
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!userCard.contains(e.target) && !dropdown.contains(e.target)) {
+          closeDropdown();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && dropdown.classList.contains('open')) {
+          closeDropdown();
+        }
+      });
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+          if (typeof AuthHelper !== 'undefined' && confirm('Are you sure you want to log out?')) {
+            AuthHelper.logout();
+          }
+        });
+      }
+    })();
+  </script>
+  
+  <!-- Dev Inspector -->
+  <script src="js/dev-inspector.js"></script>
   
 </body>
 </html>
