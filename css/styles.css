@@ -8589,10 +8589,12 @@ body.light-theme .memoriam-solemn {
   align-items: center;
 }
 
-.vault-toolbar-search i {
+.vault-toolbar-search i,
+.vault-toolbar-search svg {
   position: absolute;
   left: 0.9rem;
   color: rgba(255, 255, 255, 0.65);
+  pointer-events: none;
 }
 
 .vault-toolbar-search .glass-input {
@@ -10817,7 +10819,8 @@ body.subpage .mobile-overlay {
 }
 
 /* --- Vault page light-theme overrides --- */
-.light-theme .vault-toolbar-search i {
+.light-theme .vault-toolbar-search i,
+.light-theme .vault-toolbar-search svg {
   color: rgba(6, 78, 59, 0.6);
 }
 
