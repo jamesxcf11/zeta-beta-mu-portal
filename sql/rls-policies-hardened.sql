@@ -156,6 +156,10 @@ CREATE POLICY "vault_insert" ON vault_items
   FOR INSERT TO authenticated
   WITH CHECK (TRUE);
 
+CREATE POLICY "vault_update_admin" ON vault_items
+  FOR UPDATE TO authenticated
+  USING (is_admin_or_officer()) WITH CHECK (is_admin_or_officer());
+
 CREATE POLICY "vault_delete_admin" ON vault_items
   FOR DELETE TO authenticated
   USING (is_admin_or_officer());

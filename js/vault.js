@@ -1017,22 +1017,26 @@ const VaultModule = {
    * so the items become visible in the public gallery.
    */
   async approvePendingUpload(id) {
-    const idx = this.pendingUploads.findIndex(p => p.id === id || p.albumId === id);
-    if (idx === -1) return;
+    const numId = Number(id);
+    const idx = this.pendingUploads.findIndex(p => p.id === numId || p.id === id || p.albumId === id || p.albumId === String(id));
+    if (idx === -1) {
+      this.showToast('Could not find that pending upload');
+      return;
+    }
     const item = this.pendingUploads[idx];
 
     if (this.hasSupabase() && item.albumId) {
-      const { error } = await db.from('vault_items')
+      const { error, count } = await db.from('vault_items')
         .update({ approval_status: 'approved' })
         .eq('album_id', item.albumId)
         .eq('approval_status', 'pending');
-      if (error) { this.showToast('Failed to approve upload'); return; }
-      await this.loadVaultItems();
-      this.renderAlbumGrid();
+      if (error) { this.showToast('Failed to approve upload: ' + error.message); return; }
     }
 
     this.pendingUploads.splice(idx, 1);
     this.renderPendingApprovals();
+    await this.loadVaultItems();
+    this.renderAlbumGrid();
     this.showToast(`"${item.albumName}" approved and published to the Vault`);
   },
 
@@ -1041,8 +1045,12 @@ const VaultModule = {
    * Sets approval_status to 'rejected' in Supabase.
    */
   async rejectPendingUpload(id) {
-    const idx = this.pendingUploads.findIndex(p => p.id === id || p.albumId === id);
-    if (idx === -1) return;
+    const numId = Number(id);
+    const idx = this.pendingUploads.findIndex(p => p.id === numId || p.id === id || p.albumId === id || p.albumId === String(id));
+    if (idx === -1) {
+      this.showToast('Could not find that pending upload');
+      return;
+    }
     if (!confirm('Reject this upload? The submission will be discarded and files deleted from storage.')) return;
     const item = this.pendingUploads[idx];
 
