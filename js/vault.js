@@ -187,7 +187,7 @@ const VaultModule = {
   async loadPendingUploads() {
     const { data, error } = await db
       .from('vault_items')
-      .select('id, album_id, title, category, event_date, location, is_public, created_at, uploaded_by, file_key, thumb_key')
+      .select('id, album_id, title, category, event_date, location, is_public, created_at, uploaded_by, file_key, thumb_key, media_url, thumbnail_url')
       .eq('approval_status', 'pending')
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
@@ -210,13 +210,27 @@ const VaultModule = {
           fileCount: 1,
           submittedBy: 'Member #' + item.uploaded_by,
           submittedAt: item.created_at,
-          r2Keys: [item.file_key, item.thumb_key].filter(Boolean)
+          r2Keys: [item.file_key, item.thumb_key].filter(Boolean),
+          photos: [{
+            id: item.id,
+            mediaUrl: item.media_url || '',
+            thumbUrl: item.thumbnail_url || item.media_url || '',
+            fileKey: item.file_key || null,
+            thumbKey: item.thumb_key || null
+          }]
         };
       } else {
         albumMap[albumId].fileCount++;
         albumMap[albumId].id = item.id;
         if (item.file_key) albumMap[albumId].r2Keys.push(item.file_key);
         if (item.thumb_key) albumMap[albumId].r2Keys.push(item.thumb_key);
+        albumMap[albumId].photos.push({
+          id: item.id,
+          mediaUrl: item.media_url || '',
+          thumbUrl: item.thumbnail_url || item.media_url || '',
+          fileKey: item.file_key || null,
+          thumbKey: item.thumb_key || null
+        });
       }
     });
 
@@ -444,8 +458,9 @@ const VaultModule = {
    */
   updateSubmitButton() {
     const btn = document.getElementById('vault-submit-btn');
-    if (!btn) return;
-    btn.disabled = this.stagedFiles.length === 0 || this.uploadInProgress;
+    if (btn) btn.disabled = this.stagedFiles.length === 0 || this.uploadInProgress;
+    const step2Dot = document.getElementById('vault-step-2-dot');
+    if (step2Dot) step2Dot.disabled = this.stagedFiles.length === 0 || this.uploadInProgress;
   },
 
   /**
@@ -573,6 +588,7 @@ const VaultModule = {
     document.getElementById('vault-step-1-dot').classList.remove('active');
     document.getElementById('vault-step-2-dot').classList.add('active');
     document.getElementById('vault-step-line').classList.add('active');
+    document.getElementById('vault-step-2-dot').disabled = false;
     const titleText = document.getElementById('vault-modal-title-text');
     if (titleText) titleText.textContent = 'Review & Confirm';
     const subText = document.getElementById('vault-modal-sub-text');
@@ -593,6 +609,7 @@ const VaultModule = {
     document.getElementById('vault-step-1-dot').classList.add('active');
     document.getElementById('vault-step-2-dot').classList.remove('active');
     document.getElementById('vault-step-line').classList.remove('active');
+    document.getElementById('vault-step-2-dot').disabled = this.stagedFiles.length === 0;
     const titleText = document.getElementById('vault-modal-title-text');
     if (titleText) titleText.textContent = 'Upload to the Vault';
     const subText = document.getElementById('vault-modal-sub-text');
@@ -836,6 +853,14 @@ const VaultModule = {
   renderAlbumGrid() {
     const gallery = document.getElementById('vault-gallery');
     if (!gallery) return;
+
+    // Restore highlights and filters when the grid is shown (not inside an album view)
+    if (!this.currentAlbum) {
+      const highlights = document.getElementById('vault-highlights');
+      const filters = document.getElementById('vault-filters');
+      if (highlights) highlights.style.display = '';
+      if (filters) filters.style.display = '';
+    }
 
     let filteredAlbums = this.albums;
 
@@ -1237,14 +1262,20 @@ const VaultModule = {
     } else {
       list.innerHTML = this.pendingUploads.map(item => {
         const e = (s) => this.escapeHTML(s);
+        const hasPhotos = item.photos && item.photos.length > 0;
+        const firstPhoto = hasPhotos ? item.photos[0] : null;
+        const thumbHtml = firstPhoto && firstPhoto.thumbUrl
+          ? `<img src="${e(firstPhoto.thumbUrl)}" alt="${e(item.albumName)}" class="vault-approval-thumb-img">`
+          : `<i data-lucide="image" class="w-5 h-5"></i>`;
         return `
-        <div class="vault-approval-item" data-pending-id="${item.id}">
-          <div class="vault-approval-thumb"><i data-lucide="image" class="w-5 h-5"></i></div>
+        <div class="vault-approval-item" data-pending-id="${e(item.id)}">
+          <div class="vault-approval-thumb">${thumbHtml}</div>
           <div class="vault-approval-info">
             <strong>${e(item.albumName)} (${item.fileCount} file${item.fileCount === 1 ? '' : 's'})</strong>
             <span>Submitted by ${e(item.submittedBy)} &bull; ${e(item.category)}${item.date ? ' &bull; ' + e(item.date) : ''}${item.location ? ' &bull; ' + e(item.location) : ''}</span>
           </div>
           <div class="vault-approval-controls">
+            ${hasPhotos ? `<button class="btn btn-glass btn-sm" onclick="VaultModule.previewPendingUpload('${e(item.id)}')"><i data-lucide="eye" class="w-4 h-4"></i> View</button>` : ''}
             <button class="btn btn-gold btn-sm" onclick="VaultModule.approvePendingUpload('${e(item.id)}')"><i data-lucide="check" class="w-4 h-4"></i> Approve</button>
             <button class="btn btn-glass btn-sm" onclick="VaultModule.rejectPendingUpload('${e(item.id)}')"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>
           </div>
@@ -1254,6 +1285,258 @@ const VaultModule = {
     }
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Current pending preview state
+   */
+  currentPendingPreview: null,
+
+  /**
+   * Open a modal previewing all photos in a pending submission.
+   * Officers can view full-size images and remove individual photos before approving.
+   */
+  previewPendingUpload(id) {
+    const numId = Number(id);
+    const item = this.pendingUploads.find(p => p.id === numId || p.id === id || p.albumId === id || p.albumId === String(id));
+    if (!item) {
+      this.showToast('Could not find that pending upload');
+      return;
+    }
+
+    this.currentPendingPreview = item;
+    this.renderPendingPreviewModal();
+  },
+
+  /**
+   * Render the pending preview modal
+   */
+  renderPendingPreviewModal() {
+    if (!this.currentPendingPreview) return;
+    const item = this.currentPendingPreview;
+    const e = (s) => this.escapeHTML(s);
+
+    let modal = document.getElementById('vault-pending-preview-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'vault-pending-preview-modal';
+      modal.className = 'vault-modal hidden';
+      document.body.appendChild(modal);
+    }
+
+    const photosHtml = (item.photos || []).map((photo, index) => {
+      const thumb = photo.thumbUrl
+        ? `<img src="${e(photo.thumbUrl)}" alt="Photo ${index + 1}" class="vault-preview-thumb-img" loading="lazy">`
+        : `<div class="vault-preview-thumb-icon"><i data-lucide="image" class="w-8 h-8"></i></div>`;
+      return `
+        <div class="vault-preview-photo">
+          <div class="vault-preview-photo-thumb" onclick="VaultModule.openPendingLightbox(${index})">
+            ${thumb}
+            <div class="vault-preview-photo-overlay">
+              <i data-lucide="maximize-2" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <button class="vault-preview-photo-remove" onclick="VaultModule.removePendingPhoto('${e(item.id)}', ${photo.id})" title="Remove this photo">
+            <i data-lucide="trash-2" class="w-4 h-4"></i> Remove
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    const noPhotosHtml = (!item.photos || item.photos.length === 0)
+      ? '<p class="vault-preview-empty">No photos available for preview. This submission may have been uploaded without R2 storage configured.</p>'
+      : '';
+
+    modal.innerHTML = `
+      <div class="vault-modal-backdrop" onclick="VaultModule.closePendingPreview()"></div>
+      <div class="vault-modal-card glass-heavy vault-pending-preview-content">
+        <div class="vault-modal-header">
+          <div>
+            <h3 class="vault-modal-title"><i data-lucide="eye" class="w-5 h-5"></i> ${e(item.albumName)}</h3>
+            <p class="vault-modal-sub">${e(item.submittedBy)} &bull; ${e(item.category)}${item.date ? ' &bull; ' + e(item.date) : ''}${item.location ? ' &bull; ' + e(item.location) : ''}</p>
+          </div>
+          <button class="vault-modal-close" onclick="VaultModule.closePendingPreview()">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="vault-preview-body">
+          <div class="vault-preview-info-bar">
+            <span><i data-lucide="images" class="w-4 h-4"></i> ${item.fileCount} photo${item.fileCount === 1 ? '' : 's'}</span>
+            <span><i data-lucide="${item.visibility === 'public' ? 'globe' : 'lock'}" class="w-4 h-4"></i> ${item.visibility === 'public' ? 'Public' : 'Members only'}</span>
+          </div>
+          ${noPhotosHtml}
+          <div class="vault-preview-grid">${photosHtml}</div>
+        </div>
+        <div class="vault-modal-actions">
+          <button class="btn btn-glass btn-sm" onclick="VaultModule.closePendingPreview()">Close</button>
+          <button class="btn btn-gold btn-sm" onclick="VaultModule.approvePendingUpload('${e(item.id)}'); VaultModule.closePendingPreview();">
+            <i data-lucide="check" class="w-4 h-4"></i> Approve Remaining
+          </button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Close the pending preview modal
+   */
+  closePendingPreview() {
+    this.currentPendingPreview = null;
+    const modal = document.getElementById('vault-pending-preview-modal');
+    if (modal) modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  },
+
+  /**
+   * Open a lightbox for a photo in the current pending preview
+   */
+  openPendingLightbox(index) {
+    if (!this.currentPendingPreview || !this.currentPendingPreview.photos) return;
+    const photos = this.currentPendingPreview.photos;
+    if (index < 0 || index >= photos.length) return;
+
+    const photo = photos[index];
+    const e = (s) => this.escapeHTML(s);
+
+    let lightbox = document.getElementById('vault-lightbox');
+    if (!lightbox) {
+      lightbox = document.createElement('div');
+      lightbox.id = 'vault-lightbox';
+      lightbox.className = 'vault-lightbox';
+      document.body.appendChild(lightbox);
+    }
+
+    lightbox.innerHTML = `
+      <div class="vault-lightbox-backdrop" onclick="VaultModule.closeLightbox()"></div>
+      <button class="vault-lightbox-close" onclick="VaultModule.closeLightbox()">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+      ${index > 0 ? `
+        <button class="vault-lightbox-nav prev" onclick="VaultModule.navigatePendingLightbox(${index}, -1)">
+          <i data-lucide="chevron-left" class="w-8 h-8"></i>
+        </button>
+      ` : ''}
+      ${index < photos.length - 1 ? `
+        <button class="vault-lightbox-nav next" onclick="VaultModule.navigatePendingLightbox(${index}, 1)">
+          <i data-lucide="chevron-right" class="w-8 h-8"></i>
+        </button>
+      ` : ''}
+      <div class="vault-lightbox-content">
+        <div class="vault-lightbox-image-wrapper">
+          <img src="${e(photo.mediaUrl || photo.thumbUrl)}" alt="Photo ${index + 1}" class="vault-lightbox-image">
+        </div>
+        <div class="vault-lightbox-info">
+          <div class="vault-lightbox-header">
+            <h3 class="vault-lightbox-title">${e(this.currentPendingPreview.albumName)}</h3>
+            <span class="vault-lightbox-counter">${index + 1} / ${photos.length}</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    this.lightboxOpen = true;
+    requestAnimationFrame(() => {
+      lightbox.classList.add('active');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+
+    const keyHandler = (ev) => {
+      if (!this.lightboxOpen) {
+        document.removeEventListener('keydown', keyHandler);
+        return;
+      }
+      if (ev.key === 'Escape') this.closeLightbox();
+      if (ev.key === 'ArrowLeft' && index > 0) this.navigatePendingLightbox(index, -1);
+      if (ev.key === 'ArrowRight' && index < photos.length - 1) this.navigatePendingLightbox(index, 1);
+    };
+    document.addEventListener('keydown', keyHandler);
+  },
+
+  /**
+   * Navigate within the pending preview lightbox
+   */
+  navigatePendingLightbox(currentIndex, direction) {
+    if (!this.currentPendingPreview || !this.currentPendingPreview.photos) return;
+    const newIndex = currentIndex + direction;
+    if (newIndex >= 0 && newIndex < this.currentPendingPreview.photos.length) {
+      this.openPendingLightbox(newIndex);
+    }
+  },
+
+  /**
+   * Remove a single photo from a pending submission.
+   * Soft-deletes the DB row and cleans up R2 objects.
+   */
+  async removePendingPhoto(pendingId, photoId) {
+    if (!confirm('Remove this photo from the submission? This cannot be undone.')) return;
+
+    const numPendingId = Number(pendingId);
+    const item = this.pendingUploads.find(p => p.id === numPendingId || p.id === pendingId || p.albumId === pendingId || p.albumId === String(pendingId));
+    if (!item || !item.photos) {
+      this.showToast('Could not find that pending upload');
+      return;
+    }
+
+    const photoIdx = item.photos.findIndex(p => p.id === photoId || p.id === Number(photoId));
+    if (photoIdx === -1) {
+      this.showToast('Could not find that photo');
+      return;
+    }
+
+    const photo = item.photos[photoIdx];
+
+    // Soft-delete the DB row
+    if (this.hasSupabase()) {
+      const { error } = await db.from('vault_items')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', photoId);
+      if (error) {
+        this.showToast('Failed to remove photo: ' + error.message);
+        return;
+      }
+
+      // Clean up R2 objects
+      const keys = [photo.fileKey, photo.thumbKey].filter(Boolean);
+      if (keys.length > 0 && typeof MediaUpload !== 'undefined' && MediaUpload.isConfigured()) {
+        try {
+          await MediaUpload.deleteKeys(keys);
+        } catch (err) {
+          console.error('vault: R2 cleanup failed for removed photo', err);
+        }
+      }
+    }
+
+    // Update in-memory state
+    item.photos.splice(photoIdx, 1);
+    item.fileCount = item.photos.length;
+
+    // Remove the photo's keys from r2Keys
+    if (item.r2Keys) {
+      item.r2Keys = item.r2Keys.filter(k => k !== photo.fileKey && k !== photo.thumbKey);
+    }
+
+    // If no photos remain, close preview and remove the pending item
+    if (item.photos.length === 0) {
+      const pendingIdx = this.pendingUploads.findIndex(p => p === item);
+      if (pendingIdx !== -1) {
+        this.pendingUploads.splice(pendingIdx, 1);
+      }
+      this.closePendingPreview();
+      this.renderPendingApprovals();
+      this.renderStats();
+      this.showToast('All photos removed — submission deleted');
+      return;
+    }
+
+    // Re-render the preview modal and approval list
+    this.renderPendingPreviewModal();
+    this.renderPendingApprovals();
+    this.showToast('Photo removed from submission');
   },
 
   /**
@@ -1278,6 +1561,7 @@ const VaultModule = {
     }
 
     this.pendingUploads.splice(idx, 1);
+    this.closePendingPreview();
     this.renderPendingApprovals();
     await this.loadVaultItems();
     this.renderFilters();
@@ -1388,7 +1672,18 @@ const VaultModule = {
     if (!album) return;
 
     this.currentAlbum = album;
+
+    // Hide highlights and filters so the album view is immediately visible
+    const highlights = document.getElementById('vault-highlights');
+    const filters = document.getElementById('vault-filters');
+    if (highlights) highlights.style.display = 'none';
+    if (filters) filters.style.display = 'none';
+
     this.renderAlbumView();
+
+    // Scroll to the gallery so the user sees the opened album
+    const gallery = document.getElementById('vault-gallery');
+    if (gallery) gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
   },
 
   /**
@@ -1467,6 +1762,13 @@ const VaultModule = {
    */
   closeAlbum() {
     this.currentAlbum = null;
+
+    // Restore highlights and filters visibility
+    const highlights = document.getElementById('vault-highlights');
+    const filters = document.getElementById('vault-filters');
+    if (highlights) highlights.style.display = '';
+    if (filters) filters.style.display = '';
+
     this.renderAlbumGrid();
   },
 

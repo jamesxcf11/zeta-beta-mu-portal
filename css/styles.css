@@ -8818,6 +8818,170 @@ body.light-theme .memoriam-solemn {
   padding: 0.5rem 0;
 }
 
+/* Highlight card cursor */
+.vault-highlight-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.vault-highlight-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+/* Approval thumbnail image */
+.vault-approval-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Pending preview modal */
+.vault-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.vault-modal-header .vault-modal-title {
+  font-size: 1.3rem;
+}
+
+.vault-modal-header .vault-modal-sub {
+  margin: 0.25rem 0 0;
+}
+
+.vault-pending-preview-content {
+  max-width: 800px;
+}
+
+.vault-preview-body {
+  margin-bottom: 1.5rem;
+}
+
+.vault-preview-info-bar {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 1rem;
+}
+
+.vault-preview-info-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.vault-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.vault-preview-photo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vault-preview-photo-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.vault-preview-photo-thumb:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.vault-preview-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vault-preview-thumb-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: rgba(212, 175, 55, 0.5);
+}
+
+.vault-preview-photo-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: #d4af37;
+}
+
+.vault-preview-photo-thumb:hover .vault-preview-photo-overlay {
+  opacity: 1;
+}
+
+.vault-preview-photo-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  width: 100%;
+  padding: 0.4rem;
+  font-size: 0.8rem;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.vault-preview-photo-remove:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.vault-preview-empty {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+/* Light theme overrides for preview modal */
+.light-theme .vault-preview-info-bar {
+  color: rgba(6, 78, 59, 0.65);
+  border-bottom-color: rgba(6, 78, 59, 0.1);
+}
+
+.light-theme .vault-preview-photo-thumb {
+  border-color: rgba(6, 78, 59, 0.1);
+  background: rgba(6, 78, 59, 0.03);
+}
+
+.light-theme .vault-preview-empty {
+  color: rgba(6, 78, 59, 0.55);
+}
+
+.light-theme .vault-preview-thumb-icon {
+  color: rgba(184, 148, 31, 0.5);
+}
+
 /* Upload modal */
 .vault-modal {
   position: fixed;
@@ -9044,12 +9208,24 @@ body.light-theme .memoriam-solemn {
   color: rgba(255, 255, 255, 0.4);
   background: transparent;
   transition: all 0.3s ease;
+  cursor: pointer;
+  padding: 0;
 }
 
 .vault-step-dot.active {
   border-color: #d4af37;
   color: #d4af37;
   background: rgba(212, 175, 55, 0.1);
+}
+
+.vault-step-dot:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.vault-step-dot:not(:disabled):hover {
+  border-color: rgba(212, 175, 55, 0.6);
+  color: rgba(212, 175, 55, 0.8);
 }
 
 .vault-step-line {
