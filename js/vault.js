@@ -1036,7 +1036,10 @@ const VaultModule = {
     this.pendingUploads.splice(idx, 1);
     this.renderPendingApprovals();
     await this.loadVaultItems();
+    this.renderFilters();
     this.renderAlbumGrid();
+    this.renderWeeklyHighlights();
+    this.renderStats();
     this.showToast(`"${item.albumName}" approved and published to the Vault`);
   },
 
@@ -1073,6 +1076,7 @@ const VaultModule = {
 
     this.pendingUploads.splice(idx, 1);
     this.renderPendingApprovals();
+    this.renderStats();
     this.showToast(`"${item.albumName}" rejected`);
   },
 
