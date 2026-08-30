@@ -41,6 +41,12 @@ const VaultModule = {
   // Upload in progress flag
   uploadInProgress: false,
 
+  // Current step: 1 = form, 2 = review
+  currentStep: 1,
+
+  // Cached review data (filled when user clicks Review)
+  reviewData: null,
+
   // Category mapping between DB enum and display names
   CATEGORY_MAP: {
     'mission': 'Charity Mission',
@@ -242,16 +248,22 @@ const VaultModule = {
     }
 
     if (dropzone) {
+      const emptyP = dropzone.querySelector('#vault-dropzone-empty p');
       dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropzone.classList.add('drag-active');
+        if (emptyP) emptyP.textContent = 'Drop to upload';
       });
       dropzone.addEventListener('dragleave', (e) => {
-        if (e.target === dropzone) dropzone.classList.remove('drag-active');
+        if (e.target === dropzone) {
+          dropzone.classList.remove('drag-active');
+          if (emptyP) emptyP.textContent = 'Drag & drop or click to browse';
+        }
       });
       dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropzone.classList.remove('drag-active');
+        if (emptyP) emptyP.textContent = 'Drag & drop or click to browse';
         this.handleFileSelect(Array.from(e.dataTransfer.files || []));
       });
     }
@@ -317,12 +329,14 @@ const VaultModule = {
   renderDropzonePreviews() {
     const emptyEl = document.getElementById('vault-dropzone-empty');
     const previewsEl = document.getElementById('vault-dropzone-previews');
+    const fileCountEl = document.getElementById('vault-dropzone-filecount');
     if (!emptyEl || !previewsEl) return;
 
     if (this.stagedPreviews.length === 0) {
       emptyEl.style.display = '';
       previewsEl.style.display = 'none';
       previewsEl.innerHTML = '';
+      if (fileCountEl) fileCountEl.style.display = 'none';
       return;
     }
 
@@ -330,6 +344,12 @@ const VaultModule = {
     previewsEl.style.display = 'grid';
 
     const e = (s) => this.escapeHTML(s);
+    const fmtSize = (bytes) => {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+    };
+
     previewsEl.innerHTML = this.stagedPreviews.map((p, i) => {
       const isImage = p.file.type.startsWith('image/');
       const thumb = isImage
@@ -338,6 +358,7 @@ const VaultModule = {
       return `
         <div class="vault-dropzone-thumb">
           ${thumb}
+          <span class="vault-dropzone-thumb-size">${fmtSize(p.file.size)}</span>
           <button class="vault-dropzone-thumb-remove" onclick="VaultModule.removeStagedFile(${i})" title="Remove">
             <i data-lucide="x" class="w-3 h-3"></i>
           </button>
@@ -345,6 +366,13 @@ const VaultModule = {
         </div>
       `;
     }).join('');
+
+    // Show file count badge
+    if (fileCountEl) {
+      const totalSize = this.stagedFiles.reduce((sum, f) => sum + f.size, 0);
+      fileCountEl.style.display = 'flex';
+      fileCountEl.innerHTML = `<i data-lucide="files" class="w-4 h-4"></i> ${this.stagedFiles.length} file${this.stagedFiles.length === 1 ? '' : 's'} selected (${fmtSize(totalSize)})`;
+    }
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
   },
@@ -396,6 +424,157 @@ const VaultModule = {
     const btn = document.getElementById('vault-submit-btn');
     if (!btn) return;
     btn.disabled = this.stagedFiles.length === 0 || this.uploadInProgress;
+  },
+
+  /**
+   * Switch to step 2 (review) — validates form and renders review card
+   */
+  reviewUpload() {
+    const nameInput = document.getElementById('upload-album-name');
+    const existingSelect = document.getElementById('upload-existing-album');
+    const dateInput = document.getElementById('upload-date');
+    const locationInput = document.getElementById('upload-location');
+    const visibilitySelect = document.getElementById('upload-visibility');
+    const categorySelect = document.getElementById('upload-category');
+
+    let albumName, existingAlbumId;
+    if (this.albumMode === 'existing') {
+      existingAlbumId = existingSelect?.value || '';
+      if (!existingAlbumId) {
+        this.showToast('Please select an existing album to add to');
+        return;
+      }
+      const album = this.albums.find(a => a.id === existingAlbumId);
+      albumName = album ? album.title : '';
+    } else {
+      albumName = nameInput?.value.trim();
+      if (!albumName) {
+        this.showToast('Please enter an album/event name');
+        return;
+      }
+    }
+
+    if (this.stagedFiles.length === 0) {
+      this.showToast('Please select at least one image to upload');
+      return;
+    }
+
+    const categoryValue = categorySelect?.value || this.CATEGORIES[0];
+    const visibility = visibilitySelect?.value || 'private';
+    const dateValue = dateInput?.value || '';
+    const locationValue = locationInput?.value.trim() || '';
+
+    this.reviewData = { albumName, existingAlbumId, categoryValue, visibility, dateValue, locationValue };
+    this.renderReviewStep();
+    this.goToStep2();
+  },
+
+  /**
+   * Render the review card content
+   */
+  renderReviewStep() {
+    const container = document.getElementById('vault-review-content');
+    if (!container || !this.reviewData) return;
+
+    const e = (s) => this.escapeHTML(s);
+    const fmtSize = (bytes) => {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+    };
+
+    const r = this.reviewData;
+    const totalSize = this.stagedFiles.reduce((sum, f) => sum + f.size, 0);
+    const dateDisplay = r.dateValue ? new Date(r.dateValue).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Not specified';
+
+    const fileThumbs = this.stagedPreviews.map(p => {
+      const isImage = p.file.type.startsWith('image/');
+      const img = isImage
+        ? `<img src="${p.url}" alt="${e(p.file.name)}">`
+        : `<div class="vault-dropzone-thumb-icon"><i data-lucide="file" class="w-5 h-5"></i></div>`;
+      return `
+        <div class="vault-review-file">
+          ${img}
+          <div class="vault-review-file-info">${e(p.file.name)} &middot; ${fmtSize(p.file.size)}</div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <div class="vault-review-card">
+        <div class="vault-review-section">
+          <div class="vault-review-label">Album</div>
+          <div class="vault-review-value">${e(r.albumName)}</div>
+        </div>
+        <div class="vault-review-grid">
+          <div class="vault-review-section">
+            <div class="vault-review-label">Category</div>
+            <div class="vault-review-value">${e(r.categoryValue)}</div>
+          </div>
+          <div class="vault-review-section">
+            <div class="vault-review-label">Visibility</div>
+            <div class="vault-review-value">${r.visibility === 'public' ? 'Public' : 'Members only'}</div>
+          </div>
+          <div class="vault-review-section">
+            <div class="vault-review-label">Date</div>
+            <div class="vault-review-value">${e(dateDisplay)}</div>
+          </div>
+          <div class="vault-review-section">
+            <div class="vault-review-label">Location</div>
+            <div class="vault-review-value">${r.locationValue ? e(r.locationValue) : 'Not specified'}</div>
+          </div>
+        </div>
+        <div class="vault-review-section">
+          <div class="vault-review-label">Files (${this.stagedFiles.length} &middot; ${fmtSize(totalSize)})</div>
+          <div class="vault-review-files">${fileThumbs}</div>
+        </div>
+      </div>
+    `;
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Navigate to step 2
+   */
+  goToStep2() {
+    this.currentStep = 2;
+    document.getElementById('vault-upload-step-1').style.display = 'none';
+    document.getElementById('vault-upload-step-2').style.display = '';
+    document.getElementById('vault-submit-btn').style.display = 'none';
+    document.getElementById('vault-confirm-btn').style.display = '';
+    document.getElementById('vault-back-btn').style.display = '';
+    document.getElementById('vault-cancel-btn').style.display = 'none';
+    document.getElementById('vault-step-1-dot').classList.remove('active');
+    document.getElementById('vault-step-2-dot').classList.add('active');
+    document.getElementById('vault-step-line').classList.add('active');
+    const titleText = document.getElementById('vault-modal-title-text');
+    if (titleText) titleText.textContent = 'Review & Confirm';
+    const subText = document.getElementById('vault-modal-sub-text');
+    if (subText) subText.textContent = 'Check the details below, then confirm to upload.';
+  },
+
+  /**
+   * Navigate back to step 1
+   */
+  backToStep1() {
+    this.currentStep = 1;
+    document.getElementById('vault-upload-step-1').style.display = '';
+    document.getElementById('vault-upload-step-2').style.display = 'none';
+    document.getElementById('vault-submit-btn').style.display = '';
+    document.getElementById('vault-confirm-btn').style.display = 'none';
+    document.getElementById('vault-back-btn').style.display = 'none';
+    document.getElementById('vault-cancel-btn').style.display = '';
+    document.getElementById('vault-step-1-dot').classList.add('active');
+    document.getElementById('vault-step-2-dot').classList.remove('active');
+    document.getElementById('vault-step-line').classList.remove('active');
+    const titleText = document.getElementById('vault-modal-title-text');
+    if (titleText) titleText.textContent = 'Upload to the Vault';
+    const subText = document.getElementById('vault-modal-sub-text');
+    if (subText) subText.textContent = 'Submit photos. Officers will review before they go live.';
+    // Hide progress if visible
+    const progressWrap = document.getElementById('vault-upload-progress-wrap');
+    if (progressWrap) progressWrap.style.display = 'none';
   },
 
   /**
@@ -799,6 +978,42 @@ const VaultModule = {
    * Uploads files to Supabase Storage and inserts rows into vault_items
    * with approval_status = 'pending'. Falls back to in-memory mock for local dev.
    */
+  /**
+   * Confirm upload from step 2 — shows progress bar and delegates to submitUploadForApproval
+   */
+  async confirmUpload() {
+    const confirmBtn = document.getElementById('vault-confirm-btn');
+    const confirmLabel = document.getElementById('vault-confirm-label');
+    const progressWrap = document.getElementById('vault-upload-progress-wrap');
+    const progressBar = document.getElementById('vault-upload-progress-bar');
+    const progressText = document.getElementById('vault-upload-progress-text');
+
+    if (confirmBtn) confirmBtn.disabled = true;
+    if (confirmLabel) confirmLabel.textContent = 'Uploading…';
+    if (progressWrap) progressWrap.style.display = '';
+    if (progressBar) progressBar.style.width = '0%';
+    if (progressText) progressText.textContent = 'Starting…';
+
+    // Simulate progress updates during upload
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress = Math.min(progress + 5, 90);
+      if (progressBar) progressBar.style.width = progress + '%';
+    }, 200);
+
+    try {
+      await this.submitUploadForApproval();
+      if (progressBar) progressBar.style.width = '100%';
+      if (progressText) progressText.textContent = 'Done!';
+    } catch (err) {
+      if (progressText) progressText.textContent = 'Upload failed';
+    } finally {
+      clearInterval(progressInterval);
+      if (confirmBtn) confirmBtn.disabled = false;
+      if (confirmLabel) confirmLabel.textContent = 'Confirm & Upload';
+    }
+  },
+
   async submitUploadForApproval() {
     const nameInput = document.getElementById('upload-album-name');
     const existingSelect = document.getElementById('upload-existing-album');
@@ -857,13 +1072,17 @@ const VaultModule = {
     if (this.hasSupabase() && memberId && typeof MediaUpload !== 'undefined' && MediaUpload.isConfigured()) {
       let uploaded = 0;
       const errors = [];
+      const progressText = document.getElementById('vault-upload-progress-text');
       for (const file of files) {
         try {
+          if (progressText) progressText.textContent = `Uploading ${uploaded + 1}/${files.length}: ${file.name}`;
           const { full, thumb } = await MediaUpload.upload(file, 'vault', {
             albumId,
             withThumbnail: true,
             onProgress: (stage) => {
-              if (submitLabel) submitLabel.textContent = stage === 'compressing' ? 'Processing…' : 'Uploading…';
+              if (progressText) progressText.textContent = stage === 'compressing'
+                ? `Processing ${uploaded + 1}/${files.length}: ${file.name}`
+                : `Uploading ${uploaded + 1}/${files.length}: ${file.name}`;
             },
           });
 
@@ -1122,12 +1341,16 @@ const VaultModule = {
     if (dateInput) dateInput.value = '';
     const locationInput = document.getElementById('upload-location');
     if (locationInput) locationInput.value = '';
+    this.backToStep1();
+    this.reviewData = null;
     const modal = document.getElementById('vault-upload-modal');
     if (modal) modal.classList.remove('hidden');
   },
 
   closeUploadModal() {
     this.clearStagedFiles();
+    this.backToStep1();
+    this.reviewData = null;
     const modal = document.getElementById('vault-upload-modal');
     if (modal) modal.classList.add('hidden');
   },

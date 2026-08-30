@@ -253,73 +253,102 @@
       <button class="vault-modal-close" onclick="VaultModule.closeUploadModal()">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
+
+      <!-- Step indicator -->
+      <div class="vault-step-indicator">
+        <div class="vault-step-dot active" id="vault-step-1-dot">1</div>
+        <div class="vault-step-line" id="vault-step-line"></div>
+        <div class="vault-step-dot" id="vault-step-2-dot">2</div>
+      </div>
+
       <h3 class="vault-modal-title">
         <i data-lucide="upload" class="w-5 h-5"></i>
-        Upload to the Vault
+        <span id="vault-modal-title-text">Upload to the Vault</span>
       </h3>
-      <p class="vault-modal-sub">Submit photos and videos. Officers will review before they go live.</p>
+      <p class="vault-modal-sub" id="vault-modal-sub-text">Submit photos. Officers will review before they go live.</p>
 
-      <div class="form-group">
-        <label class="form-label">Album</label>
-        <div class="vault-album-choice">
-          <label class="vault-radio"><input type="radio" name="album-mode" value="new" checked> Create new album</label>
-          <label class="vault-radio"><input type="radio" name="album-mode" value="existing"> Add to existing album</label>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="form-group" id="upload-album-new-group">
-          <label class="form-label" for="upload-album-name">Album / Event Name</label>
-          <input id="upload-album-name" type="text" class="glass-input" placeholder="e.g., Medical Mission 2025">
-        </div>
-        <div class="form-group" id="upload-album-existing-group" style="display:none;">
-          <label class="form-label" for="upload-existing-album">Select Existing Album</label>
-          <select id="upload-existing-album" class="glass-input">
-            <option value="" disabled selected>No albums yet</option>
-          </select>
-        </div>
+      <!-- Step 1: Form + File Selection -->
+      <div id="vault-upload-step-1">
         <div class="form-group">
-          <label class="form-label" for="upload-date">Date</label>
-          <input id="upload-date" type="date" class="glass-input">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="upload-location">Location</label>
-          <input id="upload-location" type="text" class="glass-input" placeholder="e.g., Porac, Pampanga">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="upload-visibility">Default Visibility</label>
-          <select id="upload-visibility" class="glass-input">
-            <option value="private">Members only (private)</option>
-            <option value="public">Public</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="upload-category">Category</label>
-          <select id="upload-category" class="glass-input">
-            <!-- Populated from the officer-defined category list by VaultModule -->
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Files (photos)</label>
-        <div id="vault-dropzone" class="vault-dropzone">
-          <div id="vault-dropzone-empty">
-            <i data-lucide="cloud-upload" class="w-8 h-8"></i>
-            <p>Drag &amp; drop or click to browse</p>
-            <span>JPG, PNG, WebP &mdash; max 10MB each</span>
+          <label class="form-label">Album</label>
+          <div class="vault-album-choice">
+            <label class="vault-radio"><input type="radio" name="album-mode" value="new" checked> Create new album</label>
+            <label class="vault-radio"><input type="radio" name="album-mode" value="existing"> Add to existing album</label>
           </div>
-          <div id="vault-dropzone-previews" class="vault-dropzone-previews" style="display:none;"></div>
-          <input id="vault-file-input" type="file" accept="image/jpeg,image/png,image/webp" multiple>
         </div>
-        <div id="vault-dropzone-errors" class="vault-dropzone-errors"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group" id="upload-album-new-group">
+            <label class="form-label" for="upload-album-name">Album / Event Name</label>
+            <input id="upload-album-name" type="text" class="glass-input" placeholder="e.g., Medical Mission 2025">
+          </div>
+          <div class="form-group" id="upload-album-existing-group" style="display:none;">
+            <label class="form-label" for="upload-existing-album">Select Existing Album</label>
+            <select id="upload-existing-album" class="glass-input">
+              <option value="" disabled selected>No albums yet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="upload-date">Date</label>
+            <input id="upload-date" type="date" class="glass-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="upload-location">Location</label>
+            <input id="upload-location" type="text" class="glass-input" placeholder="e.g., Porac, Pampanga">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="upload-visibility">Default Visibility</label>
+            <select id="upload-visibility" class="glass-input">
+              <option value="private">Members only (private)</option>
+              <option value="public">Public</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="upload-category">Category</label>
+            <select id="upload-category" class="glass-input">
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Files (photos)</label>
+          <div id="vault-dropzone" class="vault-dropzone">
+            <div id="vault-dropzone-empty">
+              <i data-lucide="cloud-upload" class="w-8 h-8"></i>
+              <p>Drag &amp; drop or click to browse</p>
+              <span>JPG, PNG, WebP &mdash; max 10MB each</span>
+            </div>
+            <div id="vault-dropzone-previews" class="vault-dropzone-previews" style="display:none;"></div>
+            <input id="vault-file-input" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+          </div>
+          <div id="vault-dropzone-filecount" class="vault-dropzone-filecount" style="display:none;"></div>
+          <div id="vault-dropzone-errors" class="vault-dropzone-errors"></div>
+        </div>
+      </div>
+
+      <!-- Step 2: Review -->
+      <div id="vault-upload-step-2" style="display:none;">
+        <div id="vault-review-content"></div>
+        <div id="vault-upload-progress-wrap" style="display:none;">
+          <div class="vault-upload-progress">
+            <div class="vault-upload-progress-bar" id="vault-upload-progress-bar"></div>
+          </div>
+          <span class="vault-upload-progress-text" id="vault-upload-progress-text"></span>
+        </div>
       </div>
 
       <div class="vault-modal-actions">
-        <button class="btn btn-glass" onclick="VaultModule.closeUploadModal()">Cancel</button>
-        <button id="vault-submit-btn" class="btn btn-gold" onclick="VaultModule.submitUploadForApproval()" disabled>
-          <i data-lucide="send" class="w-4 h-4"></i>
-          <span id="vault-submit-label">Submit for Approval</span>
+        <button class="btn btn-glass" onclick="VaultModule.closeUploadModal()" id="vault-cancel-btn">Cancel</button>
+        <button class="btn btn-glass" id="vault-back-btn" style="display:none;" onclick="VaultModule.backToStep1()">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
+        </button>
+        <button id="vault-submit-btn" class="btn btn-gold" onclick="VaultModule.reviewUpload()" disabled>
+          <i data-lucide="eye" class="w-4 h-4"></i>
+          <span id="vault-submit-label">Review</span>
+        </button>
+        <button id="vault-confirm-btn" class="btn btn-gold" style="display:none;" onclick="VaultModule.confirmUpload()">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span id="vault-confirm-label">Confirm &amp; Upload</span>
         </button>
       </div>
     </div>

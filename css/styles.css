@@ -8841,7 +8841,7 @@ body.light-theme .memoriam-solemn {
 .vault-modal-card {
   position: relative;
   width: 100%;
-  max-width: 560px;
+  max-width: 640px;
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 20px;
@@ -8896,21 +8896,6 @@ body.light-theme .memoriam-solemn {
   margin: 0.25rem 0 1.5rem;
 }
 
-.vault-album-choice {
-  display: flex;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-}
-
-.vault-radio {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.85);
-  cursor: pointer;
-}
-
 .vault-dropzone {
   position: relative;
   display: flex;
@@ -8933,11 +8918,6 @@ body.light-theme .memoriam-solemn {
   inset: 0;
   opacity: 0;
   cursor: pointer;
-}
-
-.vault-dropzone.drag-active {
-  border-color: rgba(212, 175, 55, 0.8);
-  background: rgba(212, 175, 55, 0.08);
 }
 
 .vault-dropzone-previews {
@@ -9012,20 +8992,6 @@ body.light-theme .memoriam-solemn {
   margin-top: 0.5rem;
 }
 
-.vault-dropzone-error-item {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
-  color: #ef4444;
-  padding: 0.25rem 0;
-}
-
-.vault-dropzone-error-item i {
-  flex-shrink: 0;
-  color: #ef4444;
-}
-
 .vault-highlight-thumb-img {
   width: 100%;
   height: 100%;
@@ -9051,6 +9017,287 @@ body.light-theme .memoriam-solemn {
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 1.5rem;
+}
+
+/* Step indicator */
+.vault-step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 1.25rem;
+}
+
+.vault-step-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.vault-step-dot.active {
+  border-color: #d4af37;
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.vault-step-line {
+  width: 48px;
+  height: 2px;
+  background: rgba(212, 175, 55, 0.2);
+  transition: background 0.3s ease;
+}
+
+.vault-step-line.active {
+  background: #d4af37;
+}
+
+.light-theme .vault-step-dot {
+  border-color: rgba(184, 148, 31, 0.3);
+  color: rgba(6, 78, 59, 0.4);
+}
+
+.light-theme .vault-step-dot.active {
+  border-color: #b8941f;
+  color: #b8941f;
+  background: rgba(184, 148, 31, 0.08);
+}
+
+.light-theme .vault-step-line.active {
+  background: #b8941f;
+}
+
+/* File count badge */
+.vault-dropzone-filecount {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #d4af37;
+}
+
+.light-theme .vault-dropzone-filecount {
+  color: #b8941f;
+}
+
+/* Improved dropzone drag state */
+.vault-dropzone.drag-active {
+  border-color: rgba(212, 175, 55, 0.8);
+  background: rgba(212, 175, 55, 0.08);
+  transform: scale(1.01);
+  transition: transform 0.15s ease;
+}
+
+.vault-dropzone.drag-active #vault-dropzone-empty p {
+  color: #d4af37;
+}
+
+/* File size badge on thumbnails */
+.vault-dropzone-thumb-size {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  padding: 1px 6px;
+  font-size: 0.6rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Always show remove button on touch devices */
+@media (hover: none) {
+  .vault-dropzone-thumb-remove {
+    opacity: 1;
+  }
+}
+
+/* Improved error styling */
+.vault-dropzone-error-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #ef4444;
+  padding: 0.4rem 0.75rem;
+  margin-top: 0.35rem;
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+/* Review card */
+.vault-review-card {
+  border-radius: 14px;
+  padding: 1.25rem;
+  background: rgba(212, 175, 55, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.light-theme .vault-review-card {
+  background: rgba(6, 78, 59, 0.03);
+  border-color: rgba(184, 148, 31, 0.15);
+}
+
+.vault-review-section {
+  margin-bottom: 1rem;
+}
+
+.vault-review-section:last-child {
+  margin-bottom: 0;
+}
+
+.vault-review-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(212, 175, 55, 0.7);
+  margin-bottom: 0.2rem;
+}
+
+.light-theme .vault-review-label {
+  color: rgba(184, 148, 31, 0.7);
+}
+
+.vault-review-value {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.light-theme .vault-review-value {
+  color: rgba(6, 78, 59, 0.9);
+}
+
+.vault-review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.vault-review-files {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.vault-review-file {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .vault-review-file {
+  background: rgba(6, 78, 59, 0.06);
+  border-color: rgba(6, 78, 59, 0.12);
+}
+
+.vault-review-file img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vault-review-file-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2px 5px;
+  font-size: 0.6rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Upload progress bar */
+.vault-upload-progress {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(212, 175, 55, 0.15);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.vault-upload-progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #d4af37, #f0d060);
+  transition: width 0.3s ease;
+}
+
+.vault-upload-progress-text {
+  display: block;
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(212, 175, 55, 0.8);
+  margin-top: 0.5rem;
+}
+
+/* Album mode toggle */
+.vault-album-choice {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.vault-radio {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 0.6rem 1rem;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+}
+
+.vault-radio:has(input:checked) {
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.vault-radio input {
+  display: none;
+}
+
+.light-theme .vault-radio {
+  color: rgba(6, 78, 59, 0.6);
+}
+
+.light-theme .vault-radio:has(input:checked) {
+  color: #b8941f;
+  background: rgba(184, 148, 31, 0.06);
+}
+
+/* Disabled button styling */
+.vault-modal-actions .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* ============================================================
