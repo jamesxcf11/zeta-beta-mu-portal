@@ -8963,15 +8963,16 @@ body.light-theme .memoriam-solemn {
   height: 22px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.65);
   color: #fff;
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s;
+  opacity: 0.85;
+  transition: opacity 0.2s, background 0.2s;
 }
 
-.vault-dropzone-thumb:hover .vault-dropzone-thumb-remove {
+.vault-dropzone-thumb-remove:hover {
   opacity: 1;
+  background: rgba(239, 68, 68, 0.85);
 }
 
 .vault-dropzone-thumb-name {

@@ -359,7 +359,7 @@ const VaultModule = {
         <div class="vault-dropzone-thumb">
           ${thumb}
           <span class="vault-dropzone-thumb-size">${fmtSize(p.file.size)}</span>
-          <button class="vault-dropzone-thumb-remove" onclick="VaultModule.removeStagedFile(${i})" title="Remove">
+          <button class="vault-dropzone-thumb-remove" onclick="event.stopPropagation(); VaultModule.removeStagedFile(${i})" title="Remove">
             <i data-lucide="x" class="w-3 h-3"></i>
           </button>
           <span class="vault-dropzone-thumb-name">${e(p.file.name)}</span>
@@ -880,8 +880,8 @@ const VaultModule = {
     gallery.innerHTML = filteredAlbums.map(album => {
       const e = (s) => this.escapeHTML(s);
       const isPublic = album.isPublic === true;
-      const likes = album.likes != null ? album.likes : album.photos.length * 7;
-      const comments = album.comments != null ? album.comments : album.photos.length * 2;
+      const likes = album.likes != null ? album.likes : 0;
+      const comments = album.comments != null ? album.comments : 0;
       const visBadge = isPublic
         ? `<span class="album-visibility album-visibility-public"><i data-lucide="globe" class="w-3 h-3"></i> Public</span>`
         : `<span class="album-visibility album-visibility-private"><i data-lucide="lock" class="w-3 h-3"></i> Members</span>`;
