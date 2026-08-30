@@ -31,6 +31,16 @@ const VaultModule = {
   // Uploads awaiting officer review (in-memory only until cloud storage exists)
   pendingUploads: [],
 
+  // Staged files for upload modal (with object URLs for preview)
+  stagedFiles: [],
+  stagedPreviews: [],
+
+  // Album mode: 'new' or 'existing'
+  albumMode: 'new',
+
+  // Upload in progress flag
+  uploadInProgress: false,
+
   // Category mapping between DB enum and display names
   CATEGORY_MAP: {
     'mission': 'Charity Mission',
@@ -101,8 +111,10 @@ const VaultModule = {
     this.renderFilters();
     this.populateUploadCategories();
     this.renderAlbumGrid();
+    this.renderWeeklyHighlights();
     this.renderPendingApprovals();
     this.setupEventListeners();
+    this.setupUploadModalListeners();
     this.renderStats();
   },
 
@@ -212,6 +224,312 @@ const VaultModule = {
     const select = document.getElementById('upload-category');
     if (!select) return;
     select.innerHTML = this.CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+  },
+
+  /**
+   * Setup event listeners for the upload modal (file input, drag-drop, radio buttons)
+   */
+  setupUploadModalListeners() {
+    const fileInput = document.getElementById('vault-file-input');
+    const dropzone = document.getElementById('vault-dropzone');
+    const radios = document.querySelectorAll('input[name="album-mode"]');
+
+    if (fileInput) {
+      fileInput.addEventListener('change', (e) => {
+        this.handleFileSelect(Array.from(e.target.files || []));
+        e.target.value = '';
+      });
+    }
+
+    if (dropzone) {
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('drag-active');
+      });
+      dropzone.addEventListener('dragleave', (e) => {
+        if (e.target === dropzone) dropzone.classList.remove('drag-active');
+      });
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-active');
+        this.handleFileSelect(Array.from(e.dataTransfer.files || []));
+      });
+    }
+
+    radios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        this.setAlbumMode(e.target.value);
+      });
+    });
+  },
+
+  /**
+   * Handle files selected via input or drag-drop.
+   * Validates each file, adds valid ones to stagedFiles, shows errors for invalid.
+   */
+  handleFileSelect(files) {
+    const errors = [];
+    const validFiles = [];
+
+    for (const file of files) {
+      const validationError = typeof MediaUpload !== 'undefined'
+        ? MediaUpload.validate(file)
+        : this._validateFile(file);
+      if (validationError) {
+        errors.push(validationError);
+      } else {
+        validFiles.push(file);
+      }
+    }
+
+    for (const file of validFiles) {
+      const url = URL.createObjectURL(file);
+      this.stagedFiles.push(file);
+      this.stagedPreviews.push({ file, url });
+    }
+
+    this.renderDropzonePreviews();
+    this.renderDropzoneErrors(errors);
+    this.updateSubmitButton();
+  },
+
+  /**
+   * Fallback file validation when MediaUpload is not available
+   */
+  _validateFile(file) {
+    if (!file) return 'No file selected';
+    const accepted = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!accepted.includes(file.type)) {
+      return `"${file.name}" is not a supported image (JPG, PNG or WebP)`;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      return `"${file.name}" is larger than 10MB`;
+    }
+    if (file.size === 0) {
+      return `"${file.name}" is empty`;
+    }
+    return null;
+  },
+
+  /**
+   * Render thumbnail previews for staged files inside the dropzone
+   */
+  renderDropzonePreviews() {
+    const emptyEl = document.getElementById('vault-dropzone-empty');
+    const previewsEl = document.getElementById('vault-dropzone-previews');
+    if (!emptyEl || !previewsEl) return;
+
+    if (this.stagedPreviews.length === 0) {
+      emptyEl.style.display = '';
+      previewsEl.style.display = 'none';
+      previewsEl.innerHTML = '';
+      return;
+    }
+
+    emptyEl.style.display = 'none';
+    previewsEl.style.display = 'grid';
+
+    const e = (s) => this.escapeHTML(s);
+    previewsEl.innerHTML = this.stagedPreviews.map((p, i) => {
+      const isImage = p.file.type.startsWith('image/');
+      const thumb = isImage
+        ? `<img src="${p.url}" alt="${e(p.file.name)}" class="vault-dropzone-thumb-img">`
+        : `<div class="vault-dropzone-thumb-icon"><i data-lucide="file" class="w-6 h-6"></i></div>`;
+      return `
+        <div class="vault-dropzone-thumb">
+          ${thumb}
+          <button class="vault-dropzone-thumb-remove" onclick="VaultModule.removeStagedFile(${i})" title="Remove">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+          <span class="vault-dropzone-thumb-name">${e(p.file.name)}</span>
+        </div>
+      `;
+    }).join('');
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Render inline error messages below the dropzone
+   */
+  renderDropzoneErrors(errors) {
+    const el = document.getElementById('vault-dropzone-errors');
+    if (!el) return;
+    if (!errors || errors.length === 0) {
+      el.innerHTML = '';
+      return;
+    }
+    el.innerHTML = errors.map(msg =>
+      `<div class="vault-dropzone-error-item"><i data-lucide="alert-circle" class="w-4 h-4"></i> ${this.escapeHTML(msg)}</div>`
+    ).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Remove a staged file by index, revoke its object URL
+   */
+  removeStagedFile(index) {
+    if (index < 0 || index >= this.stagedPreviews.length) return;
+    URL.revokeObjectURL(this.stagedPreviews[index].url);
+    this.stagedFiles.splice(index, 1);
+    this.stagedPreviews.splice(index, 1);
+    this.renderDropzonePreviews();
+    this.updateSubmitButton();
+  },
+
+  /**
+   * Clear all staged files and revoke object URLs
+   */
+  clearStagedFiles() {
+    this.stagedPreviews.forEach(p => URL.revokeObjectURL(p.url));
+    this.stagedFiles = [];
+    this.stagedPreviews = [];
+    this.renderDropzonePreviews();
+    this.renderDropzoneErrors([]);
+    this.updateSubmitButton();
+  },
+
+  /**
+   * Enable/disable the submit button based on staged files count
+   */
+  updateSubmitButton() {
+    const btn = document.getElementById('vault-submit-btn');
+    if (!btn) return;
+    btn.disabled = this.stagedFiles.length === 0 || this.uploadInProgress;
+  },
+
+  /**
+   * Switch album mode between 'new' (text input) and 'existing' (select)
+   */
+  setAlbumMode(mode) {
+    this.albumMode = mode;
+    const newGroup = document.getElementById('upload-album-new-group');
+    const existingGroup = document.getElementById('upload-album-existing-group');
+    const nameInput = document.getElementById('upload-album-name');
+    const existingSelect = document.getElementById('upload-existing-album');
+
+    if (mode === 'existing') {
+      if (newGroup) newGroup.style.display = 'none';
+      if (existingGroup) existingGroup.style.display = '';
+      if (nameInput) nameInput.value = '';
+      this.populateExistingAlbums();
+    } else {
+      if (newGroup) newGroup.style.display = '';
+      if (existingGroup) existingGroup.style.display = 'none';
+      if (existingSelect) existingSelect.value = '';
+    }
+  },
+
+  /**
+   * Populate the existing-album select from real album data
+   */
+  populateExistingAlbums() {
+    const select = document.getElementById('upload-existing-album');
+    if (!select) return;
+
+    if (this.albums.length === 0) {
+      select.innerHTML = '<option value="" disabled selected>No albums yet — create a new one instead</option>';
+      select.disabled = true;
+      return;
+    }
+
+    select.disabled = false;
+    select.innerHTML = '<option value="" disabled selected>Select an album…</option>' +
+      this.albums.map(a => `<option value="${this.escapeHTML(a.id)}">${this.escapeHTML(a.title)}</option>`).join('');
+  },
+
+  /**
+   * Render the Weekly Highlights section from real data
+   */
+  renderWeeklyHighlights() {
+    const container = document.getElementById('vault-highlights');
+    if (!container) return;
+
+    if (this.albums.length === 0) {
+      container.innerHTML = `
+        <div class="vault-highlights-header">
+          <h3 class="vault-highlights-title">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+            Weekly Highlights
+          </h3>
+          <span class="vault-highlights-note">Top photos this week, ranked by reactions &amp; comments</span>
+        </div>
+        <div class="vault-empty-state vault-highlights-empty">
+          <i data-lucide="sparkles" class="w-12 h-12 text-[#d4af37] opacity-40"></i>
+          <p class="text-sm opacity-70 mt-3">No highlights yet this week — be the first to upload and react to a photo.</p>
+        </div>
+      `;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      return;
+    }
+
+    const e = (s) => this.escapeHTML(s);
+    const allPhotos = [];
+    this.albums.forEach(album => {
+      album.photos.forEach((photo, idx) => {
+        allPhotos.push({
+          photo,
+          album,
+          index: idx,
+          likes: album.likes != null ? album.likes : 0,
+          comments: album.comments != null ? album.comments : 0
+        });
+      });
+    });
+
+    allPhotos.sort((a, b) => (b.likes + b.comments) - (a.likes + a.comments));
+    const top = allPhotos.slice(0, 4);
+
+    if (top.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
+
+    const cards = top.map(item => {
+      const thumbUrl = this.thumb(item.photo);
+      const img = thumbUrl
+        ? `<img src="${e(thumbUrl)}" alt="${e(item.photo.caption || item.album.title)}" class="vault-highlight-thumb-img" loading="lazy">`
+        : `<div class="vault-highlight-thumb-icon"><i data-lucide="image" class="w-6 h-6"></i></div>`;
+      return `
+        <div class="vault-highlight-card" onclick="VaultModule.openAlbum('${e(item.album.id)}')">
+          <div class="vault-highlight-thumb">${img}</div>
+          <div class="vault-highlight-stats">
+            <span><i data-lucide="heart" class="w-3 h-3"></i> ${item.likes}</span>
+            <span><i data-lucide="message-circle" class="w-3 h-3"></i> ${item.comments}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <div class="vault-highlights-header">
+        <h3 class="vault-highlights-title">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+          Weekly Highlights
+        </h3>
+        <span class="vault-highlights-note">Top photos this week, ranked by reactions &amp; comments</span>
+      </div>
+      <div class="vault-highlights-row">${cards}</div>
+    `;
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Reusable empty-state HTML builder
+   */
+  renderEmptyState(icon, title, message, ctaText, ctaOnclick) {
+    const cta = ctaText && ctaOnclick
+      ? `<button class="btn btn-gold btn-sm mt-4" onclick="${ctaOnclick}"><i data-lucide="upload" class="w-4 h-4"></i> ${this.escapeHTML(ctaText)}</button>`
+      : '';
+    return `
+      <div class="vault-empty-state">
+        <i data-lucide="${this.escapeHTML(icon)}" class="w-16 h-16 text-[#d4af37] opacity-50"></i>
+        <h3 class="text-xl font-semibold mt-4">${this.escapeHTML(title)}</h3>
+        <p class="text-sm opacity-70 mt-2">${this.escapeHTML(message)}</p>
+        ${cta}
+      </div>
+    `;
   },
 
   /**
@@ -352,13 +670,30 @@ const VaultModule = {
     });
 
     if (filteredAlbums.length === 0) {
-      gallery.innerHTML = `
-        <div class="vault-empty-state">
-          <i data-lucide="image-off" class="w-16 h-16 text-[#d4af37] opacity-50"></i>
-          <h3 class="text-xl font-semibold mt-4">No albums found</h3>
-          <p class="text-sm opacity-70 mt-2">Try adjusting your filters or search query</p>
-        </div>
-      `;
+      if (this.albums.length === 0) {
+        gallery.innerHTML = this.renderEmptyState(
+          'image-off',
+          'No Albums Yet',
+          'Be the first to create an album and preserve a moment in fraternity history.',
+          'Upload Photos',
+          "VaultModule.openUploadModal()"
+        );
+      } else if (this.selectedCategory !== 'all') {
+        gallery.innerHTML = this.renderEmptyState(
+          'folder-search',
+          'No Albums in This Category',
+          `No albums found in "${this.selectedCategory}". Try a different category or upload a new photo.`,
+          'Upload Photos',
+          "VaultModule.openUploadModal()"
+        );
+      } else {
+        gallery.innerHTML = this.renderEmptyState(
+          'image-off',
+          'No Albums Found',
+          'Try adjusting your filters or search query.',
+          null, null
+        );
+      }
       if (typeof lucide !== 'undefined') lucide.createIcons();
       return;
     }
@@ -466,15 +801,33 @@ const VaultModule = {
    */
   async submitUploadForApproval() {
     const nameInput = document.getElementById('upload-album-name');
+    const existingSelect = document.getElementById('upload-existing-album');
     const dateInput = document.getElementById('upload-date');
     const locationInput = document.getElementById('upload-location');
     const visibilitySelect = document.getElementById('upload-visibility');
     const categorySelect = document.getElementById('upload-category');
-    const fileInput = document.querySelector('#vault-upload-modal input[type="file"]');
+    const submitLabel = document.getElementById('vault-submit-label');
 
-    const albumName = nameInput?.value.trim();
-    if (!albumName) {
-      this.showToast('Please enter an album/event name before submitting');
+    // Determine album name/id based on mode
+    let albumName, existingAlbumId;
+    if (this.albumMode === 'existing') {
+      existingAlbumId = existingSelect?.value || '';
+      if (!existingAlbumId) {
+        this.showToast('Please select an existing album to add to');
+        return;
+      }
+      const album = this.albums.find(a => a.id === existingAlbumId);
+      albumName = album ? album.title : '';
+    } else {
+      albumName = nameInput?.value.trim();
+      if (!albumName) {
+        this.showToast('Please enter an album/event name before submitting');
+        return;
+      }
+    }
+
+    if (this.stagedFiles.length === 0) {
+      this.showToast('Please select at least one image to upload');
       return;
     }
 
@@ -484,41 +837,33 @@ const VaultModule = {
       if (session?.id) memberId = session.id;
     } catch (e) { /* no session */ }
 
-    const files = fileInput?.files ? Array.from(fileInput.files) : [];
-    if (files.length === 0) {
-      this.showToast('Please select at least one image to upload');
-      return;
-    }
-
+    const files = this.stagedFiles;
     const categoryValue = categorySelect?.value || this.CATEGORIES[0];
     const visibility = visibilitySelect?.value || 'private';
     const dateValue = dateInput?.value || '';
     const locationValue = locationInput?.value.trim() || '';
 
+    // Show upload progress
+    this.uploadInProgress = true;
+    this.updateSubmitButton();
+    if (submitLabel) submitLabel.textContent = 'Uploading…';
+
+    const albumId = existingAlbumId || `album-${Date.now()}`;
+    const year = dateValue ? new Date(dateValue).getFullYear() : new Date().getFullYear();
+    const categoryEnum = this.CATEGORY_TO_ENUM[categoryValue] || 'other';
+    const isPublic = visibility === 'public';
+
     // R2 upload path (production)
     if (this.hasSupabase() && memberId && typeof MediaUpload !== 'undefined' && MediaUpload.isConfigured()) {
-      const albumId = `album-${Date.now()}`;
-      const year = dateValue ? new Date(dateValue).getFullYear() : new Date().getFullYear();
-      const categoryEnum = this.CATEGORY_TO_ENUM[categoryValue] || 'other';
-      const isPublic = visibility === 'public';
-
       let uploaded = 0;
-      for (const file of files) {
-        const validationError = MediaUpload.validate(file);
-        if (validationError) {
-          this.showToast(validationError);
-          return;
-        }
-      }
-
+      const errors = [];
       for (const file of files) {
         try {
           const { full, thumb } = await MediaUpload.upload(file, 'vault', {
             albumId,
             withThumbnail: true,
             onProgress: (stage) => {
-              if (stage === 'compressing') this.showToast('Processing image…');
-              else if (stage === 'uploading') this.showToast('Uploading to storage…');
+              if (submitLabel) submitLabel.textContent = stage === 'compressing' ? 'Processing…' : 'Uploading…';
             },
           });
 
@@ -541,29 +886,40 @@ const VaultModule = {
           });
 
           if (insertError) {
-            this.showToast('Failed to save vault item: ' + insertError.message);
-            return;
+            errors.push(`${file.name}: ${insertError.message}`);
+          } else {
+            uploaded++;
           }
-          uploaded++;
         } catch (err) {
-          this.showToast(err.message || 'Upload failed');
-          return;
+          errors.push(`${file.name}: ${err.message || 'Upload failed'}`);
         }
+      }
+
+      this.uploadInProgress = false;
+      this.updateSubmitButton();
+      if (submitLabel) submitLabel.textContent = 'Submit for Approval';
+
+      if (errors.length > 0 && uploaded === 0) {
+        this.renderDropzoneErrors(errors);
+        this.showToast('Upload failed — see errors below');
+        return;
       }
 
       await this.loadPendingUploads();
       this.closeUploadModal();
-      this.showToast(`${uploaded} image${uploaded === 1 ? '' : 's'} submitted for officer approval`);
+      if (errors.length > 0) {
+        this.showToast(`${uploaded} image${uploaded === 1 ? '' : 's'} submitted; ${errors.length} failed`);
+      } else {
+        this.showToast(`${uploaded} image${uploaded === 1 ? '' : 's'} submitted for officer approval`);
+      }
     } else if (this.hasSupabase() && memberId) {
       // Supabase configured but R2 not available (local dev / Playwright)
-      const albumId = `album-${Date.now()}`;
-      const year = dateValue ? new Date(dateValue).getFullYear() : new Date().getFullYear();
-      const categoryEnum = this.CATEGORY_TO_ENUM[categoryValue] || 'other';
-      const isPublic = visibility === 'public';
+      let uploaded = 0;
+      const errors = [];
 
       for (const file of files) {
         if (!file.type.startsWith('image/')) {
-          this.showToast(`"${file.name}" is not an image`);
+          errors.push(`"${file.name}" is not an image`);
           continue;
         }
         const { error: insertError } = await db.from('vault_items').insert({
@@ -582,9 +938,20 @@ const VaultModule = {
           approval_status: 'pending'
         });
         if (insertError) {
-          this.showToast('Failed to save vault item: ' + insertError.message);
-          return;
+          errors.push(`${file.name}: ${insertError.message}`);
+        } else {
+          uploaded++;
         }
+      }
+
+      this.uploadInProgress = false;
+      this.updateSubmitButton();
+      if (submitLabel) submitLabel.textContent = 'Submit for Approval';
+
+      if (errors.length > 0 && uploaded === 0) {
+        this.renderDropzoneErrors(errors);
+        this.showToast('Upload failed — see errors below');
+        return;
       }
 
       await this.loadPendingUploads();
@@ -604,15 +971,14 @@ const VaultModule = {
         submittedAt: new Date()
       });
 
+      this.uploadInProgress = false;
+      this.updateSubmitButton();
+      if (submitLabel) submitLabel.textContent = 'Submit for Approval';
+
       this.renderPendingApprovals();
       this.closeUploadModal();
       this.showToast('Upload submitted for officer approval');
     }
-
-    if (nameInput) nameInput.value = '';
-    if (dateInput) dateInput.value = '';
-    if (locationInput) locationInput.value = '';
-    if (fileInput) fileInput.value = '';
   },
 
   /**
@@ -731,14 +1097,25 @@ const VaultModule = {
   },
 
   /**
-   * Open the upload modal (UI mock)
+   * Open the upload modal — reset state and populate album select
    */
   openUploadModal() {
+    this.clearStagedFiles();
+    this.setAlbumMode('new');
+    const newRadio = document.querySelector('input[name="album-mode"][value="new"]');
+    if (newRadio) newRadio.checked = true;
+    const nameInput = document.getElementById('upload-album-name');
+    if (nameInput) nameInput.value = '';
+    const dateInput = document.getElementById('upload-date');
+    if (dateInput) dateInput.value = '';
+    const locationInput = document.getElementById('upload-location');
+    if (locationInput) locationInput.value = '';
     const modal = document.getElementById('vault-upload-modal');
     if (modal) modal.classList.remove('hidden');
   },
 
   closeUploadModal() {
+    this.clearStagedFiles();
     const modal = document.getElementById('vault-upload-modal');
     if (modal) modal.classList.add('hidden');
   },
@@ -782,8 +1159,8 @@ const VaultModule = {
         <h1 class="album-hero-title">${e(this.currentAlbum.title)}</h1>
         <p class="album-hero-desc">${e(this.currentAlbum.description)}</p>
         <div class="album-hero-info">
-          <span><i data-lucide="calendar" class="w-4 h-4"></i> ${e(this.currentAlbum.date)}</span>
-          <span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>
+          ${this.currentAlbum.date ? `<span><i data-lucide="calendar" class="w-4 h-4"></i> ${e(this.currentAlbum.date)}</span>` : ''}
+          ${this.currentAlbum.location ? `<span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>` : ''}
           <span><i data-lucide="images" class="w-4 h-4"></i> ${this.currentAlbum.photos.length} photos</span>
         </div>
       </div>
@@ -1013,13 +1390,42 @@ const VaultModule = {
       });
     });
 
+    if (allPhotos.length === 0) {
+      const gallery = document.getElementById('vault-gallery');
+      if (gallery) {
+        gallery.innerHTML = this.renderEmptyState(
+          'image-off',
+          'No Photos Yet',
+          'There are no photos in the vault yet. Be the first to upload!',
+          'Upload Photos',
+          "VaultModule.openUploadModal()"
+        );
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+      return;
+    }
+
+    // Derive date range from real data
+    const years = this.availableYears();
+    const dateRange = years.length > 0
+      ? (years.length === 1 ? years[0] : `${years[years.length - 1]}-${years[0]}`)
+      : '';
+
+    // Derive location summary from real data
+    const locations = [...new Set(this.albums.map(a => a.location).filter(l => l && l !== 'Unknown'))];
+    const locationSummary = locations.length === 0
+      ? ''
+      : locations.length === 1
+        ? locations[0]
+        : 'Various Locations';
+
     // Create a virtual "All Photos" album
     this.currentAlbum = {
       id: 'all-photos',
       title: 'All Photos',
       description: 'Complete photo archive from all albums across the years',
-      date: '2023-2025',
-      location: 'Various Locations',
+      date: dateRange,
+      location: locationSummary,
       category: 'Archive',
       categoryIcon: 'images',
       categoryColor: '#d4af37',

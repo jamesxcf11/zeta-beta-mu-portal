@@ -8868,6 +8868,26 @@ body.light-theme .memoriam-solemn {
 
 .light-theme .vault-modal-title { color: #064e3b; }
 
+.light-theme .vault-modal-sub { color: rgba(6, 78, 59, 0.65); }
+
+.light-theme .vault-dropzone {
+  border-color: rgba(184, 148, 31, 0.4);
+  background: rgba(6, 78, 59, 0.03);
+  color: rgba(6, 78, 59, 0.65);
+}
+
+.light-theme .vault-dropzone.drag-active {
+  border-color: rgba(184, 148, 31, 0.8);
+  background: rgba(184, 148, 31, 0.08);
+}
+
+.light-theme .vault-dropzone-thumb {
+  background: rgba(6, 78, 59, 0.06);
+  border-color: rgba(6, 78, 59, 0.12);
+}
+
+.light-theme .vault-highlights-note { color: rgba(6, 78, 59, 0.55); }
+
 .vault-modal-sub {
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
@@ -8911,6 +8931,117 @@ body.light-theme .memoriam-solemn {
   inset: 0;
   opacity: 0;
   cursor: pointer;
+}
+
+.vault-dropzone.drag-active {
+  border-color: rgba(212, 175, 55, 0.8);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.vault-dropzone-previews {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.vault-dropzone-thumb {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vault-dropzone-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vault-dropzone-thumb-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: rgba(212, 175, 55, 0.6);
+}
+
+.vault-dropzone-thumb-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.vault-dropzone-thumb:hover .vault-dropzone-thumb-remove {
+  opacity: 1;
+}
+
+.vault-dropzone-thumb-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2px 6px;
+  font-size: 0.65rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vault-dropzone-errors {
+  margin-top: 0.5rem;
+}
+
+.vault-dropzone-error-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #ef4444;
+  padding: 0.25rem 0;
+}
+
+.vault-dropzone-error-item i {
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
+.vault-highlight-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vault-highlight-thumb-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: rgba(212, 175, 55, 0.6);
+}
+
+.vault-highlights-empty {
+  padding: 2rem 1rem;
+  text-align: center;
 }
 
 .vault-modal-actions {
@@ -11707,6 +11838,17 @@ body.dark-theme.landing-page {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Subpages and memorial page in dark mode: navbar needs a visible background
+   (no hero image behind it, unlike the landing page) */
+.dark-theme body.subpage .landing-navbar,
+.dark-theme.subpage .landing-navbar,
+.dark-theme.memoriam-solemn .landing-navbar {
+  background: rgba(2, 44, 34, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
 }
 
 /* Light theme scrolled nav */

@@ -41,27 +41,22 @@ test.describe('Vault (vault.html)', () => {
     await expect(page.locator('.vault-empty-state')).toBeAttached();
   });
 
-  test('upload modal: submitting without album name shows validation toast', async ({ page }) => {
+  test('upload modal: submit button is disabled when no files are staged', async ({ page }) => {
     await page.click('button:has-text("Upload Photos")');
     await expect(page.locator('#vault-upload-modal')).not.toHaveClass(/hidden/);
-    const submitBtn = page.locator('#vault-upload-modal button:has-text("Submit")');
-    if (await submitBtn.count()) {
-      await submitBtn.click();
-      // submitUploadForApproval() should not close modal / should show toast on missing name
-      await expect(page.locator('#vault-upload-modal')).not.toHaveClass(/hidden/);
-    }
+    const submitBtn = page.locator('#vault-submit-btn');
+    await expect(submitBtn).toBeDisabled();
   });
 
-  test('upload modal: submitting without files shows validation toast', async ({ page }) => {
+  test('upload modal: album name field works and submit stays disabled without files', async ({ page }) => {
     await page.click('button:has-text("Upload Photos")');
     await page.fill('#upload-album-name', 'Medical Mission 2026');
     await page.fill('#upload-location', 'Porac, Pampanga');
-    const submitBtn = page.locator('#vault-upload-modal button:has-text("Submit")');
-    if (await submitBtn.count()) {
-      await submitBtn.click();
-      // Should stay open because no files selected
-      await expect(page.locator('#vault-upload-modal')).not.toHaveClass(/hidden/);
-    }
+    // Submit button should still be disabled because no files are staged
+    const submitBtn = page.locator('#vault-submit-btn');
+    await expect(submitBtn).toBeDisabled();
+    // Modal should still be open
+    await expect(page.locator('#vault-upload-modal')).not.toHaveClass(/hidden/);
   });
 
   test('upload modal closes via backdrop and close button', async ({ page }) => {
@@ -69,6 +64,38 @@ test.describe('Vault (vault.html)', () => {
     await expect(page.locator('#vault-upload-modal')).not.toHaveClass(/hidden/);
     await page.click('.vault-modal-close');
     await expect(page.locator('#vault-upload-modal')).toHaveClass(/hidden/);
+  });
+
+  test('upload modal: album mode radio switches field type', async ({ page }) => {
+    await page.click('button:has-text("Upload Photos")');
+    // Default: new album mode shows text input
+    await expect(page.locator('#upload-album-name')).toBeVisible();
+    await expect(page.locator('#upload-album-existing-group')).toBeHidden();
+    // Switch to existing album mode
+    await page.check('input[name="album-mode"][value="existing"]');
+    await expect(page.locator('#upload-album-existing-group')).toBeVisible();
+    await expect(page.locator('#upload-album-new-group')).toBeHidden();
+    // Should show "No albums yet" placeholder since mock has 1 album
+    const existingSelect = page.locator('#upload-existing-album');
+    await expect(existingSelect).toBeVisible();
+  });
+
+  test('upload modal: file preview appears when file is selected', async ({ page }) => {
+    await page.click('button:has-text("Upload Photos")');
+    // Initially dropzone shows empty state
+    await expect(page.locator('#vault-dropzone-empty')).toBeVisible();
+    await expect(page.locator('#vault-dropzone-previews')).toBeHidden();
+    // Upload a fake file
+    await page.setInputFiles('#vault-file-input', {
+      name: 'test.jpg',
+      mimeType: 'image/jpeg',
+      buffer: Buffer.from('fake-image'),
+    });
+    // Preview should now be visible
+    await expect(page.locator('#vault-dropzone-previews')).toBeVisible();
+    await expect(page.locator('.vault-dropzone-thumb')).toHaveCount(1);
+    // Submit button should be enabled
+    await expect(page.locator('#vault-submit-btn')).toBeEnabled();
   });
 
   test('member-only session: officer View button is hidden (role gating)', async ({ page }) => {
