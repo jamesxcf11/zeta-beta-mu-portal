@@ -406,6 +406,28 @@ const VaultModule = {
   },
 
   /**
+   * Remove a staged file from the Review step (step 2) — keeps step 1 in sync.
+   * If no files remain, sends user back to step 1.
+   */
+  removeReviewFile(index) {
+    if (index < 0 || index >= this.stagedPreviews.length) return;
+    URL.revokeObjectURL(this.stagedPreviews[index].url);
+    this.stagedFiles.splice(index, 1);
+    this.stagedPreviews.splice(index, 1);
+
+    this.renderDropzonePreviews();
+    this.updateSubmitButton();
+
+    if (this.stagedFiles.length === 0) {
+      this.showToast('No files left — add at least one photo to continue');
+      this.backToStep1();
+      return;
+    }
+
+    this.renderReviewStep();
+  },
+
+  /**
    * Clear all staged files and revoke object URLs
    */
   clearStagedFiles() {
@@ -487,7 +509,7 @@ const VaultModule = {
     const totalSize = this.stagedFiles.reduce((sum, f) => sum + f.size, 0);
     const dateDisplay = r.dateValue ? new Date(r.dateValue).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Not specified';
 
-    const fileThumbs = this.stagedPreviews.map(p => {
+    const fileThumbs = this.stagedPreviews.map((p, i) => {
       const isImage = p.file.type.startsWith('image/');
       const img = isImage
         ? `<img src="${p.url}" alt="${e(p.file.name)}">`
@@ -495,6 +517,9 @@ const VaultModule = {
       return `
         <div class="vault-review-file">
           ${img}
+          <button class="vault-review-file-remove" onclick="event.stopPropagation(); VaultModule.removeReviewFile(${i})" title="Remove" aria-label="Remove ${e(p.file.name)}">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
           <div class="vault-review-file-info">${e(p.file.name)} &middot; ${fmtSize(p.file.size)}</div>
         </div>
       `;

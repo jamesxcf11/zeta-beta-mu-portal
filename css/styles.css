@@ -8918,6 +8918,7 @@ body.light-theme .memoriam-solemn {
   inset: 0;
   opacity: 0;
   cursor: pointer;
+  z-index: 0;
 }
 
 .vault-dropzone-previews {
@@ -8930,6 +8931,7 @@ body.light-theme .memoriam-solemn {
 
 .vault-dropzone-thumb {
   position: relative;
+  z-index: 1;
   border-radius: 10px;
   overflow: hidden;
   aspect-ratio: 1;
@@ -8959,8 +8961,8 @@ body.light-theme .memoriam-solemn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: none;
   background: rgba(0, 0, 0, 0.65);
@@ -9223,6 +9225,29 @@ body.light-theme .memoriam-solemn {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.vault-review-file-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.vault-review-file-remove:hover {
+  opacity: 1;
+  background: rgba(239, 68, 68, 0.85);
 }
 
 /* Upload progress bar */
