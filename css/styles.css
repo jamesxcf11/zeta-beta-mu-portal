@@ -5734,7 +5734,7 @@ body.light-theme {
 }
 
 .light-theme .landing-navbar-links a {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(15, 40, 30, 0.85);
 }
 
 .light-theme .landing-navbar-links a:hover {
@@ -5869,11 +5869,11 @@ body.light-theme {
   border-top-color: rgba(6, 78, 59, 0.1);
 }
 
-.light-theme .landing-footer-brand p {
+.light-theme .landing-footer:not(.landing-footer--premium) .landing-footer-brand p {
   color: #2d5a4e;
 }
 
-.light-theme .landing-footer-brand span {
+.light-theme .landing-footer:not(.landing-footer--premium) .landing-footer-brand span {
   color: #064e3b;
 }
 
@@ -11457,7 +11457,7 @@ body.subpage .mobile-overlay {
   letter-spacing: 0.02em;
 }
 
-.light-theme .landing-navbar-logo-title {
+.light-theme .landing-navbar:not(.navbar-over-hero) .landing-navbar-logo-title {
   color: #064e3b;
 }
 
@@ -12081,7 +12081,6 @@ body.subpage .mobile-overlay {
   color: #d4af37;
 }
 
-.light-theme .landing-footer-desc,
 .light-theme .landing-footer--premium .landing-footer-links a,
 .light-theme .landing-footer-contact-item {
   color: rgba(255, 255, 255, 0.65);
@@ -12318,7 +12317,7 @@ body.dark-theme.landing-page {
 
 .light-theme .landing-navbar.navbar-scrolled:not(.navbar-over-hero) .landing-navbar-links a,
 .light-theme .landing-navbar:not(.navbar-over-hero) .landing-navbar-links a {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(26, 26, 26, 0.85);
 }
 
 .light-theme .landing-navbar.navbar-scrolled:not(.navbar-over-hero) .landing-navbar-links a:hover,
@@ -12366,6 +12365,52 @@ body.dark-theme.landing-page {
 .light-theme .navbar-scrolled:not(.navbar-over-hero) .nav-login-btn:hover {
   background: #0F281E;
   color: #FAF9F6;
+}
+
+/* Light theme: the navbar keeps its solid light treatment everywhere,
+   including while it sits over the dark hero, so nothing changes on scroll. */
+.light-theme .landing-navbar.navbar-over-hero {
+  background: #FAF9F6;
+  border-bottom: 1px solid #E8E6E1;
+  box-shadow: 0 1px 0 #E8E6E1;
+}
+
+.light-theme .landing-navbar.navbar-over-hero .landing-navbar-logo,
+.light-theme .landing-navbar.navbar-over-hero .landing-mobile-toggle {
+  color: #1A1A1A;
+}
+
+.light-theme .landing-navbar.navbar-over-hero .landing-navbar-logo-title {
+  color: #064e3b;
+}
+
+.light-theme .landing-navbar.navbar-over-hero .landing-navbar-links a {
+  color: rgba(26, 26, 26, 0.85);
+}
+
+.light-theme .landing-navbar.navbar-over-hero .landing-navbar-links a:hover {
+  color: var(--landing-gold);
+}
+
+.light-theme .landing-navbar.navbar-over-hero .nav-login-btn {
+  color: #1A1A1A;
+  border: 1px solid #0F281E;
+  background: transparent;
+}
+
+.light-theme .landing-navbar.navbar-over-hero .nav-login-btn:hover {
+  background: #0F281E;
+  color: #FAF9F6;
+}
+
+.light-theme .landing-navbar.navbar-over-hero .navbar-theme-toggle {
+  color: #065f46;
+}
+
+.light-theme .landing-navbar.navbar-over-hero .navbar-theme-toggle:hover {
+  color: #92700c;
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.35);
 }
 
 /* --- Hero Section --- */
@@ -13117,4 +13162,49 @@ body.dark-theme.landing-page {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ============================================
+   LANDING PAGE: CIRCULAR LOGO MARK
+   Scoped to body.landing-page (index.html only).
+   Source logo1.png is a 16:9 white-background image, so it is
+   center-cropped with object-fit: cover inside a round gold disc.
+   ============================================ */
+
+.landing-page .landing-navbar-logo-icon,
+.landing-page .landing-footer-logo-icon,
+.landing-page .landing-mobile-menu-logo-icon {
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.55);
+  flex-shrink: 0;
+}
+
+.landing-page .landing-navbar-logo-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.landing-page .landing-footer-logo-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.landing-page .landing-mobile-menu-logo-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.landing-page .landing-navbar-logo-icon img,
+.landing-page .landing-footer-logo-icon img,
+.landing-page .landing-mobile-menu-logo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  background: #ffffff;
+  display: block;
 }
