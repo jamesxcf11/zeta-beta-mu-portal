@@ -78,6 +78,51 @@ function makeVaultItems() {
  * uses last-registered-first-matched) to override specific behavior.
  */
 async function mockSupabase(page, { member = makeMember(), authError = null, vaultItems = makeVaultItems() } = {}) {
+  let profile = {
+    id: member.id,
+    username: member.username,
+    email: member.email,
+    firstName: member.first_name || '',
+    middleName: member.middle_name || '',
+    lastName: member.last_name || '',
+    name: member.name,
+    nickname: member.nickname || '',
+    birthday: member.birthday || '',
+    graduationYear: member.graduation_year || '',
+    hospital: member.hospital || '',
+    field: member.field_of_medicine || '',
+    medicalLicense: member.medical_license || '',
+    specialization: member.specialization || '',
+    batch: member.batch || '',
+    bio: member.bio || '',
+    avatarUrl: member.avatar_url || '',
+    phone: member.phone || '',
+    mobile: member.mobile || '',
+    telephone: member.telephone || '',
+    homePhone: member.home_phone || '',
+    facebook: member.facebook || '',
+    instagram: member.instagram || '',
+    address: member.address || '',
+    role: member.role,
+    status: member.status,
+  };
+
+  await page.route('**/api/profile**', async (route) => {
+    if (route.request().method() === 'GET') {
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ profile }) });
+    }
+    if (route.request().method() === 'PATCH') {
+      const updates = route.request().postDataJSON();
+      profile = {
+        ...profile,
+        ...updates,
+        name: [updates.firstName ?? profile.firstName, updates.middleName ?? profile.middleName, updates.lastName ?? profile.lastName].filter(Boolean).join(' '),
+      };
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ profile }) });
+    }
+    return route.fulfill({ status: 405, contentType: 'application/json', body: JSON.stringify({ error: 'Method not allowed' }) });
+  });
+
   // --- Auth: sign in ---
   await page.route('**/auth/v1/token**', async (route) => {
     if (authError) {
@@ -171,7 +216,13 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
       return route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
     }
     if (method === 'POST') {
-      return route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify([{ id: Date.now() }]) });
+      // PostgREST returns a single object (not an array) when the client
+      // requested one via .single() — mirror that so data.id resolves.
+      const isSingle = route.request().headers()['accept'] === 'application/vnd.pgrst.object+json';
+      const body = isSingle
+        ? JSON.stringify({ id: Date.now() })
+        : JSON.stringify([{ id: Date.now() }]);
+      return route.fulfill({ status: 201, contentType: 'application/json', body });
     }
     return route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
   });
@@ -197,13 +248,15 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
 
   // --- Mock R2 upload presign endpoint (Netlify Function) ---
   await page.route('**/api/upload-url**', async (route) => {
+    const request = route.request().postDataJSON();
+    const fileKey = request.scope === 'profile' ? 'profiles/1/mock.webp' : 'mock/mock.webp';
     return route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
         uploadUrl: 'https://mock-r2.example.com/put',
-        publicUrl: 'https://media.zetabetamu.com/mock/mock.webp',
-        fileKey: 'mock/mock.webp',
+        publicUrl: `https://media.zetabetamu.com/${fileKey}`,
+        fileKey,
         expiresIn: 300,
       }),
     });
@@ -249,4 +302,24 @@ async function seedAdminSession(page) {
   return seedSession(page, { role: 'admin', name: 'Dr. James Anderson', username: 'admin' });
 }
 
-module.exports = { mockSupabase, makeMember, makeVaultItems, seedSession, seedAdminSession, SUPABASE_HOST_GLOB };
+async function seedAuthenticatedSession(page, overrides = {}) {
+  const session = await seedSession(page, overrides);
+  await page.addInitScript((member) => {
+    window.localStorage.setItem('zbm-auth', JSON.stringify({
+      access_token: 'mock-access-token',
+      refresh_token: 'mock-refresh-token',
+      expires_in: 3600,
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
+      token_type: 'bearer',
+      user: {
+        id: 'mock-user-id',
+        email: member.email,
+        aud: 'authenticated',
+        role: 'authenticated',
+      },
+    }));
+  }, session);
+  return session;
+}
+
+module.exports = { mockSupabase, makeMember, makeVaultItems, seedSession, seedAdminSession, seedAuthenticatedSession, SUPABASE_HOST_GLOB };

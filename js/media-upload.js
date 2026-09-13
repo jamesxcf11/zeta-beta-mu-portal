@@ -23,8 +23,10 @@ const MediaUpload = {
   MAX_BYTES: 10 * 1024 * 1024, // keep in sync with R2_MAX_UPLOAD_BYTES
   MAX_DIMENSION: 2048,
   THUMB_DIMENSION: 400,
+  AVATAR_DIMENSION: 512,
   WEBP_QUALITY: 0.82,
   THUMB_QUALITY: 0.75,
+  AVATAR_QUALITY: 0.8,
 
   ACCEPTED_INPUT: ['image/jpeg', 'image/png', 'image/webp'],
 
@@ -130,6 +132,32 @@ const MediaUpload = {
     return this._encode(source, maxDim || this.THUMB_DIMENSION, this.THUMB_QUALITY);
   },
 
+  async makeAvatar(file) {
+    const source = await this._decode(file);
+    const side = Math.min(source.width, source.height);
+    const size = Math.min(this.AVATAR_DIMENSION, side);
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(
+      source,
+      (source.width - side) / 2,
+      (source.height - side) / 2,
+      side,
+      side,
+      0,
+      0,
+      size,
+      size
+    );
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/webp', this.AVATAR_QUALITY));
+    if (!blob) throw new Error('Profile image encoding failed');
+    return blob;
+  },
+
   /**
    * Current Supabase access token. This is the real credential the API
    * verifies — the localStorage zbm-session blob is not trusted server-side.
@@ -225,7 +253,9 @@ const MediaUpload = {
     };
 
     report('compressing');
-    const fullBlob = await this.compressToWebP(file);
+    const fullBlob = scope === 'profile'
+      ? await this.makeAvatar(file)
+      : await this.compressToWebP(file);
 
     let thumbBlob = null;
     if (withThumbnail) {

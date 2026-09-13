@@ -274,13 +274,37 @@ const FeedModule = {
     }
   ],
 
-  // Mock notifications data
-  notifications: [
-    { id: 1, type: 'reaction', icon: 'heart', text: 'Dr. Sarah Mitchell reacted to your post', time: '2h ago', unread: true },
-    { id: 2, type: 'comment', icon: 'message-circle', text: 'Dr. Michael Chen commented on your post', time: '5h ago', unread: true },
-    { id: 3, type: 'announcement', icon: 'megaphone', text: 'New announcement: Annual Gala 2026', time: '1d ago', unread: true },
-    { id: 4, type: 'birthday', icon: 'cake', text: 'Dr. Robert Kim\'s birthday is today', time: '1d ago', unread: false }
-  ],
+  // Derived notifications: reactions/comments on your posts + new
+  // announcements since your last visit (see loadNotifications)
+  notifications: [],
+
+  /**
+   * LocalStorage keys for per-member notification read state.
+   */
+  notifReadKey() {
+    const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+    return session ? `zbm-notif-read-${session.id}` : null;
+  },
+
+  notifLastVisitKey() {
+    const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+    return session ? `zbm-notif-last-visit-${session.id}` : null;
+  },
+
+  getReadNotificationIds() {
+    const key = this.notifReadKey();
+    if (!key) return new Set();
+    try {
+      return new Set(JSON.parse(localStorage.getItem(key) || '[]'));
+    } catch (e) {
+      return new Set();
+    }
+  },
+
+  saveReadNotificationIds(ids) {
+    const key = this.notifReadKey();
+    if (key) localStorage.setItem(key, JSON.stringify([...ids]));
+  },
 
   // Composer state
   composerState: {
@@ -303,8 +327,14 @@ const FeedModule = {
   PAGE_SIZE: 5,
   scrollObserver: null,
 
+  // Client-side search query from the header search input
+  searchQuery: '',
+
   // Track which post overflow menu is open
   activeOverflowMenu: null,
+
+  // Post id targeted by the open report modal
+  reportTargetPostId: null,
 
   /**
    * Resolve the logged-in user from the session (with safe fallbacks).
@@ -346,14 +376,20 @@ const FeedModule = {
   },
 
   /**
-   * Initialize feed module
+   * Initialize feed module. Exposes this.ready (a promise) so dependent
+   * UI such as the welcome modal can wait for real data to load.
    */
-  async init() {
+  init() {
+    this.ready = this._init();
+  },
+
+  async _init() {
     this.applyUserToUI();
     if (this.hasSupabase()) {
       await this.loadPosts();
       await this.loadAnnouncements();
       await this.loadBirthdays();
+      await this.loadNotifications();
     }
     this.renderPosts();
     this.renderBirthdays();
@@ -373,7 +409,7 @@ const FeedModule = {
       .from('posts')
       .select(`
         id, content, image_url, is_pinned, post_type, status, created_at,
-        member_id, members:id (name, avatar_url, hospital, field_of_medicine, role)
+        member_id, members:member_id (name, avatar_url, hospital, field_of_medicine, role)
       `)
       .eq('status', 'published')
       .is('deleted_at', null)
@@ -386,7 +422,7 @@ const FeedModule = {
     // Load reactions and comments for each post
     const postIds = data.map(p => p.id);
     const [{ data: reactions }, { data: comments }] = await Promise.all([
-      db.from('post_reactions').select('post_id, reaction_type').in('post_id', postIds),
+      db.from('post_reactions').select('post_id, member_id, reaction_type').in('post_id', postIds),
       db.from('comments').select('id, post_id, member_id, content, created_at, members:member_id (name, avatar_url)').eq('status', 'published').in('post_id', postIds).order('created_at', { ascending: true })
     ]);
 
@@ -399,6 +435,9 @@ const FeedModule = {
       let userReaction = null;
       postReactions.forEach(r => {
         reactionCounts[r.reaction_type] = (reactionCounts[r.reaction_type] || 0) + 1;
+        if (currentUserId && r.member_id === currentUserId) {
+          userReaction = r.reaction_type;
+        }
       });
 
       const postComments = (comments || []).filter(c => c.post_id === p.id).map(c => ({
@@ -414,6 +453,7 @@ const FeedModule = {
       const member = p.members || {};
       return {
         id: p.id,
+        memberId: p.member_id,
         author: {
           name: member.name || 'Unknown',
           avatar: member.avatar_url || 'image/placeholders/avatars/a11.jpg',
@@ -461,6 +501,7 @@ const FeedModule = {
       id: a.id,
       title: a.title,
       date: new Date(a.starts_at || a.created_at),
+      createdAt: new Date(a.created_at),
       content: a.content,
       icon: iconMap[a.priority] || 'megaphone',
       accent: accentMap[a.priority] || 'gold',
@@ -492,17 +533,139 @@ const FeedModule = {
   },
 
   /**
+   * Load notifications derived from real activity: reactions and comments
+   * on your posts plus announcements created since your last visit.
+   * Read state is persisted per member in localStorage.
+   */
+  async loadNotifications() {
+    const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+    if (!session) return;
+
+    // Baseline: first visit looks back one week so recent activity shows;
+    // afterwards only activity since the previous visit counts.
+    const FIRST_VISIT_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+    const lastVisitKey = this.notifLastVisitKey();
+    const stored = lastVisitKey ? localStorage.getItem(lastVisitKey) : null;
+    const since = stored ? new Date(stored) : new Date(Date.now() - FIRST_VISIT_WINDOW_MS);
+    if (lastVisitKey) localStorage.setItem(lastVisitKey, new Date().toISOString());
+
+    const reads = this.getReadNotificationIds();
+    const items = [];
+
+    // Reactions and comments on MY posts
+    const { data: myPosts } = await db.from('posts')
+      .select('id')
+      .eq('member_id', session.id);
+    const myPostIds = (myPosts || []).map(p => p.id);
+
+    if (myPostIds.length) {
+      const [{ data: reactions }, { data: comments }] = await Promise.all([
+        db.from('post_reactions')
+          .select('id, member_id, reaction_type, created_at, members:member_id (name)')
+          .in('post_id', myPostIds)
+          .gt('created_at', since.toISOString())
+          .order('created_at', { ascending: false })
+          .limit(20),
+        db.from('comments')
+          .select('id, member_id, created_at, members:member_id (name)')
+          .eq('status', 'published')
+          .in('post_id', myPostIds)
+          .gt('created_at', since.toISOString())
+          .order('created_at', { ascending: false })
+          .limit(20)
+      ]);
+
+      (reactions || []).forEach(r => {
+        if (r.member_id === session.id) return; // skip own activity
+        const name = r.members?.name || 'A brother';
+        items.push({
+          id: `r-${r.id}`,
+          type: 'reaction',
+          icon: 'heart',
+          text: `${name} reacted to your post`,
+          time: this.getTimeAgo(new Date(r.created_at)),
+          ts: new Date(r.created_at).getTime(),
+          unread: !reads.has(`r-${r.id}`)
+        });
+      });
+
+      (comments || []).forEach(c => {
+        if (c.member_id === session.id) return; // skip own activity
+        const name = c.members?.name || 'A brother';
+        items.push({
+          id: `c-${c.id}`,
+          type: 'comment',
+          icon: 'message-circle',
+          text: `${name} commented on your post`,
+          time: this.getTimeAgo(new Date(c.created_at)),
+          ts: new Date(c.created_at).getTime(),
+          unread: !reads.has(`c-${c.id}`)
+        });
+      });
+    }
+
+    // New announcements since the last visit
+    (this.announcements || []).forEach(a => {
+      if (!a.createdAt || a.createdAt <= since) return;
+      items.push({
+        id: `a-${a.id}`,
+        type: 'announcement',
+        icon: 'megaphone',
+        text: `New announcement: ${a.title}`,
+        time: this.getTimeAgo(a.createdAt),
+        ts: a.createdAt.getTime(),
+        unread: !reads.has(`a-${a.id}`)
+      });
+    });
+
+    items.sort((x, y) => y.ts - x.ts);
+    this.notifications = items.slice(0, 20);
+  },
+
+  /**
+   * Posts matching the active search query (all posts when empty).
+   */
+  getFilteredPosts() {
+    const query = (this.searchQuery || '').trim().toLowerCase();
+    if (!query) return this.posts;
+    return this.posts.filter(p =>
+      (p.content || '').toLowerCase().includes(query) ||
+      (p.author && p.author.name || '').toLowerCase().includes(query)
+    );
+  },
+
+  /**
    * Render visible posts to the feed (chunked; more load on scroll)
    */
   renderPosts() {
     const container = document.getElementById('posts-container');
     if (!container) return;
 
-    const visible = this.posts.slice(0, this.visibleCount);
-    const hasMore = this.posts.length > this.visibleCount;
+    const filtered = this.getFilteredPosts();
+    const visible = filtered.slice(0, this.visibleCount);
+    const hasMore = filtered.length > this.visibleCount;
 
-    container.innerHTML = visible.map(post => this.createPostHTML(post)).join('')
-      + (hasMore ? '<div id="feed-sentinel" class="feed-sentinel" aria-hidden="true"></div>' : '');
+    if (filtered.length === 0) {
+      const query = (this.searchQuery || '').trim();
+      container.innerHTML = query
+        ? `
+          <div class="empty-state">
+            <div class="empty-icon"><i data-lucide="search-x" class="w-8 h-8"></i></div>
+            <div class="empty-title">No posts found</div>
+            <div class="empty-text">No posts or members match "${this.escapeHTML(query)}".</div>
+          </div>
+        `
+        : `
+          <div class="empty-state">
+            <div class="empty-icon"><i data-lucide="newspaper" class="w-8 h-8"></i></div>
+            <div class="empty-title">No posts yet</div>
+            <div class="empty-text">Be the first to share something with the brotherhood.</div>
+          </div>
+        `;
+    } else {
+      container.innerHTML = visible.map(post => this.createPostHTML(post)).join('')
+        + (hasMore ? '<div id="feed-sentinel" class="feed-sentinel" aria-hidden="true"></div>' : '');
+    }
 
     this.observeSentinel();
 
@@ -526,7 +689,7 @@ const FeedModule = {
 
     this.scrollObserver = new IntersectionObserver((entries) => {
       if (entries.some(e => e.isIntersecting)) {
-        this.visibleCount = Math.min(this.visibleCount + this.PAGE_SIZE, this.posts.length);
+        this.visibleCount = Math.min(this.visibleCount + this.PAGE_SIZE, this.getFilteredPosts().length);
         this.renderPosts();
       }
     }, { rootMargin: '400px' });
@@ -537,7 +700,7 @@ const FeedModule = {
    * Manual load-more trigger (button click)
    */
   loadMore() {
-    this.visibleCount = Math.min(this.visibleCount + this.PAGE_SIZE, this.posts.length);
+    this.visibleCount = Math.min(this.visibleCount + this.PAGE_SIZE, this.getFilteredPosts().length);
     this.renderPosts();
   },
 
@@ -882,17 +1045,6 @@ const FeedModule = {
 
     container.innerHTML = this.announcements.slice(0, 3).map(announcement => this.createAnnouncementHTML(announcement)).join('');
 
-    const addPlaceholder = document.getElementById('announcements-add-placeholder');
-    if (addPlaceholder && typeof AuthModule !== 'undefined' && AuthModule.isOfficer && AuthModule.isOfficer()) {
-      addPlaceholder.innerHTML = `
-        <button class="sidebar-add-btn" aria-label="Add announcement" title="Add announcement" onclick="FeedModule.showToast('Add announcement coming soon')">
-          <i data-lucide="pencil" class="w-4 h-4"></i>
-        </button>
-      `;
-    } else if (addPlaceholder) {
-      addPlaceholder.innerHTML = '';
-    }
-    
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
@@ -985,6 +1137,20 @@ const FeedModule = {
         postInput.style.height = Math.min(postInput.scrollHeight, 200) + 'px';
       });
     }
+
+    // Header search — client-side filter over loaded posts
+    const searchInput = document.getElementById('feed-search-input');
+    if (searchInput) {
+      let searchTimer = null;
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+          this.searchQuery = searchInput.value;
+          this.visibleCount = this.PAGE_SIZE;
+          this.renderPosts();
+        }, 200);
+      });
+    }
   },
 
   /**
@@ -1016,6 +1182,15 @@ const FeedModule = {
       return;
     }
 
+    // Photos require the R2 upload pipeline, which only exists on the
+    // deployed site (Netlify Functions are not served by the local dev
+    // server). Block early rather than persisting a session-only blob:
+    // URL that would render as a broken image after reload.
+    if (this.composerState.imageFile && typeof MediaUpload !== 'undefined' && !MediaUpload.isConfigured()) {
+      this.showToast('Photo posts are only available on the deployed site — remove the photo to post text only');
+      return;
+    }
+
     const postBtn = document.getElementById('post-btn');
     this.isPosting = true;
     if (postBtn) { postBtn.disabled = true; postBtn.style.opacity = '0.6'; }
@@ -1023,7 +1198,7 @@ const FeedModule = {
     try {
       const user = this.getCurrentUser();
       let postId = Date.now();
-      let imageUrl = this.composerState.image;
+      let imageUrl = null;
       let imageKey = null;
 
       // Upload image to R2 when configured
@@ -1224,11 +1399,77 @@ const FeedModule = {
   },
 
   /**
-   * Report post (mock)
+   * Report post — opens the reason picker modal
    */
   reportPost(postId) {
-    this.showToast('Post reported for review');
     this.toggleOverflowMenu(postId);
+
+    const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+    const post = this.posts.find(p => p.id === postId);
+    if (post && session && post.memberId === session.id) {
+      this.showToast('You cannot report your own post');
+      return;
+    }
+
+    this.reportTargetPostId = postId;
+    const modal = document.getElementById('report-modal');
+    if (modal) {
+      modal.querySelectorAll('input[name="report-reason"]').forEach(r => { r.checked = false; });
+      const desc = document.getElementById('report-description');
+      if (desc) desc.value = '';
+      modal.classList.remove('hidden');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  },
+
+  /**
+   * Close the report modal and reset its target
+   */
+  closeReportModal() {
+    const modal = document.getElementById('report-modal');
+    if (modal) modal.classList.add('hidden');
+    this.reportTargetPostId = null;
+  },
+
+  /**
+   * Submit the report to moderation_reports
+   */
+  async submitReport() {
+    const modal = document.getElementById('report-modal');
+    const postId = this.reportTargetPostId;
+    if (!modal || !postId) return;
+
+    const checked = modal.querySelector('input[name="report-reason"]:checked');
+    if (!checked) {
+      this.showToast('Please choose a reason for this report');
+      return;
+    }
+
+    const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+    if (!session) { this.showToast('Please log in to report'); return; }
+
+    const descriptionInput = document.getElementById('report-description');
+    const description = descriptionInput ? descriptionInput.value.trim() : '';
+
+    const submitBtn = document.getElementById('report-submit-btn');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; }
+
+    try {
+      if (this.hasSupabase()) {
+        const { error } = await db.from('moderation_reports').insert({
+          reporter_id: session.id,
+          content_type: 'post',
+          content_id: postId,
+          reason: checked.value,
+          description: description || null
+        });
+        if (error) { this.showToast('Failed to submit report: ' + error.message); return; }
+      }
+      this.closeReportModal();
+      this.showToast('Report submitted. Officers will review this post.');
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; }
+    }
   },
 
   /**
@@ -1242,13 +1483,13 @@ const FeedModule = {
     const read = this.notifications.filter(n => !n.unread);
 
     const renderItem = n => `
-      <div class="notification-item ${n.unread ? 'unread' : ''}" onclick="FeedModule.markNotificationRead(${n.id})">
+      <div class="notification-item ${n.unread ? 'unread' : ''}" onclick="FeedModule.markNotificationRead('${this.escapeHTML(String(n.id))}')">
         <div class="notification-icon">
           <i data-lucide="${n.icon}" class="w-4 h-4"></i>
         </div>
         <div class="notification-content">
           <div class="notification-text">${this.escapeHTML(n.text)}</div>
-          <div class="notification-time">${n.time}</div>
+          <div class="notification-time">${this.escapeHTML(n.time)}</div>
         </div>
         ${n.unread ? '<div class="notification-dot"></div>' : ''}
       </div>
@@ -1283,20 +1524,26 @@ const FeedModule = {
   },
 
   /**
-   * Mark notification as read
+   * Mark notification as read (persisted per member)
    */
   markNotificationRead(id) {
     const n = this.notifications.find(x => x.id === id);
     if (n) n.unread = false;
+    const reads = this.getReadNotificationIds();
+    reads.add(id);
+    this.saveReadNotificationIds(reads);
     this.renderNotifications();
     this.updateUnreadBadges();
   },
 
   /**
-   * Mark all notifications as read
+   * Mark all notifications as read (persisted per member)
    */
   markAllNotificationsRead() {
     this.notifications.forEach(n => n.unread = false);
+    const reads = this.getReadNotificationIds();
+    this.notifications.forEach(n => reads.add(n.id));
+    this.saveReadNotificationIds(reads);
     this.renderNotifications();
     this.updateUnreadBadges();
   },

@@ -72,7 +72,7 @@ test.describe('Vault (vault.html)', () => {
     await expect(page.locator('#upload-album-name')).toBeVisible();
     await expect(page.locator('#upload-album-existing-group')).toBeHidden();
     // Switch to existing album mode
-    await page.check('input[name="album-mode"][value="existing"]');
+    await page.locator('.vault-radio', { hasText: 'Add to existing album' }).click();
     await expect(page.locator('#upload-album-existing-group')).toBeVisible();
     await expect(page.locator('#upload-album-new-group')).toBeHidden();
     // Should show "No albums yet" placeholder since mock has 1 album

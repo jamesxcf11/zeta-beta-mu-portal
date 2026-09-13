@@ -53,7 +53,10 @@ exports.handler = async (event) => {
   if (auth.error) return auth.error;
 
   if (!isOfficer(auth.member)) {
-    return json(403, { error: 'Only officers may delete media' });
+    const ownProfilePrefix = `profiles/${auth.member.id}/`;
+    if (keys.some((key) => typeof key !== 'string' || !key.startsWith(ownProfilePrefix))) {
+      return json(403, { error: 'Members may only delete their own profile photos' });
+    }
   }
 
   const rejected = keys.filter((k) => !r2.isManagedKey(k));

@@ -64,8 +64,8 @@ exports.handler = async (event) => {
 
   const { scope, contentType, size, albumId, variant } = body;
 
-  if (scope !== 'vault' && scope !== 'post') {
-    return json(400, { error: 'scope must be "vault" or "post"' });
+  if (scope !== 'vault' && scope !== 'post' && scope !== 'profile') {
+    return json(400, { error: 'scope must be "vault", "post", or "profile"' });
   }
 
   if (!r2.ALLOWED_MIME.includes(contentType)) {
@@ -85,6 +85,9 @@ exports.handler = async (event) => {
       error: `File exceeds the ${Math.floor(maxBytes / 1024 / 1024)}MB limit`,
       maxBytes,
     });
+  }
+  if (scope === 'profile' && declaredSize > 1024 * 1024) {
+    return json(413, { error: 'Profile photos must be 1MB or smaller after optimization', maxBytes: 1024 * 1024 });
   }
 
   const auth = await authenticate(event);
@@ -109,6 +112,8 @@ exports.handler = async (event) => {
       variant === 'thumb'
         ? `vault/${album}/thumbs/${uuid}.${extension}`
         : `vault/${album}/${uuid}.${extension}`;
+  } else if (scope === 'profile') {
+    fileKey = `profiles/${member.id}/${uuid}.${extension}`;
   } else {
     fileKey = `posts/${member.id}/${uuid}.${extension}`;
   }

@@ -121,7 +121,7 @@
       </div>
 
       <div class="profile-dropdown" id="profile-dropdown" aria-hidden="true">
-        <a href="#" class="profile-dropdown-item">View Profile</a>
+        <a href="profile.html" class="profile-dropdown-item">View Profile</a>
         <a href="#" class="profile-dropdown-item">Settings</a>
         <div class="profile-dropdown-divider"></div>
         <button class="profile-dropdown-item profile-dropdown-danger" id="profile-logout">Log Out</button>
@@ -145,7 +145,7 @@
         <div class="header-actions">
           <div class="header-search">
             <i data-lucide="search" class="w-4 h-4"></i>
-            <input type="text" class="header-search-input" placeholder="Search posts, members..." aria-label="Search">
+            <input type="text" id="feed-search-input" class="header-search-input" placeholder="Search posts, members..." aria-label="Search posts and members">
           </div>
           <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
             <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
@@ -186,14 +186,6 @@
                   Photo
                 </button>
                 <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp" style="display: none;">
-                <button class="composer-btn" aria-label="Add video" onclick="FeedModule.showToast('Video upload coming soon')">
-                  <i data-lucide="video" class="w-4 h-4"></i>
-                  Video
-                </button>
-                <button class="composer-btn" aria-label="Add feeling" onclick="FeedModule.showToast('Feeling tags coming soon')">
-                  <i data-lucide="smile" class="w-4 h-4"></i>
-                  Feeling
-                </button>
               </div>
               <button id="post-btn" class="btn btn-gold">
                 <i data-lucide="send" class="w-4 h-4"></i>
@@ -228,7 +220,6 @@
               <i data-lucide="megaphone" class="w-5 h-5"></i>
               <h3 class="sidebar-title">Announcements</h3>
               <span id="announcements-unread" class="nav-unread-badge" style="display:none;"></span>
-              <span id="announcements-add-placeholder" class="sidebar-add-placeholder"></span>
             </div>
             <div id="announcements-list" class="widget-list">
               <!-- Announcements rendered dynamically -->
@@ -328,29 +319,24 @@
         <div class="w-16 h-px bg-[#d4af37]/40 mx-auto mb-6"></div>
 
         <!-- Latest Announcement -->
-        <div class="glass rounded-xl p-4 mb-4 text-left">
+        <div class="glass rounded-xl p-4 mb-4 text-left" id="welcome-announcement-section">
           <div class="flex items-center gap-2 mb-3">
             <i data-lucide="megaphone" class="w-4 h-4 text-[#d4af37]"></i>
             <span class="text-xs font-semibold text-[#d4af37] uppercase tracking-wide">Latest Announcement</span>
           </div>
-          <h4 class="welcome-modal-heading text-sm font-semibold mb-1">Annual Gala 2026</h4>
-          <p class="welcome-modal-meta text-xs mb-1">March 25, 2026</p>
-          <p class="welcome-modal-body text-xs">Join us for our 55th anniversary celebration with distinguished alumni and guest speakers at The Grand Hotel Ballroom.</p>
+          <h4 id="welcome-announcement-title" class="welcome-modal-heading text-sm font-semibold mb-1"></h4>
+          <p id="welcome-announcement-date" class="welcome-modal-meta text-xs mb-1"></p>
+          <p id="welcome-announcement-body" class="welcome-modal-body text-xs"></p>
         </div>
 
         <!-- Today's Birthdays -->
-        <div class="glass rounded-xl p-4 mb-6 text-left">
+        <div class="glass rounded-xl p-4 mb-6 text-left" id="welcome-birthday-section">
           <div class="flex items-center gap-2 mb-3">
             <i data-lucide="cake" class="w-4 h-4 text-[#d4af37]"></i>
             <span class="text-xs font-semibold text-[#d4af37] uppercase tracking-wide">Birthdays Today</span>
           </div>
-          <div class="flex items-center gap-3">
-            <img src="image/placeholders/avatars/a3.jpg" alt="Birthday" class="w-10 h-10 rounded-full border-2 border-[#d4af37]/40">
-            <div>
-              <h4 class="welcome-modal-heading text-sm font-semibold">Dr. Michael Chen</h4>
-              <p class="welcome-modal-meta text-xs">Class of 2008 &bull; Oncologist</p>
-            </div>
-            <i data-lucide="party-popper" class="w-5 h-5 text-[#d4af37] ml-auto"></i>
+          <div id="welcome-birthday-list" class="space-y-3">
+            <!-- Rendered from FeedModule.birthdays -->
           </div>
         </div>
 
@@ -359,6 +345,64 @@
           <i data-lucide="arrow-right" class="w-5 h-5"></i>
           Enter the Community
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       REPORT POST MODAL
+       ============================================ -->
+  <div id="report-modal" class="fixed inset-0 z-[999] hidden" role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="FeedModule.closeReportModal()"></div>
+
+    <!-- Modal Content -->
+    <div class="relative flex items-center justify-center min-h-screen p-4">
+      <div class="glass-heavy relative w-full max-w-md rounded-2xl p-6 border border-[#d4af37]/20 shadow-2xl" style="animation: welcomeModalIn 0.3s ease-out;">
+
+        <!-- Close Button -->
+        <button onclick="FeedModule.closeReportModal()" class="absolute top-4 right-4 welcome-modal-close transition-colors" aria-label="Close report dialog">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/30 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="flag" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <div>
+            <h3 id="report-modal-title" class="text-lg font-serif font-semibold welcome-modal-title">Report Post</h3>
+            <p class="text-xs welcome-modal-meta">Officers will review this post.</p>
+          </div>
+        </div>
+
+        <!-- Reasons -->
+        <div class="mb-4">
+          <span class="block text-xs font-semibold mb-2 welcome-modal-meta">Reason <span class="text-red-400">*</span></span>
+          <div id="report-reasons" class="grid grid-cols-2 gap-2">
+            <label class="report-reason"><input type="radio" name="report-reason" value="spam" required><span>Spam</span></label>
+            <label class="report-reason"><input type="radio" name="report-reason" value="harassment"><span>Harassment</span></label>
+            <label class="report-reason"><input type="radio" name="report-reason" value="inappropriate"><span>Inappropriate</span></label>
+            <label class="report-reason"><input type="radio" name="report-reason" value="misinformation"><span>Misinformation</span></label>
+            <label class="report-reason"><input type="radio" name="report-reason" value="copyright"><span>Copyright</span></label>
+            <label class="report-reason"><input type="radio" name="report-reason" value="other"><span>Other</span></label>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-5">
+          <label for="report-description" class="block text-xs font-semibold mb-2 welcome-modal-meta">Additional details (optional)</label>
+          <textarea id="report-description" rows="3" class="glass-input w-full text-sm resize-none" placeholder="Anything officers should know about this post..."></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3">
+          <button onclick="FeedModule.closeReportModal()" class="btn btn-glass flex-1">Cancel</button>
+          <button id="report-submit-btn" onclick="FeedModule.submitReport()" class="btn btn-gold flex-1">
+            <i data-lucide="flag" class="w-4 h-4"></i>
+            Submit Report
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -382,6 +426,76 @@
       if (modal) modal.classList.add('hidden');
     }
 
+    // Populate the welcome modal's announcement + birthday sections from
+    // real feed data (waits for FeedModule to finish loading, with a timeout
+    // fallback so the modal never shows stale placeholder content).
+    function populateWelcomeModal() {
+      const apply = () => {
+        if (!window.FeedModule) return;
+
+        // Latest announcement
+        const annSection = document.getElementById('welcome-announcement-section');
+        const annTitle = document.getElementById('welcome-announcement-title');
+        const annDate = document.getElementById('welcome-announcement-date');
+        const annBody = document.getElementById('welcome-announcement-body');
+        const announcement = (FeedModule.announcements || [])[0];
+        if (annSection) {
+          if (announcement && annTitle && annDate && annBody) {
+            annTitle.textContent = announcement.title || 'Untitled';
+            annDate.textContent = announcement.date
+              ? announcement.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+              : '';
+            annBody.textContent = announcement.content || '';
+          } else {
+            annSection.style.display = 'none';
+          }
+        }
+
+        // Birthdays today
+        const bdaySection = document.getElementById('welcome-birthday-section');
+        const bdayList = document.getElementById('welcome-birthday-list');
+        if (bdaySection && bdayList) {
+          const today = new Date();
+          const todays = (FeedModule.birthdays || []).filter(b => {
+            const d = new Date(b.date);
+            return d.getMonth() === today.getMonth() && d.getDate() === today.getDate();
+          });
+          if (todays.length === 0) {
+            bdaySection.style.display = 'none';
+          } else {
+            bdayList.innerHTML = todays.slice(0, 3).map(b => {
+              const name = b.name || 'Brother';
+              const escaped = window.FeedModule && FeedModule.escapeHTML ? FeedModule.escapeHTML(name) : name;
+              const avatar = b.avatar
+                ? `<img src="${window.FeedModule && FeedModule.escapeHTML ? FeedModule.escapeHTML(b.avatar) : b.avatar}" alt="${escaped}" class="w-10 h-10 rounded-full border-2 border-[#d4af37]/40 object-cover">`
+                : `<span class="avatar-fallback w-10 h-10 rounded-full border-2 border-[#d4af37]/40" aria-label="${escaped}">${escaped.charAt(0)}</span>`;
+              return `
+                <div class="flex items-center gap-3">
+                  ${avatar}
+                  <div>
+                    <h4 class="welcome-modal-heading text-sm font-semibold">${escaped}</h4>
+                    <p class="welcome-modal-meta text-xs">Class of ${b.year || '—'}</p>
+                  </div>
+                  <i data-lucide="party-popper" class="w-5 h-5 text-[#d4af37] ml-auto"></i>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      };
+
+      if (window.FeedModule && FeedModule.ready) {
+        Promise.race([
+          FeedModule.ready,
+          new Promise(resolve => setTimeout(resolve, 4000))
+        ]).then(apply).catch(apply);
+      } else {
+        apply();
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const showWelcome = localStorage.getItem('zbm-show-welcome');
       if (showWelcome === 'true') {
@@ -396,7 +510,7 @@
             document.getElementById('welcome-modal-greeting').textContent = 'Welcome, ' + (user.name || 'Brother') + '!';
           }
           modal.classList.remove('hidden');
-          if (typeof lucide !== 'undefined') lucide.createIcons();
+          populateWelcomeModal();
         }
       }
     });

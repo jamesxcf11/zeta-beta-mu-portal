@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage your Zeta Beta Mu member profile">
+  <title>My Profile | Zeta Beta Mu Fraternity</title>
+  <link rel="stylesheet" href="css/tailwind.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/styles.min.css?v=8">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
+</head>
+<body class="dark-theme profile-page">
+  <header class="mobile-header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-10 h-10 object-contain">
+      </div>
+      <span class="font-serif text-lg font-semibold">Zeta Beta Mu</span>
+    </div>
+    <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+      <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+    </button>
+    <button id="hamburger-menu" class="hamburger" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-logo" title="Est. 1971 · Medical Fraternity">
+      <div class="sidebar-logo-icon"><img src="image/logo1.png" alt="ZBM Logo"></div>
+      <div class="sidebar-logo-text"><span class="sidebar-logo-title">Zeta Beta <em>Mu</em></span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <a href="home.html" class="nav-link" title="Feed"><i data-lucide="home"></i><span>Feed</span></a>
+        <a href="directory.html" class="nav-link" title="Directory"><i data-lucide="stethoscope"></i><span>Directory</span></a>
+      </div>
+      <div class="nav-group">
+        <a href="traditions.html" class="nav-link" title="Traditions"><i data-lucide="book-open"></i><span>Traditions</span></a>
+        <a href="vault.html" class="nav-link" title="Vault"><i data-lucide="archive"></i><span>Vault</span></a>
+        <a href="merchandise.html" class="nav-link" title="Merchandise"><i data-lucide="shopping-bag"></i><span>Merchandise</span></a>
+      </div>
+      <div class="nav-group">
+        <a href="memoriam.html" class="nav-link" title="In Memoriam"><i data-lucide="flame"></i><span>In Memoriam</span></a>
+      </div>
+      <div class="nav-section-divider"><span class="nav-section-mark">◆</span> Officer Controls</div>
+      <a href="admin.html" class="nav-link nav-link-officer" id="officer-tools-link" title="Officer Tools"><i data-lucide="shield"></i><span>Officer Tools</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card" id="user-card" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Open profile menu">
+        <img id="user-avatar" src="image/placeholders/avatars/a11.jpg" alt="Current user" class="user-avatar">
+        <div class="user-info">
+          <div id="user-name" class="user-name">Member</div>
+          <div class="user-role">Member</div>
+        </div>
+      </div>
+      <div class="profile-dropdown" id="profile-dropdown" aria-hidden="true">
+        <a href="profile.html" class="profile-dropdown-item" aria-current="page">View Profile</a>
+        <a href="#" class="profile-dropdown-item">Settings</a>
+        <div class="profile-dropdown-divider"></div>
+        <button class="profile-dropdown-item profile-dropdown-danger" id="profile-logout">Log Out</button>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main-content" class="main-content profile-main">
+    <header class="top-header">
+      <div>
+        <p class="profile-eyebrow">Member account</p>
+        <h1 class="header-title">My Profile</h1>
+      </div>
+      <div class="header-actions">
+        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+        </button>
+        <a href="home.html" class="btn btn-glass btn-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i>Back to Feed</a>
+      </div>
+    </header>
+
+    <div id="profile-loading" class="profile-loading" role="status">
+      <span class="loading-spinner"></span>
+      <span>Loading your profile…</span>
+    </div>
+
+    <div id="profile-error" class="profile-state profile-state-error hidden" role="alert"></div>
+
+    <form id="profile-form" class="profile-content hidden">
+      <section class="profile-hero glass-card" aria-labelledby="profile-name-heading">
+        <div class="profile-photo-wrap">
+          <img id="profile-avatar-preview" src="image/placeholders/avatars/a11.jpg" alt="Current profile photo" class="profile-avatar-large">
+          <label for="profile-photo" class="profile-photo-action">
+            <i data-lucide="camera" class="w-4 h-4"></i>
+            <span>Change photo</span>
+            <input id="profile-photo" type="file" accept="image/jpeg,image/png,image/webp" class="profile-file-input">
+          </label>
+        </div>
+        <div class="profile-hero-copy">
+          <p class="profile-eyebrow">Your fraternity profile</p>
+          <h1 id="profile-name-heading" class="profile-display-name">Member</h1>
+          <p id="profile-professional-line" class="profile-professional-line"></p>
+          <div class="profile-badges">
+            <span id="profile-role-badge" class="profile-badge"></span>
+            <span id="profile-status-badge" class="profile-badge profile-badge-status"></span>
+          </div>
+          <p class="profile-photo-note">JPG, PNG, or WebP. Your photo is cropped and compressed to 512px WebP before upload.</p>
+        </div>
+      </section>
+
+      <div id="profile-message" class="profile-state hidden" role="status" aria-live="polite"></div>
+
+      <section class="profile-section glass-card" aria-labelledby="account-heading">
+        <div class="profile-section-heading">
+          <div class="profile-section-icon"><i data-lucide="lock-keyhole"></i></div>
+          <div><h2 id="account-heading">Account</h2><p>Managed sign-in and membership details.</p></div>
+        </div>
+        <div class="profile-form-grid">
+          <div class="form-group"><label class="form-label" for="profile-username">Username</label><input id="profile-username" class="glass-input profile-readonly" readonly></div>
+          <div class="form-group"><label class="form-label" for="profile-email">Email address</label><input id="profile-email" type="email" class="glass-input profile-readonly" readonly></div>
+        </div>
+      </section>
+
+      <section class="profile-section glass-card" aria-labelledby="personal-heading">
+        <div class="profile-section-heading">
+          <div class="profile-section-icon"><i data-lucide="user-round"></i></div>
+          <div><h2 id="personal-heading">Personal information</h2><p>How your name and details appear to the brotherhood.</p></div>
+        </div>
+        <div class="profile-form-grid profile-form-grid-three">
+          <div class="form-group"><label class="form-label" for="profile-first-name">First name <span aria-hidden="true">*</span></label><input id="profile-first-name" class="glass-input" maxlength="100" required></div>
+          <div class="form-group"><label class="form-label" for="profile-middle-name">Middle name</label><input id="profile-middle-name" class="glass-input" maxlength="100"></div>
+          <div class="form-group"><label class="form-label" for="profile-last-name">Last name <span aria-hidden="true">*</span></label><input id="profile-last-name" class="glass-input" maxlength="100" required></div>
+          <div class="form-group"><label class="form-label" for="profile-nickname">Nickname</label><input id="profile-nickname" class="glass-input" maxlength="100"></div>
+          <div class="form-group"><label class="form-label" for="profile-birthday">Birthday</label><input id="profile-birthday" type="date" class="glass-input"></div>
+          <div class="form-group"><label class="form-label" for="profile-batch">Batch</label><input id="profile-batch" class="glass-input" maxlength="50"></div>
+        </div>
+      </section>
+
+      <section class="profile-section glass-card" aria-labelledby="professional-heading">
+        <div class="profile-section-heading">
+          <div class="profile-section-icon"><i data-lucide="stethoscope"></i></div>
+          <div><h2 id="professional-heading">Medical profile</h2><p>Your education, practice, and professional specialty.</p></div>
+        </div>
+        <div class="profile-form-grid">
+          <div class="form-group"><label class="form-label" for="profile-graduation-year">Graduation year <span aria-hidden="true">*</span></label><input id="profile-graduation-year" type="number" min="1900" max="2100" class="glass-input" required></div>
+          <div class="form-group"><label class="form-label" for="profile-hospital">Hospital or institution <span aria-hidden="true">*</span></label><input id="profile-hospital" class="glass-input" maxlength="255" required></div>
+          <div class="form-group"><label class="form-label" for="profile-field">Field of medicine <span aria-hidden="true">*</span></label><input id="profile-field" class="glass-input" maxlength="100" required></div>
+          <div class="form-group"><label class="form-label" for="profile-specialization">Specialization</label><input id="profile-specialization" class="glass-input" maxlength="255"></div>
+          <div class="form-group"><label class="form-label" for="profile-medical-license">Medical license</label><input id="profile-medical-license" class="glass-input" maxlength="50"></div>
+          <div class="form-group profile-field-wide"><label class="form-label" for="profile-bio">Professional biography</label><textarea id="profile-bio" class="glass-input profile-textarea" rows="5" maxlength="2000" placeholder="Share your medical work, interests, or fraternity service."></textarea><span class="profile-field-help"><span id="profile-bio-count">0</span>/2000</span></div>
+        </div>
+      </section>
+
+      <section class="profile-section glass-card" aria-labelledby="contact-heading">
+        <div class="profile-section-heading">
+          <div class="profile-section-icon"><i data-lucide="contact"></i></div>
+          <div><h2 id="contact-heading">Contact and social</h2><p>Keep your directory contact details current.</p></div>
+        </div>
+        <div class="profile-form-grid">
+          <div class="form-group"><label class="form-label" for="profile-mobile">Mobile</label><input id="profile-mobile" type="tel" class="glass-input" maxlength="20"></div>
+          <div class="form-group"><label class="form-label" for="profile-phone">Phone</label><input id="profile-phone" type="tel" class="glass-input" maxlength="20"></div>
+          <div class="form-group"><label class="form-label" for="profile-telephone">Telephone</label><input id="profile-telephone" type="tel" class="glass-input" maxlength="20"></div>
+          <div class="form-group"><label class="form-label" for="profile-home-phone">Home phone</label><input id="profile-home-phone" type="tel" class="glass-input" maxlength="20"></div>
+          <div class="form-group"><label class="form-label" for="profile-facebook">Facebook URL</label><input id="profile-facebook" type="url" class="glass-input" maxlength="255" placeholder="https://facebook.com/…"></div>
+          <div class="form-group"><label class="form-label" for="profile-instagram">Instagram URL</label><input id="profile-instagram" type="url" class="glass-input" maxlength="255" placeholder="https://instagram.com/…"></div>
+          <div class="form-group profile-field-wide"><label class="form-label" for="profile-address">Address</label><textarea id="profile-address" class="glass-input profile-textarea" rows="3" maxlength="1000"></textarea></div>
+        </div>
+      </section>
+
+      <div class="profile-actions">
+        <button id="profile-reset" type="button" class="btn btn-glass">Discard changes</button>
+        <button id="profile-save" type="submit" class="btn btn-gold"><i data-lucide="save" class="w-4 h-4"></i><span>Save profile</span></button>
+      </div>
+    </form>
+  </main>
+
+  <script src="js/main.js"></script>
+  <script src="js/media-upload.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

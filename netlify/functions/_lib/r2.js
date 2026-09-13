@@ -55,7 +55,7 @@ function safeSegment(value, fallback) {
  */
 function isManagedKey(key) {
   if (typeof key !== 'string' || key.includes('..') || key.startsWith('/')) return false;
-  return /^(vault|posts)\/[a-zA-Z0-9._/-]+\.(webp|jpg|png)$/.test(key);
+  return /^(vault|posts|profiles)\/[a-zA-Z0-9._/-]+\.(webp|jpg|png)$/.test(key);
 }
 
 async function deleteKeys(keys) {
