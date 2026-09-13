@@ -26,8 +26,10 @@ function json(statusCode, body) {
 }
 
 function requiredEnv(names) {
-  const missing = names.filter((n) => !process.env[n]);
-  return missing;
+  // Whitespace-only values (a common paste error in the Netlify UI) count
+  // as missing so callers get a clear "not configured" 500 instead of a
+  // confusing failure downstream.
+  return names.filter((n) => !process.env[n] || !String(process.env[n]).trim());
 }
 
 function adminClient() {

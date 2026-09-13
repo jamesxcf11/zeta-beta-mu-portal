@@ -122,7 +122,7 @@ exports.handler = async (event) => {
     const uploadUrl = await getSignedUrl(
       r2.client(),
       new PutObjectCommand({
-        Bucket: process.env.R2_BUCKET,
+        Bucket: r2.env('R2_BUCKET'),
         Key: fileKey,
         ContentType: contentType,
         ContentLength: declaredSize,

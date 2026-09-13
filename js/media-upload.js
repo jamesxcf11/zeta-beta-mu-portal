@@ -193,7 +193,8 @@ const MediaUpload = {
     const payload = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      throw new Error(payload.error || `Upload authorization failed (${response.status})`);
+      const base = payload.error || `Upload authorization failed (${response.status})`;
+      throw new Error(payload.detail ? `${base}: ${payload.detail}` : base);
     }
     return payload;
   },

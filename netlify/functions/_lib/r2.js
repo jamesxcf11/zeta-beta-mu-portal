@@ -18,18 +18,26 @@ const ALLOWED_MIME = Object.keys(MIME_EXTENSIONS);
 
 const DEFAULT_MAX_BYTES = 10 * 1024 * 1024; // 10 MB
 
+// Env values pasted into the Netlify UI often carry trailing whitespace or
+// newlines. A stray character in R2_ACCOUNT_ID or R2_BUCKET produces an
+// invalid endpoint/bucket that throws deep inside getSignedUrl, surfacing
+// only as an opaque 502. Trim everything centrally.
+function env(name) {
+  return String(process.env[name] || '').trim();
+}
+
 function maxUploadBytes() {
-  const parsed = parseInt(process.env.R2_MAX_UPLOAD_BYTES || '', 10);
+  const parsed = parseInt(env('R2_MAX_UPLOAD_BYTES'), 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_MAX_BYTES;
 }
 
 function client() {
   return new S3Client({
     region: 'auto',
-    endpoint: `https://${String(process.env.R2_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`,
+    endpoint: `https://${env('R2_ACCOUNT_ID')}.r2.cloudflarestorage.com`,
     credentials: {
-      accessKeyId: process.env.R2_ACCESS_KEY_ID,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+      accessKeyId: env('R2_ACCESS_KEY_ID'),
+      secretAccessKey: env('R2_SECRET_ACCESS_KEY'),
     },
     // AWS SDK v3 >= 3.729 computes CRC32 checksums by default. R2 does not
     // support them: presigned URLs gain x-amz-checksum-* params that R2
@@ -41,7 +49,7 @@ function client() {
 }
 
 function publicUrl(key) {
-  const base = (process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '');
+  const base = env('R2_PUBLIC_BASE_URL').replace(/\/+$/, '');
   return `${base}/${key}`;
 }
 
@@ -70,7 +78,7 @@ async function deleteKeys(keys) {
 
   await client().send(
     new DeleteObjectsCommand({
-      Bucket: process.env.R2_BUCKET,
+      Bucket: env('R2_BUCKET'),
       Delete: { Objects: valid.map((Key) => ({ Key })), Quiet: true },
     })
   );
@@ -80,6 +88,7 @@ async function deleteKeys(keys) {
 
 module.exports = {
   client,
+  env,
   publicUrl,
   safeSegment,
   isManagedKey,
