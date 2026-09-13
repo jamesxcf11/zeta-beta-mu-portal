@@ -139,6 +139,9 @@ exports.handler = async (event) => {
     });
   } catch (err) {
     console.error('upload-url: presign failed', err);
-    return json(502, { error: 'Could not create upload URL' });
+    return json(502, {
+      error: 'Could not create upload URL',
+      detail: err && err.message ? String(err.message).slice(0, 200) : undefined,
+    });
   }
 };

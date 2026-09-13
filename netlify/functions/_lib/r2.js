@@ -26,11 +26,17 @@ function maxUploadBytes() {
 function client() {
   return new S3Client({
     region: 'auto',
-    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    endpoint: `https://${String(process.env.R2_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`,
     credentials: {
       accessKeyId: process.env.R2_ACCESS_KEY_ID,
       secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
     },
+    // AWS SDK v3 >= 3.729 computes CRC32 checksums by default. R2 does not
+    // support them: presigned URLs gain x-amz-checksum-* params that R2
+    // rejects. WHEN_REQUIRED restores pre-3.729 behaviour for S3-compatible
+    // storage.
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED',
   });
 }
 
