@@ -552,6 +552,21 @@ const FeedModule = {
     const reads = this.getReadNotificationIds();
     const items = [];
 
+    // Per-member notification preferences (Settings page). Fails open —
+    // if preferences can't be loaded, everything stays enabled.
+    let notifPrefs = {};
+    try {
+      const { data: prefRow } = await db
+        .from('members')
+        .select('preferences')
+        .eq('id', session.id)
+        .single();
+      notifPrefs = (prefRow && prefRow.preferences && prefRow.preferences.notifications) || {};
+    } catch (e) {
+      notifPrefs = {};
+    }
+    const wantsNotification = (type) => notifPrefs[type + 's'] !== false;
+
     // Reactions and comments on MY posts
     const { data: myPosts } = await db.from('posts')
       .select('id')
@@ -619,7 +634,7 @@ const FeedModule = {
     });
 
     items.sort((x, y) => y.ts - x.ts);
-    this.notifications = items.slice(0, 20);
+    this.notifications = items.filter(i => wantsNotification(i.type)).slice(0, 20);
   },
 
   /**

@@ -27,6 +27,7 @@ function makeMember(overrides = {}) {
     hospital: 'Test Hospital',
     field_of_medicine: 'Cardiology',
     avatar_url: 'image/placeholders/avatars/a11.jpg',
+    preferences: {},
     deleted_at: null,
     created_at: new Date().toISOString(),
     ...overrides,
@@ -77,7 +78,7 @@ function makeVaultItems() {
  * Individual tests can call `page.route()` again afterwards (Playwright
  * uses last-registered-first-matched) to override specific behavior.
  */
-async function mockSupabase(page, { member = makeMember(), authError = null, vaultItems = makeVaultItems() } = {}) {
+async function mockSupabase(page, { member = makeMember(), authError = null, vaultItems = makeVaultItems(), settings = null } = {}) {
   let profile = {
     id: member.id,
     username: member.username,
@@ -123,6 +124,27 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
     return route.fulfill({ status: 405, contentType: 'application/json', body: JSON.stringify({ error: 'Method not allowed' }) });
   });
 
+  // --- Settings: /api/settings (Netlify Function) ---
+  let memberSettings = settings || {
+    notifications: { reactions: true, comments: true, announcements: true },
+    privacy: { showOnCalendar: false, showAge: false, hasBirthday: !!member.birthday },
+  };
+  await page.route('**/api/settings**', async (route) => {
+    const method = route.request().method();
+    if (method === 'GET') {
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ settings: memberSettings }) });
+    }
+    if (method === 'PATCH') {
+      const updates = route.request().postDataJSON();
+      memberSettings = {
+        notifications: { ...memberSettings.notifications, ...(updates.notifications || {}) },
+        privacy: { ...memberSettings.privacy, ...(updates.privacy || {}) },
+      };
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ settings: memberSettings }) });
+    }
+    return route.fulfill({ status: 405, contentType: 'application/json', body: JSON.stringify({ error: 'Method not allowed' }) });
+  });
+
   // --- Auth: sign in ---
   await page.route('**/auth/v1/token**', async (route) => {
     if (authError) {
@@ -142,6 +164,15 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
         refresh_token: 'mock-refresh-token',
         user: { id: 'mock-user-id', email: member.email },
       }),
+    });
+  });
+
+  // --- Auth: update user (password change on the settings page) ---
+  await page.route('**/auth/v1/user**', async (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ id: 'mock-user-id', email: member.email }),
     });
   });
 

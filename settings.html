@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage your Zeta Beta Mu account settings">
+  <title>Settings | Zeta Beta Mu Fraternity</title>
+  <link rel="stylesheet" href="css/tailwind.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/styles.min.css?v=9">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
+</head>
+<body class="dark-theme settings-page">
+  <header class="mobile-header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+        <img src="image/logo1.png" alt="ZBM Logo" class="w-10 h-10 object-contain">
+      </div>
+      <span class="font-serif text-lg font-semibold">Zeta Beta Mu</span>
+    </div>
+    <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+      <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+    </button>
+    <button id="hamburger-menu" class="hamburger" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-logo" title="Est. 1971 · Medical Fraternity">
+      <div class="sidebar-logo-icon"><img src="image/logo1.png" alt="ZBM Logo"></div>
+      <div class="sidebar-logo-text"><span class="sidebar-logo-title">Zeta Beta <em>Mu</em></span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <a href="home.html" class="nav-link" title="Feed"><i data-lucide="home"></i><span>Feed</span></a>
+        <a href="directory.html" class="nav-link" title="Directory"><i data-lucide="stethoscope"></i><span>Directory</span></a>
+      </div>
+      <div class="nav-group">
+        <a href="traditions.html" class="nav-link" title="Traditions"><i data-lucide="book-open"></i><span>Traditions</span></a>
+        <a href="vault.html" class="nav-link" title="Vault"><i data-lucide="archive"></i><span>Vault</span></a>
+        <a href="merchandise.html" class="nav-link" title="Merchandise"><i data-lucide="shopping-bag"></i><span>Merchandise</span></a>
+      </div>
+      <div class="nav-group">
+        <a href="memoriam.html" class="nav-link" title="In Memoriam"><i data-lucide="flame"></i><span>In Memoriam</span></a>
+      </div>
+      <div class="nav-section-divider"><span class="nav-section-mark">◆</span> Officer Controls</div>
+      <a href="admin.html" class="nav-link nav-link-officer" id="officer-tools-link" title="Officer Tools"><i data-lucide="shield"></i><span>Officer Tools</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card" id="user-card" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Open profile menu">
+        <img id="user-avatar" src="image/placeholders/avatars/a11.jpg" alt="Current user" class="user-avatar">
+        <div class="user-info">
+          <div id="user-name" class="user-name">Member</div>
+          <div class="user-role">Member</div>
+        </div>
+      </div>
+      <div class="profile-dropdown" id="profile-dropdown" aria-hidden="true">
+        <a href="profile.html" class="profile-dropdown-item">View Profile</a>
+        <a href="settings.html" class="profile-dropdown-item" aria-current="page">Settings</a>
+        <div class="profile-dropdown-divider"></div>
+        <button class="profile-dropdown-item profile-dropdown-danger" id="profile-logout">Log Out</button>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main-content" class="main-content profile-main">
+    <header class="top-header">
+      <div>
+        <p class="profile-eyebrow">Member account</p>
+        <h1 class="header-title">Settings</h1>
+      </div>
+      <div class="header-actions">
+        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+        </button>
+        <a href="home.html" class="btn btn-glass btn-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i>Back to Feed</a>
+      </div>
+    </header>
+
+    <div id="settings-loading" class="profile-loading" role="status">
+      <span class="loading-spinner"></span>
+      <span>Loading your settings…</span>
+    </div>
+
+    <div id="settings-error" class="profile-state profile-state-error hidden" role="alert"></div>
+
+    <div id="settings-content" class="profile-content hidden">
+      <div id="settings-message" class="profile-state hidden" role="status" aria-live="polite"></div>
+
+      <section class="profile-section glass-card" aria-labelledby="appearance-heading">
+        <div class="profile-section-heading">
+          <div class="profile-section-icon"><i data-lucide="palette"></i></div>
+          <div><h2 id="appearance-heading">Appearance</h2><p>Choose how the portal looks on this device.</p></div>
+        </div>
+        <div class="settings-theme-options" role="radiogroup" aria-label="Theme">
+          <label class="settings-theme-option">
+            <input type="radio" name="theme-preference" value="light">
+            <i data-lucide="sun" class="w-4 h-4"></i>
+            <span>Light</span>
+          </label>
+          <label class="settings-theme-option">
+            <input type="radio" name="theme-preference" value="dark">
+            <i data-lucide="moon" class="w-4 h-4"></i>
+            <span>Dark</span>
+          </label>
+          <label class="settings-theme-option">
+            <input type="radio" name="theme-preference" value="system">
+            <i data-lucide="monitor" class="w-4 h-4"></i>
+            <span>System</span>
+          </label>
+        </div>
+      </section>
+
+      <form id="settings-prefs-form">
+        <section class="profile-section glass-card" aria-labelledby="notifications-heading">
+          <div class="profile-section-heading">
+            <div class="profile-section-icon"><i data-lucide="bell"></i></div>
+            <div><h2 id="notifications-heading">Notifications</h2><p>Choose which activity shows up in your notification feed.</p></div>
+          </div>
+          <div class="settings-rows">
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-title" for="pref-reactions">Reactions</label>
+                <span class="settings-row-desc">When brothers react to your posts.</span>
+              </div>
+              <label class="settings-toggle">
+                <input type="checkbox" id="pref-reactions">
+                <span class="settings-toggle-track" aria-hidden="true"><span class="settings-toggle-thumb"></span></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-title" for="pref-comments">Comments</label>
+                <span class="settings-row-desc">When brothers comment on your posts.</span>
+              </div>
+              <label class="settings-toggle">
+                <input type="checkbox" id="pref-comments">
+                <span class="settings-toggle-track" aria-hidden="true"><span class="settings-toggle-thumb"></span></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-title" for="pref-announcements">Announcements</label>
+                <span class="settings-row-desc">New announcements from the officers.</span>
+              </div>
+              <label class="settings-toggle">
+                <input type="checkbox" id="pref-announcements">
+                <span class="settings-toggle-track" aria-hidden="true"><span class="settings-toggle-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="profile-section glass-card" aria-labelledby="privacy-heading">
+          <div class="profile-section-heading">
+            <div class="profile-section-icon"><i data-lucide="eye-off"></i></div>
+            <div><h2 id="privacy-heading">Privacy</h2><p>Control what the brotherhood can see about you.</p></div>
+          </div>
+          <div class="settings-rows">
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-title" for="pref-show-on-calendar">Birthday on the calendar</label>
+                <span class="settings-row-desc">Show your birthday in the feed and on the birthdays page.</span>
+              </div>
+              <label class="settings-toggle">
+                <input type="checkbox" id="pref-show-on-calendar">
+                <span class="settings-toggle-track" aria-hidden="true"><span class="settings-toggle-thumb"></span></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-title" for="pref-show-age">Show my age</label>
+                <span class="settings-row-desc">Display your age alongside your birthday.</span>
+              </div>
+              <label class="settings-toggle">
+                <input type="checkbox" id="pref-show-age">
+                <span class="settings-toggle-track" aria-hidden="true"><span class="settings-toggle-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+          <p id="settings-birthday-hint" class="settings-hint hidden">
+            You haven't set a birthday yet — <a href="profile.html">add it on your profile</a> to appear on the calendar.
+          </p>
+        </section>
+
+        <div class="profile-actions">
+          <button id="settings-prefs-save" type="submit" class="btn btn-gold"><i data-lucide="save" class="w-4 h-4"></i><span>Save preferences</span></button>
+        </div>
+      </form>
+
+      <form id="settings-password-form">
+        <section class="profile-section glass-card" aria-labelledby="security-heading">
+          <div class="profile-section-heading">
+            <div class="profile-section-icon"><i data-lucide="shield-check"></i></div>
+            <div><h2 id="security-heading">Security</h2><p>Change the password you use to sign in.</p></div>
+          </div>
+          <p id="settings-password-note" class="settings-hint hidden">Password changes require the live portal backend and are unavailable in this demo.</p>
+          <div class="profile-form-grid">
+            <div class="form-group"><label class="form-label" for="settings-current-password">Current password <span aria-hidden="true">*</span></label><input id="settings-current-password" type="password" class="glass-input" autocomplete="current-password" required></div>
+            <div class="form-group"><label class="form-label" for="settings-new-password">New password <span aria-hidden="true">*</span></label><input id="settings-new-password" type="password" class="glass-input" autocomplete="new-password" required></div>
+            <div class="form-group"><label class="form-label" for="settings-confirm-password">Confirm new password <span aria-hidden="true">*</span></label><input id="settings-confirm-password" type="password" class="glass-input" autocomplete="new-password" required></div>
+          </div>
+          <p class="settings-hint">At least 8 characters with one uppercase letter, one lowercase letter, and one number.</p>
+        </section>
+        <div class="profile-actions">
+          <button id="settings-password-save" type="submit" class="btn btn-gold"><i data-lucide="key-round" class="w-4 h-4"></i><span>Update password</span></button>
+        </div>
+      </form>
+
+      <section class="profile-section glass-card" aria-labelledby="session-heading">
+        <div class="profile-section-heading">
+          <div class="profile-section-icon"><i data-lucide="log-out"></i></div>
+          <div><h2 id="session-heading">Session</h2><p id="settings-session-info">Signed in to the Zeta Beta Mu portal.</p></div>
+        </div>
+        <button id="settings-signout" type="button" class="btn btn-glass settings-signout"><i data-lucide="log-out" class="w-4 h-4"></i>Sign out</button>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/main.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

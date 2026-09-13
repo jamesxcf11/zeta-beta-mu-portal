@@ -8,6 +8,7 @@ const pages = [
   { name: 'Signup', path: '/signup.html', authed: false },
   { name: 'Home/Feed', path: '/home.html', authed: true },
   { name: 'Profile', path: '/profile.html', authed: true },
+  { name: 'Settings', path: '/settings.html', authed: true },
   { name: 'Directory', path: '/directory.html', authed: true },
   { name: 'Vault', path: '/vault.html', authed: true },
 ];
@@ -15,7 +16,7 @@ const pages = [
 for (const { name, path, authed } of pages) {
   test(`accessibility scan: ${name}`, async ({ page }) => {
     await mockSupabase(page);
-    if (authed && path === '/profile.html') await seedAuthenticatedSession(page);
+    if (authed && (path === '/profile.html' || path === '/settings.html')) await seedAuthenticatedSession(page);
     else if (authed) await seedSession(page);
     await page.goto(path);
     await page.waitForTimeout(500); // allow dynamic content to render

@@ -10,7 +10,6 @@ const ProfileModule = {
 
   async init() {
     this.setupForm();
-    this.setupProfileMenu();
     await this.load();
   },
 
@@ -197,33 +196,6 @@ const ProfileModule = {
     element.classList.toggle('profile-state-success', !!message && !isError);
   },
 
-  setupProfileMenu() {
-    const card = document.getElementById('user-card');
-    const dropdown = document.getElementById('profile-dropdown');
-    const logout = document.getElementById('profile-logout');
-    const toggle = () => {
-      const open = dropdown.classList.toggle('open');
-      dropdown.setAttribute('aria-hidden', String(!open));
-      card.setAttribute('aria-expanded', String(open));
-    };
-    card.addEventListener('click', toggle);
-    card.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        toggle();
-      }
-    });
-    document.addEventListener('click', (event) => {
-      if (!card.contains(event.target) && !dropdown.contains(event.target)) {
-        dropdown.classList.remove('open');
-        dropdown.setAttribute('aria-hidden', 'true');
-        card.setAttribute('aria-expanded', 'false');
-      }
-    });
-    logout.addEventListener('click', () => {
-      if (confirm('Are you sure you want to log out?')) AuthHelper.logout();
-    });
-  },
 };
 
 document.addEventListener('DOMContentLoaded', () => ProfileModule.init());

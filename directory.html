@@ -93,15 +93,19 @@
     </nav>
 
     <div class="sidebar-footer">
-      <div class="user-card">
+      <div class="user-card" id="user-card" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Open profile menu">
         <img id="user-avatar" src="image/placeholders/avatars/a11.jpg" alt="User" class="user-avatar">
         <div class="user-info">
           <div id="user-name" class="user-name">Dr. James Anderson</div>
           <div class="user-role">Administrator</div>
         </div>
-        <button id="logout-btn" class="icon-btn" title="Logout">
-          <i data-lucide="log-out" class="w-4 h-4"></i>
-        </button>
+      </div>
+
+      <div class="profile-dropdown" id="profile-dropdown" aria-hidden="true">
+        <a href="profile.html" class="profile-dropdown-item">View Profile</a>
+        <a href="settings.html" class="profile-dropdown-item">Settings</a>
+        <div class="profile-dropdown-divider"></div>
+        <button class="profile-dropdown-item profile-dropdown-danger" id="profile-logout">Log Out</button>
       </div>
     </div>
   </aside>

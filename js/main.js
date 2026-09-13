@@ -181,6 +181,30 @@ const ThemeManager = {
   },
 
   /**
+   * Current stored preference: 'dark', 'light', or 'system' (no saved value).
+   * @returns {string}
+   */
+  getPreference() {
+    return localStorage.getItem(CONFIG.themeStorageKey) || 'system';
+  },
+
+  /**
+   * Apply and persist a theme preference. 'system' clears the saved value so
+   * the theme follows prefers-color-scheme (handled in init()).
+   * @param {string} mode - 'dark' | 'light' | 'system'
+   */
+  setPreference(mode) {
+    if (mode === 'system') {
+      localStorage.removeItem(CONFIG.themeStorageKey);
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.setTheme(systemPrefersDark ? 'dark' : 'light');
+    } else {
+      localStorage.setItem(CONFIG.themeStorageKey, mode);
+      this.setTheme(mode);
+    }
+  },
+
+  /**
    * Toggle between dark and light themes
    */
   toggle() {
@@ -683,6 +707,55 @@ const AuthHelper = {
 };
 
 // ============================================
+// PROFILE DROPDOWN MENU
+// ============================================
+// Shared wiring for the sidebar user-card dropdown (View Profile / Settings /
+// Log Out). Pages only need the markup; this owns the interaction.
+
+const ProfileMenu = {
+  init() {
+    const card = document.getElementById('user-card');
+    const dropdown = document.getElementById('profile-dropdown');
+    if (!card || !dropdown || card.dataset.profileMenuWired) return;
+    card.dataset.profileMenuWired = '1';
+
+    const close = () => {
+      dropdown.classList.remove('open');
+      dropdown.setAttribute('aria-hidden', 'true');
+      card.setAttribute('aria-expanded', 'false');
+    };
+    const toggle = () => {
+      const open = dropdown.classList.toggle('open');
+      dropdown.setAttribute('aria-hidden', String(!open));
+      card.setAttribute('aria-expanded', String(open));
+    };
+
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (!card.contains(e.target) && !dropdown.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dropdown.classList.contains('open')) close();
+    });
+
+    const logout = document.getElementById('profile-logout');
+    if (logout) {
+      logout.addEventListener('click', () => {
+        if (confirm('Are you sure you want to log out?')) {
+          AuthHelper.logout();
+        }
+      });
+    }
+  }
+};
+
+// ============================================
 // PAGE TRANSITIONS
 // ============================================
 
@@ -929,6 +1002,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update auth UI
   AuthHelper.updateUI();
 
+  // Sidebar profile dropdown menu
+  ProfileMenu.init();
+
   // Theme toggle click handler
   const themeToggle = document.getElementById('theme-toggle');
   if (themeToggle) {
@@ -965,7 +1041,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelectorAll('.admin-page .top-header .icon-btn[title="Notifications"], .admin-page .top-header .icon-btn[title="Settings"]').forEach(btn => {
+  document.querySelectorAll('.admin-page .top-header button.icon-btn[title="Notifications"], .admin-page .top-header button.icon-btn[title="Settings"]').forEach(btn => {
     btn.addEventListener('click', () => {
       notify((btn.getAttribute('title') || 'This feature') + ' — coming soon');
     });
