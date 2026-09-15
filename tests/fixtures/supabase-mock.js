@@ -227,14 +227,21 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
       }
       if (method === 'POST') {
         const isSingle = route.request().headers()['accept'] === 'application/vnd.pgrst.object+json';
-        const body = isSingle
-          ? JSON.stringify({ id: Date.now() })
-          : JSON.stringify([{ id: Date.now() }]);
+        const created = { id: Date.now(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() };
+        const body = JSON.stringify(isSingle ? created : [created]);
         return route.fulfill({
           status: 201,
           contentType: 'application/json',
           body,
         });
+      }
+      if (method === 'PATCH') {
+        const updated = {
+          id: Number(new URL(route.request().url()).searchParams.get('id')?.replace('eq.', '')) || 1,
+          ...route.request().postDataJSON(),
+          updated_at: new Date(Date.now() + 1000).toISOString(),
+        };
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(updated) });
       }
       return route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
     });
@@ -250,10 +257,17 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
       // PostgREST returns a single object (not an array) when the client
       // requested one via .single() — mirror that so data.id resolves.
       const isSingle = route.request().headers()['accept'] === 'application/vnd.pgrst.object+json';
-      const body = isSingle
-        ? JSON.stringify({ id: Date.now() })
-        : JSON.stringify([{ id: Date.now() }]);
+      const created = { id: Date.now(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() };
+      const body = JSON.stringify(isSingle ? created : [created]);
       return route.fulfill({ status: 201, contentType: 'application/json', body });
+    }
+    if (method === 'PATCH') {
+      const updated = {
+        id: Number(new URL(route.request().url()).searchParams.get('id')?.replace('eq.', '')) || 1,
+        ...route.request().postDataJSON(),
+        updated_at: new Date(Date.now() + 1000).toISOString(),
+      };
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(updated) });
     }
     return route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
   });
@@ -280,7 +294,9 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
   // --- Mock R2 upload presign endpoint (Netlify Function) ---
   await page.route('**/api/upload-url**', async (route) => {
     const request = route.request().postDataJSON();
-    const fileKey = request.scope === 'profile' ? 'profiles/1/mock.webp' : 'mock/mock.webp';
+    const fileKey = request.scope === 'profile'
+      ? 'profiles/1/mock.webp'
+      : request.scope === 'post' ? 'posts/1/mock.webp' : 'vault/mock/mock.webp';
     return route.fulfill({
       status: 200,
       contentType: 'application/json',

@@ -124,11 +124,11 @@ CREATE POLICY "posts_insert" ON posts
   FOR INSERT TO authenticated
   WITH CHECK (member_id = current_member_id());
 
--- Update: own post or admin
+-- Update: strictly the post owner; moderators must not alter another member's words
 CREATE POLICY "posts_update" ON posts
   FOR UPDATE TO authenticated
-  USING (member_id = current_member_id() OR is_admin_or_officer())
-  WITH CHECK (member_id = current_member_id() OR is_admin_or_officer());
+  USING (member_id = current_member_id())
+  WITH CHECK (member_id = current_member_id());
 
 -- Delete: own post or admin
 CREATE POLICY "posts_delete" ON posts

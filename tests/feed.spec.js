@@ -1,10 +1,36 @@
 const { test, expect } = require('@playwright/test');
-const { mockSupabase, seedSession } = require('./fixtures/supabase-mock');
+const { mockSupabase, seedAuthenticatedSession } = require('./fixtures/supabase-mock');
+
+async function renderPost(page, overrides = {}) {
+  await page.evaluate((values) => {
+    const created = new Date(Date.now() - 60_000);
+    FeedModule.posts = [{
+      id: 101,
+      memberId: 1,
+      author: { name: 'Dr. Test Member', avatar: 'image/placeholders/avatars/a11.jpg', title: 'Member' },
+      content: 'Original post text',
+      image: null,
+      imageKey: null,
+      timestamp: created,
+      updatedAt: created,
+      isPinned: false,
+      type: 'general',
+      reactions: { like: 0, love: 0, celebrate: 0, insightful: 0, support: 0, haha: 0 },
+      userReaction: null,
+      comments: [],
+      shares: 0,
+      showComments: false,
+      ...values,
+    }];
+    FeedModule.visibleCount = 5;
+    FeedModule.renderPosts();
+  }, overrides);
+}
 
 test.describe('Feed (home.html)', () => {
   test.beforeEach(async ({ page }) => {
     await mockSupabase(page);
-    await seedSession(page);
+    await seedAuthenticatedSession(page);
     await page.goto('/home.html');
     // Wait for FeedModule.init() to complete — it's async (loads posts,
     // announcements, birthdays from Supabase) and setupEventListeners()
@@ -146,12 +172,14 @@ test.describe('Feed (home.html)', () => {
   });
 
   test('report post opens reason picker and inserts into moderation_reports', async ({ page }) => {
-    // Create a post first (mock POST returns an id; post renders client-side)
-    await page.fill('#post-input', 'Post that will be reported');
-    await page.click('#post-btn', { force: true });
-    await expect(page.locator('#posts-container')).toContainText('Post that will be reported');
+    await renderPost(page, {
+      id: 202,
+      memberId: 2,
+      author: { name: 'Dr. Other Member', avatar: '', title: 'Member' },
+      content: 'Post that will be reported',
+    });
 
-    // Open the post's overflow menu and click Report
+    // Open the other member's post menu and click Report
     await page.locator('.post-card .post-overflow-btn').first().click();
     await page.locator('.overflow-menu-item:has-text("Report")').click();
 
@@ -211,6 +239,172 @@ test.describe('Feed (home.html)', () => {
     await page.waitForTimeout(400);
     await expect(page.locator('#posts-container')).toContainText('Cardiology research update');
     await expect(page.locator('#posts-container')).toContainText('Neurology conference recap');
+  });
+
+  test('owner can edit post text inline and the Edited label persists in the card', async ({ page }) => {
+    await renderPost(page);
+    await page.locator('.post-overflow-btn').click();
+    await expect(page.getByRole('button', { name: 'Edit Post' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Report' })).toHaveCount(0);
+    await page.getByRole('button', { name: 'Edit Post' }).click();
+
+    const input = page.locator('#post-edit-input-101');
+    await expect(input).toHaveValue('Original post text');
+    await input.fill('Updated post text');
+    const patch = page.waitForRequest(request => request.url().includes('/rest/v1/posts') && request.method() === 'PATCH');
+    await page.getByRole('button', { name: 'Save' }).click();
+    const request = await patch;
+
+    expect(request.postDataJSON().content).toBe('Updated post text');
+    await expect(page.locator('#posts-container')).toContainText('Updated post text');
+    await expect(page.locator('.post-edited-label')).toHaveText('· Edited');
+    await expect(input).toHaveCount(0);
+  });
+
+  test('cancel leaves the original post unchanged', async ({ page }) => {
+    await renderPost(page);
+    await page.locator('.post-overflow-btn').click();
+    await page.getByRole('button', { name: 'Edit Post' }).click();
+    await page.locator('#post-edit-input-101').fill('Discard this change');
+    await page.getByRole('button', { name: 'Cancel' }).click();
+
+    await expect(page.locator('#posts-container')).toContainText('Original post text');
+    await expect(page.locator('#posts-container')).not.toContainText('Discard this change');
+    await expect(page.locator('.post-edited-label')).toHaveCount(0);
+  });
+
+  test('edit validation requires text or a picture', async ({ page }) => {
+    await renderPost(page);
+    await page.locator('.post-overflow-btn').click();
+    await page.getByRole('button', { name: 'Edit Post' }).click();
+    await page.locator('#post-edit-input-101').fill('   ');
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect(page.locator('.toast')).toContainText('needs text or a picture');
+    await expect(page.locator('#post-edit-input-101')).toBeVisible();
+  });
+
+  test('loaded posts retain the Edited marker after reload', async ({ page }) => {
+    const createdAt = new Date(Date.now() - 120_000).toISOString();
+    const updatedAt = new Date(Date.now() - 60_000).toISOString();
+    await page.route('**/rest/v1/posts**', route => {
+      if (route.request().method() !== 'GET') return route.fallback();
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([{
+          id: 303,
+          member_id: 1,
+          content: 'Previously edited post',
+          image_url: null,
+          image_key: null,
+          is_pinned: false,
+          post_type: 'general',
+          status: 'published',
+          created_at: createdAt,
+          updated_at: updatedAt,
+          members: { name: 'Dr. Test Member', avatar_url: '', hospital: '', field_of_medicine: '', role: 'member' },
+        }]),
+      });
+    });
+    await page.reload();
+    await page.waitForFunction(() => window.FeedModule && FeedModule.ready);
+    await page.evaluate(() => FeedModule.ready);
+
+    await expect(page.locator('#posts-container')).toContainText('Previously edited post');
+    await expect(page.locator('.post-edited-label')).toHaveText('· Edited');
+  });
+
+  test('other members posts expose Report only and reject direct edit calls', async ({ page }) => {
+    await renderPost(page, {
+      id: 202,
+      memberId: 2,
+      author: { name: 'Dr. Other Member', avatar: '', title: 'Member' },
+      content: 'Another member post',
+    });
+    await page.locator('.post-overflow-btn').click();
+
+    await expect(page.getByRole('button', { name: 'Edit Post' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Delete Post' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Report' })).toBeVisible();
+    await page.evaluate(() => FeedModule.editPost(202));
+    await expect(page.locator('.toast')).toContainText('only edit your own posts');
+    await expect(page.locator('#post-edit-input-202')).toHaveCount(0);
+  });
+
+  test('owner can remove an existing post picture', async ({ page }) => {
+    await renderPost(page, {
+      image: 'https://media.zetabetamu.com/posts/1/old.webp',
+      imageKey: 'posts/1/old.webp',
+    });
+    await page.locator('.post-overflow-btn').click();
+    await page.getByRole('button', { name: 'Edit Post' }).click();
+    await page.getByRole('button', { name: 'Remove picture' }).click();
+
+    const patch = page.waitForRequest(request => request.url().includes('/rest/v1/posts') && request.method() === 'PATCH');
+    const cleanup = page.waitForRequest(request => request.url().includes('/api/delete-object'));
+    await page.getByRole('button', { name: 'Save' }).click();
+    const patchRequest = await patch;
+    const cleanupRequest = await cleanup;
+
+    expect(patchRequest.postDataJSON()).toMatchObject({ image_url: null, image_key: null });
+    expect(cleanupRequest.postDataJSON()).toEqual({ keys: ['posts/1/old.webp'] });
+    await expect(page.locator('.post-image')).toHaveCount(0);
+    await expect(page.locator('.post-edited-label')).toHaveText('· Edited');
+  });
+
+  test('owner can replace a picture and the old R2 object is cleaned up', async ({ page }) => {
+    await page.evaluate(() => { window.__ZBM_FORCE_UPLOADS = true; });
+    await renderPost(page, {
+      image: 'https://media.zetabetamu.com/posts/1/old.webp',
+      imageKey: 'posts/1/old.webp',
+    });
+    await page.locator('.post-overflow-btn').click();
+    await page.getByRole('button', { name: 'Edit Post' }).click();
+    await page.setInputFiles('#post-edit-image-101', {
+      name: 'replacement.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAEAQH/6V8nWQAAAABJRU5ErkJggg==', 'base64'),
+    });
+
+    const patch = page.waitForRequest(request => request.url().includes('/rest/v1/posts') && request.method() === 'PATCH');
+    const cleanup = page.waitForRequest(request => request.url().includes('/api/delete-object'));
+    await page.getByRole('button', { name: 'Save' }).click();
+    const patchRequest = await patch;
+    const cleanupRequest = await cleanup;
+
+    expect(patchRequest.postDataJSON()).toMatchObject({
+      image_url: 'https://media.zetabetamu.com/posts/1/mock.webp',
+      image_key: 'posts/1/mock.webp',
+    });
+    expect(cleanupRequest.postDataJSON()).toEqual({ keys: ['posts/1/old.webp'] });
+    await expect(page.locator('.post-image')).toHaveAttribute('src', 'https://media.zetabetamu.com/posts/1/mock.webp');
+  });
+
+  test('failed picture edit removes the new R2 upload and preserves edit mode', async ({ page }) => {
+    await page.evaluate(() => { window.__ZBM_FORCE_UPLOADS = true; });
+    await renderPost(page);
+    await page.route('**/rest/v1/posts**', route => {
+      if (route.request().method() === 'PATCH') {
+        return route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ message: 'Update failed' }) });
+      }
+      return route.fallback();
+    });
+    await page.locator('.post-overflow-btn').click();
+    await page.getByRole('button', { name: 'Edit Post' }).click();
+    await page.setInputFiles('#post-edit-image-101', {
+      name: 'replacement.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAEAQH/6V8nWQAAAABJRU5ErkJggg==', 'base64'),
+    });
+
+    const cleanup = page.waitForRequest(request => request.url().includes('/api/delete-object'));
+    await page.getByRole('button', { name: 'Save' }).click();
+    const cleanupRequest = await cleanup;
+
+    expect(cleanupRequest.postDataJSON()).toEqual({ keys: ['posts/1/mock.webp'] });
+    await expect(page.locator('#post-edit-input-101')).toBeVisible();
+    await expect(page.locator('.toast')).toContainText('Failed to update post');
   });
 
   test('photo posts on the local server are blocked with a clear message', async ({ page }) => {

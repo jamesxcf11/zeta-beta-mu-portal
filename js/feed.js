@@ -102,6 +102,31 @@ const FeedModule = {
   // Post id targeted by the open report modal
   reportTargetPostId: null,
 
+  editingPostId: null,
+  editState: {
+    content: '',
+    image: null,
+    imageKey: null,
+    imageFile: null,
+    previewUrl: null,
+    removeImage: false,
+    saving: false
+  },
+
+  getCurrentMemberId() {
+    try {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      return session && session.id !== undefined ? String(session.id) : null;
+    } catch (e) {
+      return null;
+    }
+  },
+
+  isOwnPost(post) {
+    const memberId = this.getCurrentMemberId();
+    return !!post && !!memberId && String(post.memberId) === memberId;
+  },
+
   /**
    * Resolve the logged-in user from the session (with safe fallbacks).
    */
@@ -177,7 +202,7 @@ const FeedModule = {
       result = await db
         .from('posts')
         .select(`
-          id, content, image_url, is_pinned, post_type, status, created_at,
+          id, content, image_url, image_key, is_pinned, post_type, status, created_at, updated_at,
           member_id, members:member_id (name, avatar_url, hospital, field_of_medicine, role)
         `)
         .eq('status', 'published')
@@ -240,7 +265,9 @@ const FeedModule = {
         },
         content: p.content,
         image: p.image_url,
+        imageKey: p.image_key,
         timestamp: new Date(p.created_at),
+        updatedAt: new Date(p.updated_at || p.created_at),
         isPinned: p.is_pinned,
         type: p.post_type || 'general',
         reactions: {
@@ -534,6 +561,42 @@ const FeedModule = {
     }
   },
 
+  createEditFormHTML(post) {
+    const state = this.editState;
+    const preview = state.removeImage ? null : (state.previewUrl || state.image);
+    const imageControls = preview
+      ? `
+        <div class="post-edit-image-preview">
+          <img src="${this.escapeHTML(preview)}" alt="Edited post preview">
+          <button type="button" class="post-edit-image-remove" onclick="FeedModule.removeEditImage()" aria-label="Remove picture">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      `
+      : '<div class="post-edit-image-empty">No picture attached</div>';
+
+    return `
+      <div class="post-edit-form">
+        <label class="sr-only" for="post-edit-input-${post.id}">Edit post text</label>
+        <textarea id="post-edit-input-${post.id}" class="post-edit-input" rows="4" maxlength="10000">${this.escapeHTML(state.content)}</textarea>
+        ${imageControls}
+        <div class="post-edit-toolbar">
+          <label class="btn btn-glass post-edit-photo-btn" for="post-edit-image-${post.id}">
+            <i data-lucide="image" class="w-4 h-4"></i>
+            ${preview ? 'Replace picture' : 'Add picture'}
+          </label>
+          <input id="post-edit-image-${post.id}" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onchange="FeedModule.handleEditImage(${post.id}, event)">
+          <div class="post-edit-actions">
+            <button type="button" class="btn btn-glass" onclick="FeedModule.cancelEditPost()" ${state.saving ? 'disabled' : ''}>Cancel</button>
+            <button type="button" class="btn btn-gold" onclick="FeedModule.saveEditPost(${post.id})" ${state.saving ? 'disabled' : ''}>
+              ${state.saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
   /**
    * Create HTML for a single post
    */
@@ -570,6 +633,26 @@ const FeedModule = {
     const pinnedLabel = post.isPinned
       ? '<div class="pinned-label"><i data-lucide="pin" class="w-3 h-3"></i> Pinned</div>'
       : '';
+    const isOwn = this.isOwnPost(post);
+    const isEditing = this.editingPostId === post.id;
+    const updatedAt = post.updatedAt instanceof Date ? post.updatedAt : new Date(post.updatedAt || post.timestamp);
+    const editedLabel = updatedAt.getTime() > post.timestamp.getTime()
+      ? '<span class="post-edited-label">· Edited</span>'
+      : '';
+    const menuItems = isOwn
+      ? `
+        <button class="overflow-menu-item" onclick="FeedModule.editPost(${post.id})">
+          <i data-lucide="pencil" class="w-4 h-4"></i> Edit Post
+        </button>
+        <button class="overflow-menu-item overflow-menu-danger" onclick="FeedModule.deletePost(${post.id})">
+          <i data-lucide="trash-2" class="w-4 h-4"></i> Delete Post
+        </button>
+      `
+      : `
+        <button class="overflow-menu-item" onclick="FeedModule.reportPost(${post.id})">
+          <i data-lucide="flag" class="w-4 h-4"></i> Report
+        </button>
+      `;
 
     return `
       <article class="post-card ${post.isPinned ? 'is-pinned' : ''}" data-post-id="${post.id}">
@@ -580,26 +663,19 @@ const FeedModule = {
             <div class="post-author-name">${safeAuthorName}</div>
             <div class="post-author-title">${safeAuthorTitle}${officerBadge}</div>
           </div>
-          <div class="post-timestamp">• ${timeAgo}</div>
-          <button class="post-overflow-btn" onclick="FeedModule.toggleOverflowMenu(${post.id}, event)" aria-label="Post options">
-            <i data-lucide="more-horizontal" class="w-4 h-4"></i>
-          </button>
-          <div class="post-overflow-menu" id="overflow-menu-${post.id}">
-            <button class="overflow-menu-item" onclick="FeedModule.editPost(${post.id})">
-              <i data-lucide="pencil" class="w-4 h-4"></i> Edit Post
+          <div class="post-timestamp">• ${timeAgo} ${editedLabel}</div>
+          ${isEditing ? '' : `
+            <button class="post-overflow-btn" onclick="FeedModule.toggleOverflowMenu(${post.id}, event)" aria-label="Post options">
+              <i data-lucide="more-horizontal" class="w-4 h-4"></i>
             </button>
-            <button class="overflow-menu-item overflow-menu-danger" onclick="FeedModule.deletePost(${post.id})">
-              <i data-lucide="trash-2" class="w-4 h-4"></i> Delete Post
-            </button>
-            <button class="overflow-menu-item" onclick="FeedModule.reportPost(${post.id})">
-              <i data-lucide="flag" class="w-4 h-4"></i> Report
-            </button>
-          </div>
+            <div class="post-overflow-menu" id="overflow-menu-${post.id}">${menuItems}</div>
+          `}
         </div>
-        
-        <div class="post-content">${safeContent}</div>
-        
-        ${post.image ? `<img src="${this.escapeHTML(post.image)}" alt="Post image" class="post-image" loading="lazy" decoding="async">` : ''}
+
+        ${isEditing ? this.createEditFormHTML(post) : `
+          <div class="post-content">${safeContent}</div>
+          ${post.image ? `<img src="${this.escapeHTML(post.image)}" alt="Post image" class="post-image" loading="lazy" decoding="async">` : ''}
+        `}
         
         <div class="post-actions">
           <div class="post-reactions">
@@ -1013,6 +1089,8 @@ const FeedModule = {
       let postId = Date.now();
       let imageUrl = null;
       let imageKey = null;
+      let createdAt = new Date();
+      let updatedAt = createdAt;
 
       // Upload image to R2 when configured
       if (this.composerState.imageFile && typeof MediaUpload !== 'undefined' && MediaUpload.isConfigured()) {
@@ -1043,13 +1121,16 @@ const FeedModule = {
           image_key: imageKey,
           post_type: 'general',
           status: 'published'
-        }).select('id').single();
+        }).select('id, created_at, updated_at').single();
         if (error) { this.showToast('Failed to create post'); return; }
         postId = data.id;
+        createdAt = new Date(data.created_at || Date.now());
+        updatedAt = new Date(data.updated_at || data.created_at || Date.now());
       }
 
       const newPost = {
         id: postId,
+        memberId: this.getCurrentMemberId(),
         author: {
           name: user.name,
           avatar: user.avatar,
@@ -1057,7 +1138,9 @@ const FeedModule = {
         },
         content: text,
         image: imageUrl,
-        timestamp: new Date(),
+        imageKey,
+        timestamp: createdAt,
+        updatedAt,
         type: 'general',
         reactions: { love: 0, celebrate: 0, insightful: 0, like: 0 },
         userReaction: null,
@@ -1182,12 +1265,160 @@ const FeedModule = {
     }
   },
 
-  /**
-   * Edit post (mock)
-   */
+  resetEditState() {
+    if (this.editState.previewUrl && this.editState.previewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(this.editState.previewUrl);
+    }
+    this.editingPostId = null;
+    this.editState = {
+      content: '',
+      image: null,
+      imageKey: null,
+      imageFile: null,
+      previewUrl: null,
+      removeImage: false,
+      saving: false
+    };
+  },
+
   editPost(postId) {
-    this.showToast('Edit functionality coming soon');
-    this.toggleOverflowMenu(postId);
+    const post = this.posts.find(p => p.id === postId);
+    if (!this.isOwnPost(post)) {
+      this.showToast('You can only edit your own posts');
+      return;
+    }
+
+    document.querySelectorAll('.post-overflow-menu.show').forEach(menu => menu.classList.remove('show'));
+    this.activeOverflowMenu = null;
+    this.resetEditState();
+    this.editingPostId = postId;
+    this.editState.content = post.content || '';
+    this.editState.image = post.image || null;
+    this.editState.imageKey = post.imageKey || null;
+    this.renderPosts();
+    requestAnimationFrame(() => document.getElementById(`post-edit-input-${postId}`)?.focus());
+  },
+
+  handleEditImage(postId, event) {
+    const post = this.posts.find(p => p.id === postId);
+    if (this.editingPostId !== postId || !this.isOwnPost(post)) {
+      this.showToast('You can only edit your own posts');
+      return;
+    }
+
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const validationError = typeof MediaUpload !== 'undefined' ? MediaUpload.validate(file) : 'Image upload is unavailable';
+    if (validationError) {
+      this.showToast(validationError);
+      event.target.value = '';
+      return;
+    }
+
+    if (this.editState.previewUrl && this.editState.previewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(this.editState.previewUrl);
+    }
+    this.editState.imageFile = file;
+    this.editState.previewUrl = URL.createObjectURL(file);
+    this.editState.removeImage = false;
+    this.renderPosts();
+  },
+
+  removeEditImage() {
+    if (this.editState.previewUrl && this.editState.previewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(this.editState.previewUrl);
+    }
+    this.editState.imageFile = null;
+    this.editState.previewUrl = null;
+    this.editState.removeImage = true;
+    this.renderPosts();
+  },
+
+  cancelEditPost() {
+    this.resetEditState();
+    this.renderPosts();
+  },
+
+  async saveEditPost(postId) {
+    if (this.editState.saving) return;
+    const post = this.posts.find(p => p.id === postId);
+    if (this.editingPostId !== postId || !this.isOwnPost(post)) {
+      this.showToast('You can only edit your own posts');
+      return;
+    }
+
+    const input = document.getElementById(`post-edit-input-${postId}`);
+    const content = (input?.value || '').trim();
+    const willHaveImage = !!this.editState.imageFile || (!this.editState.removeImage && !!this.editState.image);
+    if (!content && !willHaveImage) {
+      this.showToast('A post needs text or a picture');
+      return;
+    }
+    if (!this.hasSupabase()) {
+      this.showToast('The live feed is unavailable');
+      return;
+    }
+    if (this.editState.imageFile && (typeof MediaUpload === 'undefined' || !MediaUpload.isConfigured())) {
+      this.showToast('Picture editing is only available on the deployed site');
+      return;
+    }
+
+    this.editState.content = content;
+    this.editState.saving = true;
+    this.renderPosts();
+
+    const oldImageKey = post.imageKey;
+    let newImageKey = null;
+    let imageUrl = this.editState.removeImage ? null : post.image;
+    let imageKey = this.editState.removeImage ? null : post.imageKey;
+
+    try {
+      if (this.editState.imageFile) {
+        const { full } = await MediaUpload.upload(this.editState.imageFile, 'post', { withThumbnail: false });
+        imageUrl = full.publicUrl;
+        imageKey = full.fileKey;
+        newImageKey = full.fileKey;
+      }
+
+      const memberId = this.getCurrentMemberId();
+      const { data, error } = await db.from('posts')
+        .update({ content, image_url: imageUrl, image_key: imageKey })
+        .eq('id', postId)
+        .eq('member_id', memberId)
+        .select('id, content, image_url, image_key, updated_at')
+        .single();
+
+      if (error || !data) {
+        if (newImageKey) {
+          try { await MediaUpload.deleteKeys([newImageKey]); } catch (cleanupError) {}
+        }
+        this.editState.saving = false;
+        this.renderPosts();
+        this.showToast('Failed to update post');
+        return;
+      }
+
+      post.content = data.content;
+      post.image = data.image_url;
+      post.imageKey = data.image_key;
+      post.updatedAt = new Date(data.updated_at || Date.now());
+      this.resetEditState();
+      this.renderPosts();
+      this.showToast('Post updated');
+
+      if (oldImageKey && oldImageKey !== data.image_key) {
+        try { await MediaUpload.deleteKeys([oldImageKey]); } catch (error) {
+          console.error('feed: failed to clean up replaced post image', error);
+        }
+      }
+    } catch (error) {
+      if (newImageKey) {
+        try { await MediaUpload.deleteKeys([newImageKey]); } catch (cleanupError) {}
+      }
+      this.editState.saving = false;
+      this.renderPosts();
+      this.showToast(error.message || 'Failed to update post');
+    }
   },
 
   /**
@@ -1195,7 +1426,10 @@ const FeedModule = {
    */
   async deletePost(postId) {
     const post = this.posts.find(p => p.id === postId);
-    if (!post) return;
+    if (!this.isOwnPost(post)) {
+      this.showToast('You can only delete your own posts');
+      return;
+    }
     if (!confirm('Delete this post?')) return;
 
     if (this.hasSupabase()) {

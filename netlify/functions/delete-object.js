@@ -1,9 +1,9 @@
 /**
  * POST /api/delete-object
  *
- * Officer-only cleanup of R2 objects. Used when a vault submission is rejected
- * so refused media stops consuming storage — previously rejected uploads set
- * approval_status = 'rejected' and left the files behind forever.
+ * Authenticated cleanup of managed R2 objects. Members may remove their own
+ * profile and post images; officers may additionally remove vault media when a
+ * submission is rejected so refused files do not consume storage.
  *
  * Request body: { keys: string[] }
  * Response:     { deleted: number }
@@ -52,11 +52,15 @@ exports.handler = async (event) => {
   const auth = await authenticate(event);
   if (auth.error) return auth.error;
 
-  if (!isOfficer(auth.member)) {
-    const ownProfilePrefix = `profiles/${auth.member.id}/`;
-    if (keys.some((key) => typeof key !== 'string' || !key.startsWith(ownProfilePrefix))) {
-      return json(403, { error: 'Members may only delete their own profile photos' });
-    }
+  const ownProfilePrefix = `profiles/${auth.member.id}/`;
+  const ownPostPrefix = `posts/${auth.member.id}/`;
+  const forbidden = keys.some((key) => {
+    if (typeof key !== 'string') return true;
+    if (key.startsWith(ownProfilePrefix) || key.startsWith(ownPostPrefix)) return false;
+    return !isOfficer(auth.member) || !key.startsWith('vault/');
+  });
+  if (forbidden) {
+    return json(403, { error: 'You may only delete your own profile or post images' });
   }
 
   const rejected = keys.filter((k) => !r2.isManagedKey(k));
