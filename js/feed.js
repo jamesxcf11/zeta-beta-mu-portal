@@ -34,245 +34,11 @@ const FeedModule = {
   // Double-submit guard for post creation
   isPosting: false,
 
-  // Mock posts data with multiple reactions
-  posts: [
-    {
-      id: 1,
-      author: {
-        name: 'Dr. Sarah Mitchell',
-        avatar: 'image/placeholders/avatars/a5.jpg',
-        title: 'Neurologist at Mount Sinai',
-        isOfficer: true
-      },
-      content: 'Just published our latest research on neuroplasticity in stroke recovery. Excited to share these findings with our medical community! The study followed 200 patients over 18 months and shows remarkable improvement potential with targeted therapy protocols.',
-      image: 'image/placeholders/picsum/p1.jpg',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-      isPinned: true,
-      type: 'achievement',
-      reactions: {
-        love: 8,
-        celebrate: 12,
-        insightful: 4,
-        like: 0
-      },
-      userReaction: null,
-      comments: [
-        {
-          id: 1,
-          author: { name: 'Dr. Michael Chen', avatar: 'image/placeholders/avatars/a3.jpg' },
-          content: 'Congratulations Dr. Mitchell! This is groundbreaking work.',
-          timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000)
-        },
-        {
-          id: 2,
-          author: { name: 'Dr. James Anderson', avatar: 'image/placeholders/avatars/a11.jpg' },
-          content: 'Would love to discuss the methodology. Great job!',
-          timestamp: new Date(Date.now() - 30 * 60 * 1000)
-        }
-      ],
-      shares: 3,
-      showComments: false
-    },
-    {
-      id: 2,
-      author: {
-        name: 'Dr. Michael Chen',
-        avatar: 'image/placeholders/avatars/a3.jpg',
-        title: 'Oncologist at Johns Hopkins'
-      },
-      content: 'Honored to be speaking at the Annual Oncology Summit next month. Looking forward to reconnecting with fellow Zeta Beta Mu brothers at the event! Who else is attending?',
-      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
-      type: 'achievement',
-      reactions: {
-        love: 15,
-        celebrate: 20,
-        insightful: 8,
-        like: 2
-      },
-      userReaction: 'celebrate',
-      comments: [
-        {
-          id: 3,
-          author: { name: 'Dr. Emily Roberts', avatar: 'image/placeholders/avatars/a9.jpg' },
-          content: 'I will be there! Let\'s grab coffee between sessions.',
-          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000)
-        }
-      ],
-      shares: 8,
-      showComments: false
-    },
-    {
-      id: 3,
-      author: {
-        name: 'Dr. James Anderson',
-        avatar: 'image/placeholders/avatars/a11.jpg',
-        title: 'Cardiologist at St. Luke\'s'
-      },
-      content: 'Reminder: The Annual Fraternity Gala Dinner is scheduled for March 25th at The Grand Hotel. Please RSVP by March 10th. This year\'s theme is "Honoring 55 Years of Excellence." Looking forward to seeing everyone there!',
-      image: 'image/placeholders/picsum/p2.jpg',
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-      type: 'announcement',
-      reactions: {
-        love: 45,
-        celebrate: 60,
-        insightful: 12,
-        like: 10
-      },
-      userReaction: null,
-      comments: [],
-      shares: 32,
-      showComments: false
-    },
-    {
-      id: 4,
-      author: {
-        name: 'Dr. Emily Roberts',
-        avatar: 'image/placeholders/avatars/a9.jpg',
-        title: 'Pediatrician at Children\'s Hospital'
-      },
-      content: 'Congratulations to our newest inductees! Welcome to the brotherhood, Dr. Martinez, Dr. Patel, and Dr. Wong. Your dedication to medicine and service is truly inspiring. 🎓',
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-      type: 'achievement',
-      reactions: {
-        love: 30,
-        celebrate: 45,
-        insightful: 8,
-        like: 6
-      },
-      userReaction: 'love',
-      comments: [
-        {
-          id: 4,
-          author: { name: 'Dr. Martinez', avatar: 'image/placeholders/avatars/a12.jpg' },
-          content: 'Thank you so much! Honored to be part of this amazing fraternity.',
-          timestamp: new Date(Date.now() - 1.5 * 24 * 60 * 60 * 1000)
-        }
-      ],
-      shares: 12,
-      showComments: false
-    },
-    {
-      id: 5,
-      author: {
-        name: 'Dr. Robert Kim',
-        avatar: 'image/placeholders/avatars/a8.jpg',
-        title: 'Surgeon at Mayo Clinic'
-      },
-      content: 'Sharing a case study from yesterday: 6-hour complex cardiac surgery on a 72-year-old patient. Successful outcome thanks to the incredible team at Mayo. Grateful for the expertise honed through years of practice and the support of mentors from Zeta Beta Mu.',
-      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-      type: 'case_study',
-      reactions: {
-        love: 56,
-        celebrate: 40,
-        insightful: 35,
-        like: 25
-      },
-      userReaction: null,
-      comments: [
-        {
-          id: 5,
-          author: { name: 'Dr. James Anderson', avatar: 'image/placeholders/avatars/a11.jpg' },
-          content: 'Excellent work, Dr. Kim! The patient is fortunate to have you.',
-          timestamp: new Date(Date.now() - 2.5 * 24 * 60 * 60 * 1000)
-        },
-        {
-          id: 6,
-          author: { name: 'Dr. Sarah Mitchell', avatar: 'image/placeholders/avatars/a5.jpg' },
-          content: 'Proud of our brother! This is what excellence looks like.',
-          timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-        }
-      ],
-      shares: 24,
-      showComments: false
-    }
-  ],
+  posts: [],
+  feedLoadError: null,
 
-  // Mock birthdays data (today, tomorrow, next)
-  birthdays: (() => {
-    const today = new Date();
-    const makeDate = (offset) => {
-      const d = new Date(today);
-      d.setDate(today.getDate() + offset);
-      return d;
-    };
-    return [
-      { name: 'Dr. Michael Chen', date: makeDate(0), avatar: 'image/placeholders/avatars/a3.jpg', year: 2008 },
-      { name: 'Dr. Sarah Johnson', date: makeDate(1), avatar: 'image/placeholders/avatars/a6.jpg', year: 2012 },
-      { name: 'Dr. Robert Kim', date: makeDate(5), avatar: 'image/placeholders/avatars/a8.jpg', year: 2010 },
-      { name: 'Dr. Emily Roberts', date: makeDate(8), avatar: 'image/placeholders/avatars/a9.jpg', year: 2015 },
-      { name: 'Dr. James Anderson', date: makeDate(12), avatar: 'image/placeholders/avatars/a11.jpg', year: 2005 },
-      { name: 'Dr. David Martinez', date: makeDate(15), avatar: 'image/placeholders/avatars/a12.jpg', year: 2011 },
-      { name: 'Dr. Lisa Wong', date: makeDate(20), avatar: 'image/placeholders/avatars/a20.jpg', year: 2014 },
-      { name: 'Dr. Brian Patel', date: makeDate(22), avatar: '', year: 2009 }
-    ];
-  })(),
-
-  // Mock announcements data
-  announcements: [
-    {
-      id: 1,
-      title: 'Annual Gala 2026',
-      date: new Date('2026-03-25'),
-      content: 'Join us for our 55th anniversary celebration at The Grand Hotel.',
-      icon: 'calendar',
-      accent: 'gold',
-      unread: true
-    },
-    {
-      id: 2,
-      title: 'New Member Induction',
-      date: new Date('2026-04-15'),
-      content: 'Ceremony for 12 new medical professionals joining the brotherhood.',
-      icon: 'award',
-      accent: 'emerald',
-      unread: true
-    },
-    {
-      id: 3,
-      title: 'Medical Conference',
-      date: new Date('2026-05-10'),
-      content: 'Annual medical excellence conference — registration opens next week.',
-      icon: 'heart-pulse',
-      accent: 'info',
-      unread: false
-    },
-    {
-      id: 4,
-      title: 'Officer Elections',
-      date: new Date('2026-06-01'),
-      content: 'Nominate qualified brothers for the upcoming officer elections.',
-      icon: 'shield',
-      accent: 'gold',
-      unread: false
-    },
-    {
-      id: 5,
-      title: 'Alumni Outreach Drive',
-      date: new Date('2026-06-15'),
-      content: 'Help reconnect with alumni and update contact records before the gala.',
-      icon: 'mail',
-      accent: 'emerald',
-      unread: false
-    },
-    {
-      id: 6,
-      title: 'Community Clinic Day',
-      date: new Date('2026-07-08'),
-      content: 'Volunteer for the annual free community clinic day at St. Luke\'s.',
-      icon: 'stethoscope',
-      accent: 'info',
-      unread: true
-    },
-    {
-      id: 7,
-      title: 'Scholarship Fundraiser',
-      date: new Date('2026-08-20'),
-      content: 'Support the next generation of medical leaders through our scholarship fund.',
-      icon: 'graduation-cap',
-      accent: 'gold',
-      unread: false
-    }
-  ],
+  birthdays: [],
+  announcements: [],
 
   // Derived notifications: reactions/comments on your posts + new
   // announcements since your last visit (see loadNotifications)
@@ -405,19 +171,31 @@ const FeedModule = {
    * Load posts from Supabase and map to the existing data structure
    */
   async loadPosts() {
-    const { data, error } = await db
-      .from('posts')
-      .select(`
-        id, content, image_url, is_pinned, post_type, status, created_at,
-        member_id, members:member_id (name, avatar_url, hospital, field_of_medicine, role)
-      `)
-      .eq('status', 'published')
-      .is('deleted_at', null)
-      .order('is_pinned', { ascending: false })
-      .order('created_at', { ascending: false })
-      .limit(20);
+    this.feedLoadError = null;
+    let result;
+    try {
+      result = await db
+        .from('posts')
+        .select(`
+          id, content, image_url, is_pinned, post_type, status, created_at,
+          member_id, members:member_id (name, avatar_url, hospital, field_of_medicine, role)
+        `)
+        .eq('status', 'published')
+        .is('deleted_at', null)
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(20);
+    } catch (error) {
+      result = { error };
+    }
 
-    if (error || !data) return;
+    const { data, error } = result;
+    if (error || !data) {
+      console.error('feed: failed to load posts', error);
+      this.posts = [];
+      this.feedLoadError = 'The live feed could not be reached. Check your connection and try again.';
+      return;
+    }
 
     // Load reactions and comments for each post
     const postIds = data.map(p => p.id);
@@ -479,6 +257,11 @@ const FeedModule = {
         showComments: false
       };
     });
+  },
+
+  async retryLoadPosts() {
+    await this.loadPosts();
+    this.renderPosts();
   },
 
   /**
@@ -655,6 +438,21 @@ const FeedModule = {
   renderPosts() {
     const container = document.getElementById('posts-container');
     if (!container) return;
+
+    if (this.feedLoadError) {
+      container.innerHTML = `
+        <div class="empty-state feed-error-state" role="alert">
+          <div class="empty-icon"><i data-lucide="wifi-off" class="w-8 h-8"></i></div>
+          <div class="empty-title">Live feed unavailable</div>
+          <div class="empty-text">${this.escapeHTML(this.feedLoadError)}</div>
+          <button class="btn btn-secondary" type="button" onclick="FeedModule.retryLoadPosts()">Try again</button>
+        </div>
+      `;
+      const loadMore = document.getElementById('feed-load-more');
+      if (loadMore) loadMore.style.display = 'none';
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      return;
+    }
 
     const filtered = this.getFilteredPosts();
     const visible = filtered.slice(0, this.visibleCount);

@@ -109,6 +109,22 @@ test.describe('Feed (home.html)', () => {
     await expect(loadMoreContainer).toHaveCSS('display', 'none');
   });
 
+  test('shows a live-feed error instead of hardcoded posts when Supabase fails', async ({ page }) => {
+    await page.route('**/rest/v1/posts**', route => route.fulfill({
+      status: 503,
+      contentType: 'application/json',
+      body: JSON.stringify({ message: 'Database unavailable' }),
+    }));
+    await page.reload();
+    await page.waitForFunction(() => window.FeedModule && FeedModule.ready);
+    await page.evaluate(() => FeedModule.ready);
+
+    await expect(page.locator('#posts-container')).toContainText('Live feed unavailable');
+    await expect(page.locator('#posts-container')).toContainText('Try again');
+    await expect(page.locator('#posts-container')).not.toContainText('Dr. Sarah Mitchell');
+    await expect(page.locator('#feed-load-more')).toHaveCSS('display', 'none');
+  });
+
   test('keyboard accessibility: Photo button is reachable via Tab', async ({ page }) => {
     await page.locator('#post-input').focus();
     await page.keyboard.press('Tab');

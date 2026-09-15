@@ -55,6 +55,11 @@ exports.handler = async (event) => {
     return json(500, { error: 'Storage is not configured' });
   }
 
+  if (!/^[a-f0-9]{32}$/i.test(r2.env('R2_ACCOUNT_ID'))) {
+    console.error('upload-url: invalid R2_ACCOUNT_ID');
+    return json(500, { error: 'R2_ACCOUNT_ID is invalid in the Netlify environment' });
+  }
+
   let body;
   try {
     body = JSON.parse(event.body || '{}');
