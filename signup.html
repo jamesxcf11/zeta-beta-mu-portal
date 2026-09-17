@@ -515,7 +515,7 @@
                 <span class="w-5 h-5 rounded border border-[var(--login-checkbox-border)] bg-[var(--login-checkbox-bg)] flex items-center justify-center peer-checked:bg-[var(--login-accent)] peer-checked:border-[var(--login-accent)] transition-colors mt-0.5 flex-shrink-0">
                   <i data-lucide="check" class="w-3.5 h-3.5 text-[var(--login-primary-text)] opacity-0 peer-checked:opacity-100 transition-opacity"></i>
                 </span>
-                <span class="text-sm text-[var(--login-muted)]">I agree to the <a href="#" class="text-[var(--login-accent)] hover:underline">Terms of Service</a> and <a href="#" class="text-[var(--login-accent)] hover:underline">Privacy Policy</a>. I confirm that I am a member or alumni of Zeta Beta Mu Fraternity.</span>
+                <span class="text-sm text-[var(--login-muted)]">I agree to the <a href="#legal-terms" data-legal="terms" class="text-[var(--login-accent)] hover:underline">Terms of Service</a> and <a href="#legal-privacy" data-legal="privacy" class="text-[var(--login-accent)] hover:underline">Privacy Policy</a>. I confirm that I am a member or alumni of Zeta Beta Mu Fraternity.</span>
               </label>
             </div>
 
@@ -846,9 +846,61 @@
     })();
   </script>
 
-  <!-- Shared auth & theme scripts -->
-  <script src="js/auth.js"></script>
-  <script src="js/main.js"></script>
+  <!-- Legal modal: Terms of Service & Privacy Policy opened from the
+       agreement checkbox links on step 4 -->
+  <div id="legal-modal" class="vault-modal hidden" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+    <div class="vault-modal-backdrop" data-legal-close></div>
+    <div class="vault-modal-card glass-heavy">
+      <button class="vault-modal-close" type="button" data-legal-close aria-label="Close">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <h3 class="vault-modal-title" id="legal-modal-title">
+        <i data-lucide="scale" class="w-5 h-5"></i>
+        Terms &amp; Privacy
+      </h3>
+      <p class="vault-modal-sub">The terms and data practices that apply to the Zeta Beta Mu member portal.</p>
+
+      <div class="legal-modal-body">
+        <section id="legal-terms">
+          <h4>Terms of Service</h4>
+          <p>Membership in this portal is limited to verified members and alumni of Zeta Beta Mu Medical Fraternity. By submitting an application you affirm that the information you provide is accurate and that you are eligible for membership.</p>
+          <p>Portal accounts are personal and non-transferable. You are responsible for activity under your account and for keeping your credentials confidential. Officers may suspend accounts that misrepresent identity or misuse community content.</p>
+          <p>Content posted to the feed, directory, vault, and memorial pages must respect fellow brothers and the fraternity. Officers may remove content that violates community standards.</p>
+        </section>
+        <section id="legal-privacy">
+          <h4>Privacy Policy</h4>
+          <p>We collect only the information you provide during registration and profile management: name, contact details, graduation year, and professional information used for the member directory.</p>
+          <p>Your data is used solely to operate the portal — verifying membership, powering the directory, and delivering announcements. We do not sell or share member data with third parties.</p>
+          <p>Directory visibility, birthday display, and notification preferences can be managed from Settings. You may request account removal by contacting fraternity officers.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const modal = document.getElementById('legal-modal');
+      if (!modal) return;
+      const open = (section) => {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        const target = document.getElementById('legal-' + section);
+        if (target) target.scrollIntoView({ block: 'start' });
+      };
+      const close = () => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      };
+      document.querySelectorAll('[data-legal]').forEach(link => {
+        link.addEventListener('click', (e) => { e.preventDefault(); open(link.dataset.legal); });
+      });
+      modal.querySelectorAll('[data-legal-close]').forEach(el => el.addEventListener('click', close));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
+      });
+    })();
+  </script>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof lucide !== 'undefined') {

@@ -248,6 +248,7 @@ const AdminModule = {
     const container = document.getElementById('pending-members');
     const badge = document.getElementById('pending-count');
     if (badge) badge.textContent = `${this.pendingMembers.length} pending`;
+    if (typeof this.renderNotifications === 'function') this.renderNotifications();
     if (!container) return;
 
     if (this.pendingMembers.length === 0) {
@@ -571,8 +572,76 @@ const AdminModule = {
     }
 
     // Drop zone interactions
-    this.setupDropZone('magazine-drop-zone', 'magazine-cover-url');
-    this.setupDropZone('vault-drop-zone', 'vault-media-url');
+    this.setupDropZone('magazine-drop-zone', 'magazine-cover-url', 'image/*');
+    this.setupDropZone('vault-drop-zone', 'vault-media-url', 'image/*,video/*');
+
+    // Header notifications dropdown
+    this.setupNotifications();
+  },
+
+  /**
+   * Header bell: real dropdown of pending work (applications, reports)
+   * instead of a "coming soon" toast. Items jump to the relevant tab.
+   */
+  setupNotifications() {
+    const btn = document.getElementById('admin-notif-btn');
+    const dropdown = document.getElementById('admin-notif-dropdown');
+    if (!btn || !dropdown) return;
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.renderNotifications();
+      dropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.admin-notif-wrap')) dropdown.classList.remove('show');
+    });
+
+    dropdown.addEventListener('click', (e) => {
+      const item = e.target.closest('[data-notif-tab]');
+      if (!item) return;
+      this.switchTab(item.dataset.notifTab);
+      dropdown.classList.remove('show');
+    });
+
+    this.renderNotifications();
+  },
+
+  renderNotifications() {
+    const list = document.getElementById('admin-notif-list');
+    const dot = document.getElementById('admin-notif-dot');
+    if (!list) return;
+
+    const pending = this.pendingMembers.length;
+    const reports = this.reports.posts.length + this.reports.comments.length;
+    if (dot) dot.style.display = (pending + reports) ? '' : 'none';
+
+    if (!pending && !reports) {
+      list.innerHTML = `
+        <div class="notification-empty">
+          <p>You're all caught up — no pending items.</p>
+        </div>`;
+      return;
+    }
+
+    const items = [];
+    if (pending) {
+      items.push({ icon: 'user-plus', tab: 'members',
+        text: `${pending} membership application${pending > 1 ? 's' : ''} awaiting review` });
+    }
+    if (reports) {
+      items.push({ icon: 'flag', tab: 'moderation',
+        text: `${reports} open moderation report${reports > 1 ? 's' : ''}` });
+    }
+
+    list.innerHTML = items.map(i => `
+      <button class="notification-item unread" type="button" data-notif-tab="${i.tab}">
+        <i data-lucide="${i.icon}" class="w-5 h-5"></i>
+        <span>${this.escapeHTML(i.text)}</span>
+      </button>`).join('');
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   },
 
   /**
@@ -580,9 +649,17 @@ const AdminModule = {
    * @param {string} zoneId - Drop zone element ID
    * @param {string} urlInputId - Associated URL input to populate with object URL
    */
-  setupDropZone(zoneId, urlInputId) {
+  setupDropZone(zoneId, urlInputId, accept) {
     const zone = document.getElementById(zoneId);
     if (!zone) return;
+
+    const attachFile = (file) => {
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const input = document.getElementById(urlInputId);
+      if (input) input.value = url;
+      this.showToast(`File "${file.name}" attached. URL field auto-filled.`, 'success');
+    };
 
     zone.addEventListener('dragover', (e) => {
       e.preventDefault();
@@ -594,17 +671,25 @@ const AdminModule = {
     zone.addEventListener('drop', (e) => {
       e.preventDefault();
       zone.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
-        const input = document.getElementById(urlInputId);
-        if (input) input.value = url;
-        this.showToast(`File "${file.name}" attached. URL field auto-filled.`, 'success');
-      }
+      attachFile(e.dataTransfer.files[0]);
     });
-    zone.addEventListener('click', () => {
-      this.showToast('File picker coming soon. Paste a URL in the field below for now.', 'info');
+
+    // Click opens a real file picker that behaves exactly like a drop.
+    // TODO(cloud): once R2 upload is wired here, upload the picked file
+    // and fill the URL field with the hosted URL instead of a blob URL.
+    const picker = document.createElement('input');
+    picker.type = 'file';
+    picker.id = `${zoneId}-file-input`;
+    picker.className = 'sr-only';
+    if (accept) picker.accept = accept;
+    picker.addEventListener('click', (e) => e.stopPropagation());
+    picker.addEventListener('change', () => {
+      attachFile(picker.files && picker.files[0]);
+      picker.value = '';
     });
+    zone.appendChild(picker);
+
+    zone.addEventListener('click', () => picker.click());
   },
 
   /**
@@ -896,6 +981,7 @@ const AdminModule = {
   renderReports() {
     this.renderReportList('reported-posts', this.reports.posts, 'post', 'reported-posts-count');
     this.renderReportList('flagged-comments', this.reports.comments, 'comment', 'flagged-comments-count');
+    if (typeof this.renderNotifications === 'function') this.renderNotifications();
   },
 
   renderReportList(containerId, items, type, countId) {

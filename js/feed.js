@@ -894,7 +894,7 @@ const FeedModule = {
 
     return `
       <div class="widget-item birthday-item ${isToday ? 'today' : ''}${wished}" data-name="${safeName}">
-        <a href="#profile" class="birthday-row-link" aria-label="View ${safeName}'s profile">
+        <a href="directory.html" class="birthday-row-link" aria-label="Find ${safeName} in the member directory">
           ${avatarHTML}
           <div class="widget-content">
             <div class="widget-label">${safeName}</div>

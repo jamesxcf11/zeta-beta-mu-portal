@@ -422,4 +422,36 @@ test.describe('Feed (home.html)', () => {
     await page.waitForTimeout(400);
     await expect(page.locator('#posts-container')).not.toContainText('Photo post attempt');
   });
+
+  test('birthday member rows lead to the member directory', async ({ page }) => {
+    await page.evaluate(() => {
+      FeedModule.birthdays = [{
+        name: 'Dr. Birthday Member',
+        date: new Date(),
+        avatar: '',
+        year: 2004,
+        wished: false,
+      }];
+      FeedModule.renderBirthdays();
+    });
+
+    const memberLink = page.locator('#birthdays-list .birthday-row-link');
+    await expect(memberLink).toHaveAttribute('href', 'directory.html');
+    await memberLink.click();
+    await page.waitForURL('**/directory.html');
+  });
+
+  test('view all announcements opens visible announcement content', async ({ page }) => {
+    await page.locator('a[href="announcements.html"]').click();
+    await page.waitForURL('**/announcements.html');
+    await expect(page.getByRole('heading', { name: 'All Announcements' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Back to Feed' })).toBeVisible();
+  });
+
+  test('view all birthdays opens visible birthday content', async ({ page }) => {
+    await page.locator('a[href="birthdays.html"]').click();
+    await page.waitForURL('**/birthdays.html');
+    await expect(page.getByRole('heading', { name: 'All Birthdays' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Back to Feed' })).toBeVisible();
+  });
 });

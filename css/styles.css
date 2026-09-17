@@ -8677,6 +8677,85 @@ body.light-theme .memoriam-solemn {
   background: rgba(6, 78, 59, 0.04);
 }
 
+button.memorial-gallery-item {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  border-style: solid;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+button.memorial-gallery-item:hover,
+button.memorial-gallery-item:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.7);
+  outline: none;
+}
+
+.memorial-gallery-item img,
+.memorial-gallery-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.memorial-gallery-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.memorial-gallery-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  border: 1px dashed rgba(212, 175, 55, 0.3);
+}
+
+.light-theme .memorial-gallery-empty {
+  color: rgba(6, 78, 59, 0.7);
+}
+
+.memorial-attachment-preview {
+  position: relative;
+  margin-top: 0.75rem;
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 320px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.memorial-attachment-preview img,
+.memorial-attachment-preview video,
+.memorial-tribute-media img,
+.memorial-tribute-media video {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+}
+
+.memorial-tribute-media {
+  margin-bottom: 0.75rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+}
+
 /* ============================================================
    PAGE 6 — VAULT REVISIONS (feedback round 1)
    ============================================================ */
@@ -9144,6 +9223,57 @@ body.light-theme .memoriam-solemn {
 .light-theme .vault-modal-title { color: #064e3b; }
 
 .light-theme .vault-modal-sub { color: rgba(6, 78, 59, 0.65); }
+
+/* Admin header notifications dropdown anchors to the bell wrapper */
+.admin-notif-wrap {
+  position: relative;
+}
+
+.admin-notif-wrap .notification-dropdown {
+  width: 300px;
+}
+
+.admin-notif-wrap .notification-item {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--feed-card-border);
+  text-align: left;
+  font: inherit;
+  color: var(--feed-text);
+}
+
+.admin-notif-wrap .notification-item i {
+  color: var(--feed-gold);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* Signup legal modal (Terms of Service / Privacy Policy) */
+.legal-modal-body {
+  margin-top: 1.25rem;
+}
+
+.legal-modal-body section + section {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.legal-modal-body h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: inherit;
+}
+
+.legal-modal-body p {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  margin-bottom: 0.75rem;
+  opacity: 0.85;
+}
 
 .light-theme .vault-dropzone {
   border-color: rgba(184, 148, 31, 0.4);
@@ -10815,8 +10945,13 @@ body.subpage .mobile-overlay {
     gap: 0.25rem;
   }
 
-  .landing-page .landing-navbar-actions .btn {
+  .landing-page .landing-navbar-actions .btn,
+  .landing-page .landing-navbar-actions .nav-login-btn {
     display: none;
+  }
+
+  .landing-page .landing-navbar-inner {
+    gap: 0.75rem;
   }
 
   .landing-page .landing-mobile-toggle {
@@ -12909,6 +13044,19 @@ body.dark-theme.landing-page {
   justify-content: space-between;
 }
 
+/* Narrow screens: logo collapses to the icon so the single CTA stays
+   fully onscreen next to it (the full wordmark is ~190px and pushed
+   the action past the right edge on phones) */
+@media (max-width: 640px) {
+  .login-page .landing-navbar-logo-text {
+    display: none;
+  }
+
+  .login-page .landing-navbar-inner {
+    gap: 0.75rem;
+  }
+}
+
 /* Focus states for portal pages (home, admin, etc.) */
 .icon-btn:focus-visible,
 .composer-btn:focus-visible,
@@ -13865,4 +14013,11 @@ body.dark-theme.landing-page {
 
 .settings-signout:hover {
   background: rgba(127, 29, 29, 0.25);
+}
+
+@media (max-width: 1024px) {
+  body.home-page .feed-sidebar,
+  body.full-list-page .top-header {
+    display: flex;
+  }
 }

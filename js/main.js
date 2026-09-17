@@ -1041,7 +1041,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelectorAll('.admin-page .top-header button.icon-btn[title="Notifications"], .admin-page .top-header button.icon-btn[title="Settings"]').forEach(btn => {
+  // The admin bell has a real dropdown (AdminModule.setupNotifications)
+  // and Settings is a link — skip both so this only covers true stubs.
+  document.querySelectorAll('.admin-page .top-header button.icon-btn:not(#admin-notif-btn)').forEach(btn => {
     btn.addEventListener('click', () => {
       notify((btn.getAttribute('title') || 'This feature') + ' — coming soon');
     });

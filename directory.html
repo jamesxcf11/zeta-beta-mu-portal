@@ -321,36 +321,98 @@
       if (file && text) text.textContent = `Selected: ${file.name}`;
     });
 
-    // TODO(cloud): once Supabase is configured, parse the spreadsheet
-    // (e.g. with SheetJS/xlsx) client-side, map columns to the `members`
-    // table schema, and bulk-insert via db.from('members').insert([...]).
-    // For now this reads the file's row count (CSV only) as a mock preview
-    // so admins get real feedback instead of a modal that silently closes.
+    // TODO(cloud): once Supabase is configured, also bulk-insert the
+    // parsed rows via db.from('members').insert([...]). For now the
+    // import updates the local member list for this session only.
+    // .xlsx needs SheetJS — until it's added, only .csv is parsed and
+    // other formats get a clear message.
+    function notify(msg) {
+      if (typeof FeedModule !== 'undefined' && FeedModule.showToast) FeedModule.showToast(msg);
+      else alert(msg);
+    }
+
+    // Minimal CSV parser that understands quoted fields and "" escapes
+    // (matches the quoting exportDirectoryCSV produces).
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], field = '', inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (text[i + 1] === '"') { field += '"'; i++; }
+            else inQuotes = false;
+          } else field += c;
+        } else if (c === '"') inQuotes = true;
+        else if (c === ',') { row.push(field); field = ''; }
+        else if (c === '\n' || c === '\r') {
+          if (c === '\r' && text[i + 1] === '\n') i++;
+          row.push(field); field = '';
+          if (row.some(v => v.trim() !== '')) rows.push(row);
+          row = [];
+        } else field += c;
+      }
+      row.push(field);
+      if (row.some(v => v.trim() !== '')) rows.push(row);
+      return rows;
+    }
+
     function handleImportReview() {
       const input = document.getElementById('import-file-input');
       const file = input?.files?.[0];
       if (!file) {
-        if (typeof FeedModule !== 'undefined') FeedModule.showToast('Please select a file first');
-        else alert('Please select a file first');
+        notify('Please select a file first');
         return;
       }
 
-      if (file.name.toLowerCase().endsWith('.csv')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const rowCount = e.target.result.split(/\r\n|\r|\n/).filter(l => l.trim()).length - 1;
-          closeImportModal();
-          const msg = `"${file.name}" — detected ${Math.max(rowCount, 0)} member row(s). Real import will be enabled once the cloud database is connected.`;
-          if (typeof FeedModule !== 'undefined') FeedModule.showToast(msg);
-          else alert(msg);
-        };
-        reader.readAsText(file);
-      } else {
-        closeImportModal();
-        const msg = `"${file.name}" received. Excel parsing will be enabled once the cloud database is connected — for now, please use a .csv file.`;
-        if (typeof FeedModule !== 'undefined') FeedModule.showToast(msg);
-        else alert(msg);
+      if (!file.name.toLowerCase().endsWith('.csv')) {
+        notify(`"${file.name}" — Excel parsing isn't available yet; please export the spreadsheet as .csv`);
+        return;
       }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const rows = parseCSV(e.target.result);
+        if (rows.length < 2) {
+          notify(`"${file.name}" has no member rows to import`);
+          return;
+        }
+
+        // Map the header row to member fields (tolerates both the export
+        // format and the modal's advertised column names)
+        const header = rows[0].map(h => h.trim().toLowerCase());
+        const col = (...names) => header.findIndex(h => names.some(n => h.includes(n)));
+        const cName = col('name');
+        const cYear = col('year', 'batch');
+        const cHospital = col('hospital');
+        const cField = col('field', 'special', 'medicine');
+        if (cName === -1) {
+          notify(`"${file.name}" — couldn't find a name column in the header row`);
+          return;
+        }
+
+        const baseId = Date.now();
+        const newMembers = rows.slice(1).map((r, i) => ({
+          id: `imported-${baseId}-${i}`,
+          name: (r[cName] || '').trim(),
+          year: cYear === -1 ? '' : (r[cYear] || '').trim(),
+          hospital: cHospital === -1 ? '' : (r[cHospital] || '').trim(),
+          field: cField === -1 ? '' : (r[cField] || '').trim(),
+          avatar: 'image/placeholders/avatars/a11.jpg'
+        })).filter(m => m.name);
+
+        if (!newMembers.length) {
+          notify(`"${file.name}" — no valid member rows found`);
+          return;
+        }
+
+        DirectoryModule.members.push(...newMembers);
+        DirectoryModule.renderMembers();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        closeImportModal();
+        notify(`Imported ${newMembers.length} member(s) from "${file.name}" — local preview only until cloud sync is enabled`);
+      };
+      reader.readAsText(file);
     }
 
     // Send admins to the Member Management tab in Officer Tools

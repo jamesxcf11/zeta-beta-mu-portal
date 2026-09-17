@@ -73,6 +73,53 @@ test.describe('Admin (admin.html) - admin session', () => {
     const valid = await urlInput.evaluate((el) => el.checkValidity());
     expect(valid).toBe(false);
   });
+
+  // Header actions (incl. the bell) live in .top-header, which is
+  // desktop-only across the portal — same as home.html's bell.
+  test('notification bell opens a real dropdown of pending work', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'top-header is hidden on mobile by design');
+    await page.evaluate(() => {
+      AdminModule.pendingMembers = [{ id: 1, name: 'Dr. Pending Applicant' }];
+      AdminModule.reports = { posts: [{ id: 9 }], comments: [] };
+      AdminModule.renderNotifications();
+    });
+    await page.click('#admin-notif-btn');
+    const dropdown = page.locator('#admin-notif-dropdown');
+    await expect(dropdown).toHaveClass(/show/);
+    await expect(page.locator('#admin-notif-dot')).toBeVisible();
+
+    const item = dropdown.locator('[data-notif-tab="members"]');
+    await expect(item).toContainText('1 membership application awaiting review');
+    await expect(dropdown.locator('[data-notif-tab="moderation"]')).toContainText('1 open moderation report');
+    await item.click();
+
+    await expect(dropdown).not.toHaveClass(/show/);
+    await expect(page.locator('#panel-members')).toBeVisible({ timeout: 10000 });
+  });
+
+  test('notification dropdown shows caught-up state when nothing is pending', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'top-header is hidden on mobile by design');
+    await page.evaluate(() => {
+      AdminModule.pendingMembers = [];
+      AdminModule.reports = { posts: [], comments: [] };
+      AdminModule.renderNotifications();
+    });
+    await page.click('#admin-notif-btn');
+    await expect(page.locator('#admin-notif-list')).toContainText('all caught up');
+    await expect(page.locator('#admin-notif-dot')).toBeHidden();
+  });
+
+  test('drop-zone click opens a file picker that fills the URL field', async ({ page }) => {
+    await page.evaluate(() => AdminModule.switchTab('content'));
+    await expect(page.locator('#panel-content')).toBeVisible({ timeout: 10000 });
+
+    // Clicking the zone must not toast "coming soon" — it creates a real picker
+    await page.click('#vault-drop-zone');
+    const picker = page.locator('#vault-drop-zone-file-input');
+    await expect(picker).toBeAttached();
+    await picker.setInputFiles({ name: 'photo.jpg', mimeType: 'image/jpeg', buffer: Buffer.from('fake-jpg') });
+    await expect(page.locator('#vault-media-url')).toHaveValue(/^blob:/);
+  });
 });
 
 test.describe('Admin (admin.html) - non-admin / logged-out access', () => {
