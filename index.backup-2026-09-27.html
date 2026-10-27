@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zeta Beta Mu Fraternity - Elite Medical Professional Portal. A brotherhood of medical excellence since 1971.">
+  <title>Zeta Beta Mu Fraternity | Brotherhood of Medical Excellence</title>
+  
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="css/tailwind.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.min.css?v=11">
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
+</head>
+<body class="dark-theme landing-page">
+  
+  <!-- ============================================
+       PREMIUM STICKY NAVBAR
+       ============================================ -->
+  <nav id="landing-navbar" class="landing-navbar">
+    <div class="landing-navbar-inner">
+      <a href="#home" class="landing-navbar-logo">
+        <div class="landing-navbar-logo-icon">
+          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+        </div>
+        <div class="landing-navbar-logo-text">
+          <span class="landing-navbar-logo-title">Zeta Beta Mu</span>
+          <span class="landing-navbar-logo-subtitle">MEDICAL FRATERNITY</span>
+        </div>
+      </a>
+      <div class="landing-navbar-links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#pillars">Pillars</a>
+        <a href="#vault">Gallery</a>
+        <a href="#vault">Vault</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="landing-navbar-actions">
+        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+        </button>
+        <a href="login.html" class="nav-login-btn">Member Login</a>
+      </div>
+      <button id="landing-mobile-toggle" class="landing-mobile-toggle" aria-label="Toggle menu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile slide-in menu -->
+  <div id="landing-mobile-overlay" class="landing-mobile-overlay"></div>
+  <aside id="landing-mobile-menu" class="landing-mobile-menu">
+    <div class="landing-mobile-menu-logo">
+      <div class="landing-mobile-menu-logo-icon">
+        <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+      </div>
+      <div class="landing-mobile-menu-logo-text">
+        <h1 class="landing-mobile-menu-title">Zeta Beta Mu</h1>
+        <p class="landing-mobile-menu-subtitle">Medical Fraternity</p>
+      </div>
+    </div>
+
+    <nav class="landing-mobile-menu-nav">
+      <a href="#home" class="nav-link"><i data-lucide="home"></i><span>Home</span></a>
+      <a href="#about" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
+      <a href="#pillars" class="nav-link"><i data-lucide="columns-3"></i><span>Pillars</span></a>
+      <a href="#vault" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
+      <a href="#contact" class="nav-link"><i data-lucide="mail"></i><span>Contact</span></a>
+    </nav>
+
+    <div class="landing-mobile-menu-footer">
+      <a href="login.html" class="btn btn-gold btn-sm">
+        <i data-lucide="log-in" class="w-4 h-4"></i>
+        Member Login
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============================================
+       PREMIUM HERO SECTION
+       ============================================ -->
+  <section id="home" class="landing-hero landing-hero--premium">
+    <div class="landing-hero-glow" aria-hidden="true"></div>
+    <div class="landing-hero-inner landing-hero-inner--premium">
+      <div class="landing-hero-branding">
+        <div class="landing-hero-badge">
+          EST. 1971 &middot; UNIVERSITY OF SANTO TOMAS
+        </div>
+        <h1 class="landing-hero-title">
+          Zeta Beta <em>Mu</em>
+        </h1>
+        <p class="landing-hero-motto">Scholarship. Service. Sociability. Sacrifice. Idealism.</p>
+        <p class="landing-hero-desc">
+          A distinguished medical fraternity united by a shared commitment to excellence,
+          brotherhood, and service — shaping physicians who make a lasting impact in the
+          Philippines and beyond.
+        </p>
+        <div class="landing-hero-cta">
+          <a href="#about" class="hero-btn-primary">Discover Our Legacy</a>
+          <a href="#pillars" class="hero-btn-secondary">Our Five Pillars</a>
+        </div>
+      </div>
+      <div class="landing-hero-shield">
+        <svg viewBox="0 0 400 460" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="ZBM Shield">
+          <path d="M200 8 L380 60 L380 220 C380 340 280 420 200 452 C120 420 20 340 20 220 L20 60 Z" stroke="url(#shieldStroke)" stroke-width="2" fill="url(#shieldFill)" opacity="0.18"/>
+          <path d="M200 35 L350 78 L350 215 C350 315 270 385 200 415 C130 385 50 315 50 215 L50 78 Z" stroke="url(#shieldStroke)" stroke-width="1.5" fill="url(#shieldInner)" opacity="0.28"/>
+          <path d="M200 70 L320 105 L320 210 C320 290 255 350 200 375 C145 350 80 290 80 210 L80 105 Z" stroke="url(#shieldStroke)" stroke-width="1" fill="url(#shieldInner)" opacity="0.22"/>
+          <text x="200" y="245" text-anchor="middle" font-family="Playfair Display, serif" font-size="98" font-weight="700" fill="url(#shieldText)" letter-spacing="0.15em">ZBM</text>
+          <text x="200" y="330" text-anchor="middle" font-family="Playfair Display, serif" font-size="24" font-weight="500" fill="url(#shieldText)" letter-spacing="0.25em" opacity="0.85">EST. MCMLXXI</text>
+          <defs>
+            <linearGradient id="shieldStroke" x1="0" y1="0" x2="400" y2="460" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#064e3b" stop-opacity="0.4"/>
+            </linearGradient>
+            <linearGradient id="shieldFill" x1="0" y1="0" x2="0" y2="460" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#064e3b" stop-opacity="0.05"/>
+            </linearGradient>
+            <linearGradient id="shieldInner" x1="0" y1="0" x2="0" y2="460" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.15"/>
+              <stop offset="100%" stop-color="#02180e" stop-opacity="0.3"/>
+            </linearGradient>
+            <linearGradient id="shieldText" x1="0" y1="0" x2="400" y2="460" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#f3d67b"/>
+              <stop offset="50%" stop-color="#d4af37"/>
+              <stop offset="100%" stop-color="#b8941f"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       ABOUT US SECTION - REDESIGNED
+       ============================================ -->
+  <section id="about" class="landing-section-about">
+    <div class="about-container">
+
+      <!-- Header -->
+      <div class="about-header">
+        <span class="about-badge">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          DISCOVER OUR STORY
+        </span>
+        <h2 class="about-title">About Us</h2>
+        <div class="about-divider"></div>
+      </div>
+
+      <!-- Description -->
+      <p class="about-description">
+        The Zeta Beta Mu Fraternity is a brotherhood founded in 1971 at the University of Santo Tomas, rooted in a shared commitment to excellence, leadership, and service among future medical professionals. Guided by its five pillars—Scholarship, Service, Sociability, Sacrifice, and Idealism—the fraternity cultivates well-rounded individuals who strive for academic distinction, meaningful community engagement, strong bonds of brotherhood, selfless dedication, and principled living. Through generations, it has continued to uphold its legacy of shaping competent, compassionate physicians and leaders dedicated to making a lasting impact in society.
+      </p>
+
+      <!-- Image on Top -->
+      <div class="about-image-top-container" data-animate="center">
+        <div class="about-image-frame-top">
+          <img src="image/aboutus.jpg" alt="Zeta Beta Mu Fraternity" class="about-image-top">
+          <div class="about-image-overlay-top">
+            <a href="#vault" class="about-portfolio-btn">
+              Our Heritage
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Five Pillars -->
+      <div id="pillars" class="about-pillars-header">
+        <span class="about-badge">
+          <i data-lucide="columns-3" class="w-4 h-4"></i>
+          OUR FOUNDATION
+        </span>
+        <h3 class="about-pillars-title">The Five Pillars</h3>
+        <p class="about-pillars-subtitle">The values that have guided every brother of Zeta Beta Mu since 1971.</p>
+      </div>
+
+      <div class="about-grid-pillars">
+
+        <div class="about-service-card" data-animate="grid-1">
+          <div class="about-service-icon">
+            <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+          </div>
+          <div class="about-service-divider"></div>
+          <h3 class="about-service-title">Scholarship</h3>
+          <p class="about-service-desc">A relentless pursuit of academic excellence and lifelong learning, fostering intellectual growth and distinction in medicine.</p>
+        </div>
+
+        <div class="about-service-card" data-animate="grid-2">
+          <div class="about-service-icon">
+            <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+          </div>
+          <div class="about-service-divider"></div>
+          <h3 class="about-service-title">Service</h3>
+          <p class="about-service-desc">Giving back through medical missions, free clinics, and community work — caring for those who need us most.</p>
+        </div>
+
+        <div class="about-service-card" data-animate="grid-3">
+          <div class="about-service-icon">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+          <div class="about-service-divider"></div>
+          <h3 class="about-service-title">Sociability</h3>
+          <p class="about-service-desc">A genuine brotherhood and fellowship that connects members across generations, hospitals, and borders for life.</p>
+        </div>
+
+        <div class="about-service-card" data-animate="grid-4">
+          <div class="about-service-icon">
+            <i data-lucide="hand-heart" class="w-6 h-6"></i>
+          </div>
+          <div class="about-service-divider"></div>
+          <h3 class="about-service-title">Sacrifice</h3>
+          <p class="about-service-desc">Selfless dedication to our patients, our brothers, and our country — putting service above self.</p>
+        </div>
+
+        <div class="about-service-card" data-animate="grid-5">
+          <div class="about-service-icon">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <div class="about-service-divider"></div>
+          <h3 class="about-service-title">Idealism</h3>
+          <p class="about-service-desc">Upholding the highest ethical and moral standards, serving as principled role models for future generations.</p>
+        </div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="about-stats">
+        <div class="about-stat-card" data-animate="stat">
+          <div class="about-stat-icon">
+            <i data-lucide="award" class="w-6 h-6"></i>
+          </div>
+          <div class="about-stat-value">55</div>
+          <div class="about-stat-label">Years of Excellence</div>
+          <div class="about-stat-bar"></div>
+        </div>
+
+        <div class="about-stat-card" data-animate="stat">
+          <div class="about-stat-icon">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+          <div class="about-stat-value">651</div>
+          <div class="about-stat-label">Distinguished Alumni</div>
+          <div class="about-stat-bar"></div>
+        </div>
+
+        <div class="about-stat-card" data-animate="stat">
+          <div class="about-stat-icon">
+            <i data-lucide="calendar" class="w-6 h-6"></i>
+          </div>
+          <div class="about-stat-value">1971</div>
+          <div class="about-stat-label">Founded at UST</div>
+          <div class="about-stat-bar"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================
+       VILLA MARIA PARTNERSHIP SECTION
+       ============================================ -->
+  <section id="partnership" class="landing-section">
+    <div class="landing-section-inner">
+      <div class="partnership-grid" data-reveal>
+        <div class="partnership-media">
+          <img src="sample vault/66ac2a3f-ed7a-44cc-9d5e-0db23b1b86d4.jpg" alt="Zeta Beta Mu brothers during a community outreach program with students" class="partnership-image">
+          <div class="partnership-media-badge">
+            <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+            Ongoing Partnership
+          </div>
+        </div>
+        <div class="partnership-content">
+          <span class="landing-section-badge">
+            <i data-lucide="sprout" class="w-4 h-4"></i>
+            Service in Action
+          </span>
+          <h2 class="landing-section-title" style="text-align:left;">Supporting Villa Maria Integrated School</h2>
+          <p class="partnership-text">
+            In the spirit of our pillar of <strong>Service</strong>, Zeta Beta Mu proudly supports
+            <strong>Villa Maria Integrated School</strong> in Porac, Pampanga — a school dedicated to
+            <strong>Aeta students</strong>. Through gift-giving drives, educational supplies, and
+            medical outreach, our brothers help nurture the next generation of this community.
+          </p>
+          <div class="partnership-meta">
+            <span class="partnership-meta-item">
+              <i data-lucide="map-pin" class="w-4 h-4"></i>
+              Porac, Pampanga
+            </span>
+            <span class="partnership-meta-item">
+              <i data-lucide="users" class="w-4 h-4"></i>
+              For Aeta Students
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PUBLIC GALLERY SECTION (Vault Preview)
+       ============================================ -->
+  <section id="vault" class="landing-section landing-section-alt">
+    <div class="landing-section-inner">
+      <div class="landing-section-header" data-reveal>
+        <span class="landing-section-badge">
+          <i data-lucide="images" class="w-4 h-4"></i>
+          Gallery
+        </span>
+        <h2 class="landing-section-title">From the Vault</h2>
+        <p class="landing-section-subtitle">
+          A curated selection of moments from our fraternity's rich history, approved for public viewing.
+        </p>
+      </div>
+
+      <div id="public-gallery" class="landing-gallery-grid">
+        <!-- Rendered by landing.js -->
+      </div>
+
+      <div class="landing-gallery-lock-note" data-reveal>
+        <i data-lucide="lock" class="w-5 h-5"></i>
+        <p>Members can access the full Historical Vault with thousands of photos after logging in.</p>
+        <a href="login.html" class="btn btn-outline-gold btn-sm">
+          <i data-lucide="log-in" class="w-4 h-4"></i>
+          Member Login
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       UPCOMING EVENTS SECTION
+       ============================================ -->
+  <section id="events" class="landing-section">
+    <div class="landing-section-inner">
+      <div class="landing-section-header" data-reveal>
+        <span class="landing-section-badge">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          Events
+        </span>
+        <h2 class="landing-section-title">Upcoming Events</h2>
+        <p class="landing-section-subtitle">
+          Stay connected with what's happening in the Zeta Beta Mu community.
+        </p>
+      </div>
+
+      <div class="landing-events-grid" data-reveal>
+        <div class="landing-event-card glass-card">
+          <div class="landing-event-date">
+            <span class="landing-event-month">MAR</span>
+            <span class="landing-event-day">25</span>
+          </div>
+          <div class="landing-event-info">
+            <h3>Annual Gala 2026</h3>
+            <p class="landing-event-meta">
+              <i data-lucide="map-pin" class="w-4 h-4"></i>
+              The Grand Hotel Ballroom
+            </p>
+            <p class="landing-event-desc">Join us for our 55th anniversary celebration with distinguished alumni and guest speakers.</p>
+          </div>
+        </div>
+        <div class="landing-event-card glass-card">
+          <div class="landing-event-date">
+            <span class="landing-event-month">APR</span>
+            <span class="landing-event-day">15</span>
+          </div>
+          <div class="landing-event-info">
+            <h3>New Member Induction</h3>
+            <p class="landing-event-meta">
+              <i data-lucide="map-pin" class="w-4 h-4"></i>
+              University Great Hall
+            </p>
+            <p class="landing-event-desc">Ceremony welcoming 12 new medical professionals into the brotherhood.</p>
+          </div>
+        </div>
+        <div class="landing-event-card glass-card">
+          <div class="landing-event-date">
+            <span class="landing-event-month">MAY</span>
+            <span class="landing-event-day">10</span>
+          </div>
+          <div class="landing-event-info">
+            <h3>Medical Excellence Conference</h3>
+            <p class="landing-event-meta">
+              <i data-lucide="map-pin" class="w-4 h-4"></i>
+              Convention Center
+            </p>
+            <p class="landing-event-desc">Three-day annual conference featuring research presentations and keynote speakers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PRE-FOOTER CTA
+       ============================================ -->
+  <section id="contact" class="landing-prefooter">
+    <div class="landing-prefooter-inner">
+      <span class="landing-prefooter-eyebrow">JOIN THE BROTHERHOOD</span>
+      <h2 class="landing-prefooter-title">Begin Your <em>Legacy</em></h2>
+      <p class="landing-prefooter-text">
+        If you are a medical student at UST with a commitment to excellence, service,
+        and brotherhood, we invite you to learn more about becoming part of the Zeta
+        Beta Mu family.
+      </p>
+      <div class="landing-prefooter-cta">
+        <a href="signup.html" class="btn btn-legacy btn-lg">Get in Touch</a>
+        <a href="#about" class="btn btn-pillars-outline btn-lg">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PREMIUM FOOTER
+       ============================================ -->
+  <footer class="landing-footer landing-footer--premium">
+    <div class="landing-footer-inner">
+      <div class="landing-footer-brand">
+        <div class="landing-footer-logo">
+          <div class="landing-footer-logo-icon">
+            <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+          </div>
+          <div class="landing-footer-logo-text">
+            <span class="landing-footer-logo-title">Zeta Beta Mu</span>
+            <span class="landing-footer-logo-subtitle">MEDICAL FRATERNITY</span>
+          </div>
+        </div>
+        <p class="landing-footer-desc">
+          A distinguished medical fraternity founded in 1971 at the University of Santo Tomas,
+          upholding the five pillars of Scholarship, Service, Sociability, Sacrifice, and Idealism.
+        </p>
+        <div class="landing-footer-social">
+          <a href="https://www.facebook.com/ZetaBetaMuFraternity" target="_blank" rel="noopener" aria-label="Facebook">
+            <i data-lucide="facebook" class="w-4 h-4"></i>
+          </a>
+          <a href="https://www.instagram.com/zetabetamufraternity/" target="_blank" rel="noopener" aria-label="Instagram">
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+      <div class="landing-footer-links">
+        <h4>QUICK LINKS</h4>
+        <a href="#about">About Us</a>
+        <a href="#pillars">The Five Pillars</a>
+        <a href="#partnership">Community Partnerships</a>
+        <a href="#vault">Gallery</a>
+        <a href="login.html">Member Login</a>
+      </div>
+      <div class="landing-footer-contact">
+        <h4>CONTACT</h4>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="map-pin" class="w-4 h-4"></i>
+          <span>University of Santo Tomas<br>España Blvd., Sampaloc<br>Manila, Philippines</span>
+        </div>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span>contact@zetabetamu.org</span>
+        </div>
+      </div>
+    </div>
+    <div class="landing-footer-bottom">
+      <p>© 2026 Zeta Beta Mu Medical Fraternity. All rights reserved.</p>
+      <span>EST. 1971 · UNIVERSITY OF SANTO TOMAS</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script src="js/landing.js"></script>
+  
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+  </script>
+  
+</body>
+</html>

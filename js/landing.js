@@ -163,9 +163,37 @@ const LandingModule = {
    */
   init() {
     this.setupStickyNavbar();
+    this.setupNavDropdown();
     this.renderPublicGallery();
     this.setupAboutAnimations();
     this.setupScrollReveal();
+  },
+
+  /**
+   * Click-to-toggle for the "Pillars" nav dropdown (in addition to hover),
+   * so it also works on touch devices without a real hover state.
+   */
+  setupNavDropdown() {
+    const dropdown = document.querySelector('.landing-navbar-dropdown');
+    if (!dropdown) return;
+
+    const trigger = dropdown.querySelector('.landing-navbar-dropdown-trigger');
+    const menu = dropdown.querySelector('.landing-navbar-dropdown-menu');
+    if (!trigger || !menu) return;
+
+    trigger.addEventListener('click', (e) => {
+      // Only intercept on touch/coarse-pointer devices; desktop mouse users
+      // can just click through to the Pillars hub page.
+      if (window.matchMedia('(hover: hover)').matches) return;
+      e.preventDefault();
+      menu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+    });
   },
 
   /**

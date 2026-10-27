@@ -61,12 +61,22 @@ test.describe('Settings page', () => {
   });
 
   test('switches theme and persists the preference', async ({ page }) => {
+    // Day Mode (light) is the site-wide default, so the "Light" radio is
+    // already checked on load — switch to Dark first to force a real change.
+    await page.locator('.settings-theme-option', { hasText: 'Dark' }).click();
+    await expect(page.locator('body')).toHaveClass(/dark-theme/);
+    const darkStored = await page.evaluate(() => localStorage.getItem('zbm-theme-preference'));
+    expect(darkStored).toBe('dark');
+
     await page.locator('.settings-theme-option', { hasText: 'Light' }).click();
     await expect(page.locator('body')).toHaveClass(/light-theme/);
     const stored = await page.evaluate(() => localStorage.getItem('zbm-theme-preference'));
     expect(stored).toBe('light');
 
     await page.locator('.settings-theme-option', { hasText: 'System' }).click();
+    // "System" is treated as Day Mode (no OS-preference auto-switching) and
+    // clears any saved override.
+    await expect(page.locator('body')).toHaveClass(/light-theme/);
     const cleared = await page.evaluate(() => localStorage.getItem('zbm-theme-preference'));
     expect(cleared).toBeNull();
   });

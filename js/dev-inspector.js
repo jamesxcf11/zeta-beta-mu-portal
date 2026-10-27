@@ -5,6 +5,10 @@
  * and displays details in the panel.
  */
 (function () {
+  var host = window.location.hostname;
+  var isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]';
+  var forceEnable = new URLSearchParams(window.location.search).get('dev-inspector') === '1';
+  if (!isLocalhost || (navigator.webdriver && !forceEnable)) return;
   if (window.__devInspector) return;
 
   var active = false;
@@ -125,6 +129,7 @@
       'transition:transform 200ms ease'
     ].join(';');
     collapseBtn.title = 'Collapse panel';
+    collapseBtn.setAttribute('aria-label', 'Collapse panel');
     collapseBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       toggleCollapse();

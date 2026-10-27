@@ -5037,6 +5037,29 @@ body.light-theme {
   color: var(--emerald-950);
 }
 
+/* ζβμ Greek-letter nav mark (replaces logo+name lockup in the top-left nav tab) */
+.landing-navbar-greek-mark {
+  display: inline-block;
+  font-family: 'GFS Didot', 'Cormorant Garamond', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.35;
+  padding: 0.05em 0.05em 0.15em;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  background: linear-gradient(135deg, #f3d67b 0%, #d4af37 45%, #b8941f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.light-theme .landing-navbar:not(.navbar-over-hero) .landing-navbar-greek-mark {
+  background: linear-gradient(135deg, #b8941f 0%, #92700c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .landing-navbar-links {
   display: flex;
   align-items: center;
@@ -5054,6 +5077,76 @@ body.light-theme {
 
 .landing-navbar-links a:hover {
   color: #d4af37;
+}
+
+.landing-navbar-links a.active,
+.landing-navbar-dropdown-trigger.active {
+  color: #d4af37;
+}
+
+/* Pillars dropdown in the desktop nav */
+.landing-navbar-dropdown {
+  position: relative;
+}
+
+.landing-navbar-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.landing-navbar-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  min-width: 180px;
+  background: rgba(6, 20, 15, 0.98);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  z-index: 60;
+}
+
+.landing-navbar-dropdown:hover .landing-navbar-dropdown-menu,
+.landing-navbar-dropdown:focus-within .landing-navbar-dropdown-menu,
+.landing-navbar-dropdown-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.landing-navbar-dropdown-menu a {
+  display: block;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+}
+
+.landing-navbar-dropdown-menu a:hover {
+  background: rgba(212, 175, 55, 0.12);
+  color: #d4af37;
+}
+
+.light-theme .landing-navbar-dropdown-menu {
+  background: #fff;
+  border-color: rgba(6, 78, 59, 0.12);
+  box-shadow: 0 20px 40px rgba(6, 78, 59, 0.12);
+}
+
+.light-theme .landing-navbar-dropdown-menu a {
+  color: rgba(26, 26, 26, 0.85);
+}
+
+.light-theme .landing-navbar-dropdown-menu a:hover {
+  background: rgba(212, 175, 55, 0.12);
+  color: #92700c;
 }
 
 .landing-navbar-actions {
@@ -5159,6 +5252,14 @@ body.light-theme {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+}
+
+.landing-mobile-menu-nav .nav-link-sub {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+  padding-left: 2.75rem;
 }
 
 .landing-mobile-menu-footer {
@@ -6580,7 +6681,8 @@ body.light-theme {
 /* Stats Section */
 .about-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 320px));
+  justify-content: center;
   gap: 2rem;
   margin-top: 4rem;
 }
@@ -10492,9 +10594,32 @@ body.subpage .mobile-overlay {
   transform: scale(1.02);
 }
 
+/* Photo-less hero backdrop: a dark green/gold mesh, used while we wait on
+   the client's final 50th Homecoming photo (see TODO above the markup). */
+.landing-hero-bg--gradient {
+  background:
+    radial-gradient(ellipse at 22% 15%, rgba(212, 175, 55, 0.14) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 20%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 30% 80%, rgba(16, 185, 129, 0.10) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 85%, rgba(212, 175, 55, 0.07) 0%, transparent 40%),
+    linear-gradient(160deg, #0a3324 0%, #04231a 45%, #021810 75%, #010c07 100%);
+}
+
 .landing-hero-scrim {
   position: absolute;
   inset: 0;
+  background:
+    linear-gradient(to bottom,
+      rgba(2, 24, 18, 0.55) 0%,
+      rgba(2, 24, 18, 0.35) 40%,
+      rgba(2, 24, 18, 0.7) 100%),
+    radial-gradient(ellipse at center 42%, rgba(0, 0, 0, 0.2) 0%, transparent 65%),
+    radial-gradient(ellipse at center 40%, rgba(6, 78, 59, 0.2) 0%, transparent 70%);
+}
+
+/* Photo hero still exists in markup/CSS for when a real photo is supplied;
+   the scrim above is tuned lighter for the photo-less gradient backdrop. */
+.landing-hero-bg:not(.landing-hero-bg--gradient) + .landing-hero-scrim {
   background:
     linear-gradient(to bottom,
       rgba(2, 24, 18, 0.9) 0%,
@@ -10507,6 +10632,16 @@ body.subpage .mobile-overlay {
 .landing-hero--photo .landing-hero-inner {
   position: relative;
   z-index: 2;
+}
+
+/* Logo mark sits below the "Zeta Beta Mu Fraternity" wordmark, not beside it */
+.landing-hero-logo-mark {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin: 1rem auto 1.5rem;
+  display: block;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4));
 }
 
 /* Hero text stays light in both themes (photo backdrop is dark) */
@@ -10688,40 +10823,30 @@ body.subpage .mobile-overlay {
   }
 }
 
-/* --- 4. Pillar cards: roman numeral accents + richer hover --- */
-.about-grid-pillars {
-  counter-reset: pillar;
-}
-
+/* --- 4. Pillar cards: clean cards, no icons/roman numerals per client feedback --- */
 .about-grid-pillars .about-service-card {
   position: relative;
-  counter-increment: pillar;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.about-grid-pillars .about-service-card::after {
-  content: counter(pillar, upper-roman);
-  position: absolute;
-  top: 1.25rem;
-  right: 1.5rem;
-  font-family: 'Playfair Display', serif;
-  font-size: 2.25rem;
-  font-weight: 700;
-  color: rgba(212, 175, 55, 0.55);
-  line-height: 1;
-  transition: color 0.3s ease;
-  pointer-events: none;
+.about-service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #d4af37;
+  margin-top: 0.5rem;
 }
 
-.about-grid-pillars .about-service-card:hover::after {
-  color: rgba(212, 175, 55, 0.85);
+.light-theme .about-service-link {
+  color: #92700c;
 }
 
-.light-theme .about-grid-pillars .about-service-card::after {
-  color: rgba(146, 112, 12, 0.6);
-}
-
-.light-theme .about-grid-pillars .about-service-card:hover::after {
-  color: rgba(146, 112, 12, 0.9);
+.about-readmore-cta {
+  text-align: center;
+  margin-top: 2rem;
 }
 
 /* --- 5. Gallery polish --- */
@@ -12390,6 +12515,13 @@ body.dark-theme.landing-page {
   background: transparent;
 }
 
+/* 2b. Subtle tonal shift on alternating ("alt") sections in dark mode so
+   the page keeps some section-to-section rhythm instead of reading as one
+   continuous slab (mirrors the light-theme cream/white alternation). */
+.dark-theme .landing-section-alt {
+  background: rgba(0, 0, 0, 0.16);
+}
+
 .light-theme .landing-section-alt {
   background: rgba(6, 78, 59, 0.02);
 }
@@ -12413,6 +12545,14 @@ body.dark-theme.landing-page {
   background: rgba(255, 255, 255, 0.62);
   border: 1px solid rgba(6, 78, 59, 0.08);
   box-shadow: 0 8px 32px rgba(6, 78, 59, 0.08);
+}
+
+/* Pillar cards need extra lift in dark mode: the default glass background
+   above is nearly invisible against the dark green mesh page background. */
+.dark-theme .about-service-card:not(:hover) {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 /* 4. Metallic gold text gradients on hero headings */

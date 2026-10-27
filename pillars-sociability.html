@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sociability - one of the Five Pillars of Zeta Beta Mu Fraternity.">
+  <title>Sociability | Zeta Beta Mu Fraternity</title>
+
+  <link rel="stylesheet" href="css/tailwind.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=GFS+Didot&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/styles.min.css?v=12">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
+</head>
+<body class="dark-theme landing-page">
+
+  <nav id="landing-navbar" class="landing-navbar navbar-scrolled">
+    <div class="landing-navbar-inner">
+      <a href="index.html" class="landing-navbar-logo landing-navbar-logo--mark" aria-label="Zeta Beta Mu Fraternity home">
+        <span class="landing-navbar-greek-mark">ζβμ</span>
+      </a>
+      <div class="landing-navbar-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <div class="landing-navbar-dropdown">
+          <a href="pillars.html" class="landing-navbar-dropdown-trigger active">
+            Pillars
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+          </a>
+          <div class="landing-navbar-dropdown-menu">
+            <a href="pillars-scholarship.html">Scholarship</a>
+            <a href="pillars-service.html">Service</a>
+            <a href="pillars-sociability.html" class="active">Sociability</a>
+            <a href="pillars-sacrifice.html">Sacrifice</a>
+            <a href="pillars-idealism.html">Idealism</a>
+          </div>
+        </div>
+        <a href="index.html#vault">Gallery</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+      <div class="landing-navbar-actions">
+        <button class="navbar-theme-toggle" type="button" aria-label="Toggle dark mode">
+          <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
+          <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
+        </button>
+        <a href="login.html" class="nav-login-btn">Member Login</a>
+      </div>
+      <button id="landing-mobile-toggle" class="landing-mobile-toggle" aria-label="Toggle menu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </nav>
+
+  <div id="landing-mobile-overlay" class="landing-mobile-overlay"></div>
+  <aside id="landing-mobile-menu" class="landing-mobile-menu">
+    <div class="landing-mobile-menu-logo">
+      <div class="landing-mobile-menu-logo-icon">
+        <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+      </div>
+      <div class="landing-mobile-menu-logo-text">
+        <h1 class="landing-mobile-menu-title">Zeta Beta Mu Fraternity</h1>
+      </div>
+    </div>
+    <nav class="landing-mobile-menu-nav">
+      <a href="index.html" class="nav-link"><i data-lucide="home"></i><span>Home</span></a>
+      <a href="about.html" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
+      <a href="pillars.html" class="nav-link"><i data-lucide="columns-3"></i><span>Pillars</span></a>
+      <a href="pillars-scholarship.html" class="nav-link nav-link-sub"><span>Scholarship</span></a>
+      <a href="pillars-service.html" class="nav-link nav-link-sub"><span>Service</span></a>
+      <a href="pillars-sociability.html" class="nav-link nav-link-sub active"><span>Sociability</span></a>
+      <a href="pillars-sacrifice.html" class="nav-link nav-link-sub"><span>Sacrifice</span></a>
+      <a href="pillars-idealism.html" class="nav-link nav-link-sub"><span>Idealism</span></a>
+      <a href="index.html#vault" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
+      <a href="index.html#contact" class="nav-link"><i data-lucide="mail"></i><span>Contact</span></a>
+    </nav>
+    <div class="landing-mobile-menu-footer">
+      <a href="login.html" class="btn btn-gold btn-sm">
+        <i data-lucide="log-in" class="w-4 h-4"></i>
+        Member Login
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============================================
+       SOCIABILITY
+       ============================================ -->
+  <section class="landing-section" style="padding-top: 140px;">
+    <div class="landing-section-inner" style="max-width: 860px;">
+      <div class="landing-section-header">
+        <span class="landing-section-badge">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          A PILLAR OF ZETA BETA MU
+        </span>
+        <h1 class="landing-section-title">Sociability</h1>
+      </div>
+
+      <p class="about-description">
+        Sociability is an important part of Zeta Beta Mu Fraternity, reflecting the friendships,
+        fellowship, and sense of community shared among our brothers. Through our social events and
+        gatherings, we create opportunities to celebrate, connect with others, and strengthen the
+        relationships that have always been an important part of the fraternity.
+      </p>
+      <p class="about-description">
+        Each year, Zeta Beta Mu hosts two major social events, our Back-To-School Party and Year-Ender
+        Party. These gatherings bring together students and young people for an evening of celebration,
+        entertainment, and fellowship, creating an environment where new connections can be formed and
+        lasting memories can be made.
+      </p>
+      <p class="about-description">
+        Beyond our major events, our brothers also make time for outings, hangouts, and informal
+        gatherings throughout the year. These moments allow our members to spend time together outside of
+        our regular activities and strengthen the friendships and camaraderie within the brotherhood.
+      </p>
+      <p class="about-description">
+        Through our events and everyday fellowship, Zeta Beta Mu continues to celebrate the spirit of
+        sociability and the relationships that connect our brothers with the wider community.
+      </p>
+    </div>
+  </section>
+
+  <!-- Photos from the Vault: Year Ender, Back to School, general hangouts -->
+  <section class="landing-section landing-section-alt">
+    <div class="landing-section-inner">
+      <div class="landing-section-header" data-reveal>
+        <span class="landing-section-badge">
+          <i data-lucide="images" class="w-4 h-4"></i>
+          From the Vault
+        </span>
+        <h2 class="landing-section-title">Parties &amp; Fellowship</h2>
+        <p class="landing-section-subtitle">
+          <!-- TODO: replace placeholder photos below with the actual Year-Ender / Back-to-School / hangout albums from the Vault -->
+          Moments from our Year-Ender and Back-to-School parties, and everyday brotherhood.
+        </p>
+      </div>
+      <div class="landing-gallery-grid">
+        <div class="glass-card overflow-hidden">
+          <img src="sample vault/012ec369-ea52-42fc-912a-d1ef7504950a.jpg" alt="Sociability — fraternity gathering" class="w-full h-56 object-cover">
+        </div>
+        <div class="glass-card overflow-hidden">
+          <img src="sample vault/10cd9e8d-2106-42c5-996a-ba7b590fe852.jpg" alt="Sociability — fraternity gathering" class="w-full h-56 object-cover">
+        </div>
+        <div class="glass-card overflow-hidden">
+          <img src="sample vault/21f815ad-4772-4ed3-b327-9aa23fee294e.jpg" alt="Sociability — fraternity gathering" class="w-full h-56 object-cover">
+        </div>
+        <div class="glass-card overflow-hidden">
+          <img src="sample vault/28da8bc3-b009-46b1-a938-ff815d169cc3.jpg" alt="Sociability — fraternity gathering" class="w-full h-56 object-cover">
+        </div>
+        <div class="glass-card overflow-hidden">
+          <img src="sample vault/2eaf4706-2fdd-47ba-ae98-a07b479269e6.jpg" alt="Sociability — fraternity gathering" class="w-full h-56 object-cover">
+        </div>
+        <div class="glass-card overflow-hidden">
+          <img src="sample vault/8ecbf87d-4371-4e5d-8f92-4976f4500daf.jpg" alt="Sociability — fraternity gathering" class="w-full h-56 object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="landing-footer landing-footer--premium">
+    <div class="landing-footer-inner">
+      <div class="landing-footer-brand">
+        <div class="landing-footer-logo">
+          <div class="landing-footer-logo-icon">
+            <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
+          </div>
+          <div class="landing-footer-logo-text">
+            <span class="landing-footer-logo-title">Zeta Beta Mu Fraternity</span>
+          </div>
+        </div>
+        <p class="landing-footer-desc">
+          A distinguished medical fraternity founded in 1971 at the University of Santo Tomas,
+          upholding the five pillars of Scholarship, Service, Sociability, Sacrifice, and Idealism.
+        </p>
+        <div class="landing-footer-social">
+          <a href="https://www.facebook.com/ZetaBetaMuFraternity" target="_blank" rel="noopener" aria-label="Facebook">
+            <i data-lucide="facebook" class="w-4 h-4"></i>
+          </a>
+          <a href="https://www.instagram.com/zetabetamufraternity/" target="_blank" rel="noopener" aria-label="Instagram">
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+      <div class="landing-footer-links">
+        <h4>QUICK LINKS</h4>
+        <a href="about.html">About Us</a>
+        <a href="pillars.html">The Five Pillars</a>
+        <a href="index.html#vault">Gallery</a>
+        <a href="login.html">Member Login</a>
+      </div>
+      <div class="landing-footer-contact">
+        <h4>CONTACT</h4>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="map-pin" class="w-4 h-4"></i>
+          <span>University of Santo Tomas<br>España Blvd., Sampaloc<br>Manila, Philippines</span>
+        </div>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span>contact@zetabetamu.org</span>
+        </div>
+      </div>
+    </div>
+    <div class="landing-footer-bottom">
+      <p>© 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+      <span>EST. 1971 · UNIVERSITY OF SANTO TOMAS</span>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/landing.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+
+</body>
+</html>

@@ -110,23 +110,12 @@ const ThemeManager = {
    * Initialize theme from localStorage or system preference
    */
   init() {
+    // Day Mode (light) is always the default. We intentionally do not read
+    // prefers-color-scheme here — the site should never auto-switch based on
+    // OS/system preference. Dark mode only applies once a user manually
+    // toggles it, and that explicit choice is what gets persisted below.
     const savedTheme = localStorage.getItem(CONFIG.themeStorageKey);
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme) {
-      this.setTheme(savedTheme);
-    } else if (systemPrefersDark) {
-      this.setTheme('dark');
-    } else {
-      this.setTheme('light');
-    }
-    
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem(CONFIG.themeStorageKey)) {
-        this.setTheme(e.matches ? 'dark' : 'light');
-      }
-    });
+    this.setTheme(savedTheme === 'dark' ? 'dark' : 'light');
 
     // Setup toggle click handler
     this.setupToggleHandler();
@@ -181,23 +170,23 @@ const ThemeManager = {
   },
 
   /**
-   * Current stored preference: 'dark', 'light', or 'system' (no saved value).
+   * Current stored preference: 'dark' or 'light'. Defaults to 'light' (Day
+   * Mode) when nothing has been saved yet — the site never infers a
+   * preference from the OS.
    * @returns {string}
    */
   getPreference() {
-    return localStorage.getItem(CONFIG.themeStorageKey) || 'system';
+    return localStorage.getItem(CONFIG.themeStorageKey) === 'dark' ? 'dark' : 'light';
   },
 
   /**
-   * Apply and persist a theme preference. 'system' clears the saved value so
-   * the theme follows prefers-color-scheme (handled in init()).
-   * @param {string} mode - 'dark' | 'light' | 'system'
+   * Apply and persist a theme preference.
+   * @param {string} mode - 'dark' | 'light' | 'system' ('system' is treated as Day Mode)
    */
   setPreference(mode) {
     if (mode === 'system') {
       localStorage.removeItem(CONFIG.themeStorageKey);
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.setTheme(systemPrefersDark ? 'dark' : 'light');
+      this.setTheme('light');
     } else {
       localStorage.setItem(CONFIG.themeStorageKey, mode);
       this.setTheme(mode);
@@ -1089,3 +1078,19 @@ window.Router = Router;
 window.AuthHelper = AuthHelper;
 window.smoothScrollTo = smoothScrollTo;
 window.formatDate = formatDate;
+
+// ============================================
+// LOCALHOST-ONLY DEV INSPECTOR
+// ============================================
+(function loadDevInspectorOnLocalhost() {
+  const host = window.location.hostname;
+  const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]';
+  const forceEnable = new URLSearchParams(window.location.search).get('dev-inspector') === '1';
+  if (!isLocalhost || (navigator.webdriver && !forceEnable)) return;
+  if (window.__devInspector || document.querySelector('script[src*="dev-inspector.js"]')) return;
+
+  const script = document.createElement('script');
+  script.src = 'js/dev-inspector.js';
+  script.defer = true;
+  document.head.appendChild(script);
+})();

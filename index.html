@@ -12,13 +12,13 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=GFS+Didot&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.min.css?v=11">
+  <link rel="stylesheet" href="css/styles.min.css?v=12">
 
   <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
@@ -31,21 +31,26 @@
        ============================================ -->
   <nav id="landing-navbar" class="landing-navbar">
     <div class="landing-navbar-inner">
-      <a href="#home" class="landing-navbar-logo">
-        <div class="landing-navbar-logo-icon">
-          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
-        </div>
-        <div class="landing-navbar-logo-text">
-          <span class="landing-navbar-logo-title">Zeta Beta Mu</span>
-          <span class="landing-navbar-logo-subtitle">MEDICAL FRATERNITY</span>
-        </div>
+      <a href="index.html" class="landing-navbar-logo landing-navbar-logo--mark" aria-label="Zeta Beta Mu Fraternity home">
+        <span class="landing-navbar-greek-mark">ζβμ</span>
       </a>
       <div class="landing-navbar-links">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#pillars">Pillars</a>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <div class="landing-navbar-dropdown">
+          <a href="pillars.html" class="landing-navbar-dropdown-trigger">
+            Pillars
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+          </a>
+          <div class="landing-navbar-dropdown-menu">
+            <a href="pillars-scholarship.html">Scholarship</a>
+            <a href="pillars-service.html">Service</a>
+            <a href="pillars-sociability.html">Sociability</a>
+            <a href="pillars-sacrifice.html">Sacrifice</a>
+            <a href="pillars-idealism.html">Idealism</a>
+          </div>
+        </div>
         <a href="#vault">Gallery</a>
-        <a href="#vault">Vault</a>
         <a href="#contact">Contact</a>
       </div>
       <div class="landing-navbar-actions">
@@ -69,15 +74,19 @@
         <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
       </div>
       <div class="landing-mobile-menu-logo-text">
-        <h1 class="landing-mobile-menu-title">Zeta Beta Mu</h1>
-        <p class="landing-mobile-menu-subtitle">Medical Fraternity</p>
+        <h1 class="landing-mobile-menu-title">Zeta Beta Mu Fraternity</h1>
       </div>
     </div>
 
     <nav class="landing-mobile-menu-nav">
-      <a href="#home" class="nav-link"><i data-lucide="home"></i><span>Home</span></a>
-      <a href="#about" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
-      <a href="#pillars" class="nav-link"><i data-lucide="columns-3"></i><span>Pillars</span></a>
+      <a href="index.html" class="nav-link"><i data-lucide="home"></i><span>Home</span></a>
+      <a href="about.html" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
+      <a href="pillars.html" class="nav-link"><i data-lucide="columns-3"></i><span>Pillars</span></a>
+      <a href="pillars-scholarship.html" class="nav-link nav-link-sub"><span>Scholarship</span></a>
+      <a href="pillars-service.html" class="nav-link nav-link-sub"><span>Service</span></a>
+      <a href="pillars-sociability.html" class="nav-link nav-link-sub"><span>Sociability</span></a>
+      <a href="pillars-sacrifice.html" class="nav-link nav-link-sub"><span>Sacrifice</span></a>
+      <a href="pillars-idealism.html" class="nav-link nav-link-sub"><span>Idealism</span></a>
       <a href="#vault" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
       <a href="#contact" class="nav-link"><i data-lucide="mail"></i><span>Contact</span></a>
     </nav>
@@ -93,54 +102,26 @@
   <!-- ============================================
        PREMIUM HERO SECTION
        ============================================ -->
-  <section id="home" class="landing-hero landing-hero--premium">
-    <div class="landing-hero-glow" aria-hidden="true"></div>
-    <div class="landing-hero-inner landing-hero-inner--premium">
+  <section id="home" class="landing-hero landing-hero--photo">
+    <!-- TODO: replace with client's final 50th Homecoming photo. Using a styled
+         gradient backdrop (no photo) in the meantime — the previous stand-in
+         image was a charity-event photo with third-party sponsor logos baked
+         into it (Cartelle/Snickers/Landbank/etc.), which ghosted behind the
+         hero text and looked unintentional. -->
+    <div class="landing-hero-bg landing-hero-bg--gradient" aria-hidden="true"></div>
+    <div class="landing-hero-scrim" aria-hidden="true"></div>
+    <div class="landing-hero-inner landing-hero-inner--solo">
       <div class="landing-hero-branding">
-        <div class="landing-hero-badge">
-          EST. 1971 &middot; UNIVERSITY OF SANTO TOMAS
-        </div>
-        <h1 class="landing-hero-title">
-          Zeta Beta <em>Mu</em>
-        </h1>
-        <p class="landing-hero-motto">Scholarship. Service. Sociability. Sacrifice. Idealism.</p>
+        <h1 class="landing-hero-title">Zeta Beta Mu Fraternity</h1>
+        <img src="image/logo1.png" alt="ZBM Logo" class="landing-hero-logo-mark">
         <p class="landing-hero-desc">
-          A distinguished medical fraternity united by a shared commitment to excellence,
-          brotherhood, and service — shaping physicians who make a lasting impact in the
-          Philippines and beyond.
+          <!-- TODO: awaiting client's finalized hero statement -->
+          A brotherhood of excellence, service, and lifelong fellowship since 1971.
         </p>
         <div class="landing-hero-cta">
-          <a href="#about" class="hero-btn-primary">Discover Our Legacy</a>
-          <a href="#pillars" class="hero-btn-secondary">Our Five Pillars</a>
+          <a href="about.html" class="hero-btn-primary">Discover Our Legacy</a>
+          <a href="pillars.html" class="hero-btn-secondary">Our Five Pillars</a>
         </div>
-      </div>
-      <div class="landing-hero-shield">
-        <svg viewBox="0 0 400 460" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="ZBM Shield">
-          <path d="M200 8 L380 60 L380 220 C380 340 280 420 200 452 C120 420 20 340 20 220 L20 60 Z" stroke="url(#shieldStroke)" stroke-width="2" fill="url(#shieldFill)" opacity="0.18"/>
-          <path d="M200 35 L350 78 L350 215 C350 315 270 385 200 415 C130 385 50 315 50 215 L50 78 Z" stroke="url(#shieldStroke)" stroke-width="1.5" fill="url(#shieldInner)" opacity="0.28"/>
-          <path d="M200 70 L320 105 L320 210 C320 290 255 350 200 375 C145 350 80 290 80 210 L80 105 Z" stroke="url(#shieldStroke)" stroke-width="1" fill="url(#shieldInner)" opacity="0.22"/>
-          <text x="200" y="245" text-anchor="middle" font-family="Playfair Display, serif" font-size="98" font-weight="700" fill="url(#shieldText)" letter-spacing="0.15em">ZBM</text>
-          <text x="200" y="330" text-anchor="middle" font-family="Playfair Display, serif" font-size="24" font-weight="500" fill="url(#shieldText)" letter-spacing="0.25em" opacity="0.85">EST. MCMLXXI</text>
-          <defs>
-            <linearGradient id="shieldStroke" x1="0" y1="0" x2="400" y2="460" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.9"/>
-              <stop offset="100%" stop-color="#064e3b" stop-opacity="0.4"/>
-            </linearGradient>
-            <linearGradient id="shieldFill" x1="0" y1="0" x2="0" y2="460" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.2"/>
-              <stop offset="100%" stop-color="#064e3b" stop-opacity="0.05"/>
-            </linearGradient>
-            <linearGradient id="shieldInner" x1="0" y1="0" x2="0" y2="460" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.15"/>
-              <stop offset="100%" stop-color="#02180e" stop-opacity="0.3"/>
-            </linearGradient>
-            <linearGradient id="shieldText" x1="0" y1="0" x2="400" y2="460" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#f3d67b"/>
-              <stop offset="50%" stop-color="#d4af37"/>
-              <stop offset="100%" stop-color="#b8941f"/>
-            </linearGradient>
-          </defs>
-        </svg>
       </div>
     </div>
   </section>
@@ -162,16 +143,16 @@
       </div>
 
       <!-- Description -->
+      <!-- TODO: awaiting client's finalized short About Us copy -->
       <p class="about-description">
-        The Zeta Beta Mu Fraternity is a brotherhood founded in 1971 at the University of Santo Tomas, rooted in a shared commitment to excellence, leadership, and service among future medical professionals. Guided by its five pillars—Scholarship, Service, Sociability, Sacrifice, and Idealism—the fraternity cultivates well-rounded individuals who strive for academic distinction, meaningful community engagement, strong bonds of brotherhood, selfless dedication, and principled living. Through generations, it has continued to uphold its legacy of shaping competent, compassionate physicians and leaders dedicated to making a lasting impact in society.
+        The Zeta Beta Mu Fraternity is a brotherhood rooted at the University of Santo Tomas, built on a shared commitment to excellence, leadership, and service among future medical professionals. Guided by its five pillars—Scholarship, Service, Sociability, Sacrifice, and Idealism—the fraternity cultivates well-rounded individuals who strive for academic distinction, meaningful community engagement, strong bonds of brotherhood, selfless dedication, and principled living.
       </p>
-
       <!-- Image on Top -->
       <div class="about-image-top-container" data-animate="center">
         <div class="about-image-frame-top">
           <img src="image/aboutus.jpg" alt="Zeta Beta Mu Fraternity" class="about-image-top">
           <div class="about-image-overlay-top">
-            <a href="#vault" class="about-portfolio-btn">
+            <a href="about.html" class="about-portfolio-btn">
               Our Heritage
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
@@ -186,74 +167,50 @@
           OUR FOUNDATION
         </span>
         <h3 class="about-pillars-title">The Five Pillars</h3>
-        <p class="about-pillars-subtitle">The values that have guided every brother of Zeta Beta Mu since 1971.</p>
+        <p class="about-pillars-subtitle">The values that have guided every brother of Zeta Beta Mu.</p>
       </div>
 
       <div class="about-grid-pillars">
 
-        <div class="about-service-card" data-animate="grid-1">
-          <div class="about-service-icon">
-            <i data-lucide="graduation-cap" class="w-6 h-6"></i>
-          </div>
-          <div class="about-service-divider"></div>
+        <a href="pillars-scholarship.html" class="about-service-card" data-animate="grid-1">
           <h3 class="about-service-title">Scholarship</h3>
-          <p class="about-service-desc">A relentless pursuit of academic excellence and lifelong learning, fostering intellectual growth and distinction in medicine.</p>
-        </div>
-
-        <div class="about-service-card" data-animate="grid-2">
-          <div class="about-service-icon">
-            <i data-lucide="heart-handshake" class="w-6 h-6"></i>
-          </div>
           <div class="about-service-divider"></div>
+          <span class="about-service-link">Learn more <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+        </a>
+
+        <a href="pillars-service.html" class="about-service-card" data-animate="grid-2">
           <h3 class="about-service-title">Service</h3>
-          <p class="about-service-desc">Giving back through medical missions, free clinics, and community work — caring for those who need us most.</p>
-        </div>
-
-        <div class="about-service-card" data-animate="grid-3">
-          <div class="about-service-icon">
-            <i data-lucide="users" class="w-6 h-6"></i>
-          </div>
           <div class="about-service-divider"></div>
+          <span class="about-service-link">Learn more <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+        </a>
+
+        <a href="pillars-sociability.html" class="about-service-card" data-animate="grid-3">
           <h3 class="about-service-title">Sociability</h3>
-          <p class="about-service-desc">A genuine brotherhood and fellowship that connects members across generations, hospitals, and borders for life.</p>
-        </div>
-
-        <div class="about-service-card" data-animate="grid-4">
-          <div class="about-service-icon">
-            <i data-lucide="hand-heart" class="w-6 h-6"></i>
-          </div>
           <div class="about-service-divider"></div>
+          <span class="about-service-link">Learn more <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+        </a>
+
+        <a href="pillars-sacrifice.html" class="about-service-card" data-animate="grid-4">
           <h3 class="about-service-title">Sacrifice</h3>
-          <p class="about-service-desc">Selfless dedication to our patients, our brothers, and our country — putting service above self.</p>
-        </div>
-
-        <div class="about-service-card" data-animate="grid-5">
-          <div class="about-service-icon">
-            <i data-lucide="shield-check" class="w-6 h-6"></i>
-          </div>
           <div class="about-service-divider"></div>
+          <span class="about-service-link">Learn more <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+        </a>
+
+        <a href="pillars-idealism.html" class="about-service-card" data-animate="grid-5">
           <h3 class="about-service-title">Idealism</h3>
-          <p class="about-service-desc">Upholding the highest ethical and moral standards, serving as principled role models for future generations.</p>
-        </div>
+          <div class="about-service-divider"></div>
+          <span class="about-service-link">Learn more <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+        </a>
       </div>
 
       <!-- Stats Section -->
       <div class="about-stats">
         <div class="about-stat-card" data-animate="stat">
           <div class="about-stat-icon">
-            <i data-lucide="award" class="w-6 h-6"></i>
-          </div>
-          <div class="about-stat-value">55</div>
-          <div class="about-stat-label">Years of Excellence</div>
-          <div class="about-stat-bar"></div>
-        </div>
-
-        <div class="about-stat-card" data-animate="stat">
-          <div class="about-stat-icon">
             <i data-lucide="users" class="w-6 h-6"></i>
           </div>
-          <div class="about-stat-value">651</div>
-          <div class="about-stat-label">Distinguished Alumni</div>
+          <div class="about-stat-value">653</div>
+          <div class="about-stat-label">Total Members</div>
           <div class="about-stat-bar"></div>
         </div>
 
@@ -418,7 +375,7 @@
       </p>
       <div class="landing-prefooter-cta">
         <a href="signup.html" class="btn btn-legacy btn-lg">Get in Touch</a>
-        <a href="#about" class="btn btn-pillars-outline btn-lg">Learn More</a>
+        <a href="about.html" class="btn btn-pillars-outline btn-lg">Learn More</a>
       </div>
     </div>
   </section>
@@ -434,8 +391,7 @@
             <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
           </div>
           <div class="landing-footer-logo-text">
-            <span class="landing-footer-logo-title">Zeta Beta Mu</span>
-            <span class="landing-footer-logo-subtitle">MEDICAL FRATERNITY</span>
+            <span class="landing-footer-logo-title">Zeta Beta Mu Fraternity</span>
           </div>
         </div>
         <p class="landing-footer-desc">
@@ -453,8 +409,8 @@
       </div>
       <div class="landing-footer-links">
         <h4>QUICK LINKS</h4>
-        <a href="#about">About Us</a>
-        <a href="#pillars">The Five Pillars</a>
+        <a href="about.html">About Us</a>
+        <a href="pillars.html">The Five Pillars</a>
         <a href="#partnership">Community Partnerships</a>
         <a href="#vault">Gallery</a>
         <a href="login.html">Member Login</a>
