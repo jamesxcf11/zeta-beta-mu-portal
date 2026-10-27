@@ -6325,7 +6325,8 @@ body.light-theme {
 .about-title {
   font-family: 'Playfair Display', serif;
   font-size: 3.5rem;
-  font-weight: 300;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: white;
   margin-bottom: 1.5rem;
   line-height: 1.2;
@@ -14161,3 +14162,587 @@ body.dark-theme.landing-page {
     display: flex;
   }
 }
+
+/* ============================================================================
+   ABOUT US — 50-YEAR HISTORY NARRATIVE & IDEALISM ALUMNI PROFILES
+   ============================================================================ */
+
+.about-history-content .about-description {
+  text-align: left;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.5rem;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+
+.about-history-content .about-image-top-container {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3rem;
+}
+
+.about-history-content .about-history-subheading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  max-width: 720px;
+  margin: 2.5rem auto 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.about-lead {
+  max-width: 680px;
+  margin: 1.25rem auto 0;
+  text-align: center;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* Unified Chronological Alumni Profile Cards (Idealism Page) */
+.idealism-alumni-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+  margin-top: 2.5rem;
+}
+
+.idealism-alumni-card {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 2.25rem;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 18px;
+  background: rgba(2, 28, 22, 0.42);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.24);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.idealism-alumni-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.3);
+}
+
+.light-theme .idealism-alumni-card {
+  background: #ffffff;
+  border: 1px solid rgba(6, 78, 59, 0.12);
+  box-shadow: 0 10px 30px rgba(6, 78, 59, 0.08);
+}
+
+.light-theme .idealism-alumni-card:hover {
+  border-color: rgba(197, 160, 89, 0.55);
+  box-shadow: 0 16px 38px rgba(6, 78, 59, 0.12);
+}
+
+.idealism-alumni-photo-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.light-theme .idealism-alumni-photo-wrap {
+  border-color: rgba(197, 160, 89, 0.55);
+  box-shadow: 0 8px 22px rgba(6, 78, 59, 0.14);
+}
+
+.idealism-alumni-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  display: block;
+}
+
+.idealism-alumni-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.idealism-alumni-header {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding-bottom: 1rem;
+}
+
+.light-theme .idealism-alumni-header {
+  border-bottom-color: rgba(6, 78, 59, 0.12);
+}
+
+.idealism-alumni-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.65rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #ffffff;
+  margin: 0 0 0.4rem;
+}
+
+.light-theme .idealism-alumni-name {
+  color: #064e3b;
+}
+
+.idealism-alumni-credentials {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: rgba(245, 245, 240, 0.82);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.light-theme .idealism-alumni-credentials {
+  color: #1e4038;
+}
+
+.idealism-alumni-honors {
+  color: #d4af37;
+  font-weight: 600;
+}
+
+.light-theme .idealism-alumni-honors {
+  color: #92700c;
+}
+
+.idealism-alumni-quote {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  border-left: 3px solid #d4af37;
+  border-radius: 0 12px 12px 0;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.light-theme .idealism-alumni-quote {
+  background: rgba(197, 160, 89, 0.08);
+  border-left-color: #b8941f;
+}
+
+.idealism-alumni-quote p {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.light-theme .idealism-alumni-quote p {
+  color: #1a2e28;
+}
+
+.idealism-alumni-quote--placeholder p {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.light-theme .idealism-alumni-quote--placeholder p {
+  color: rgba(6, 78, 59, 0.6);
+}
+
+@media (max-width: 768px) {
+  .idealism-alumni-card {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .idealism-alumni-photo-wrap {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .idealism-alumni-header {
+    text-align: center;
+  }
+
+  .idealism-alumni-name {
+    font-size: 1.4rem;
+  }
+}
+
+/* ============================================================================
+   VAULT TAG BADGES & EMBEDDED PILLAR VAULT VIEWER
+   ============================================================================ */
+
+.album-tags,
+.vault-review-tags,
+.pillar-vault-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.5rem;
+}
+
+.vault-tag-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 999px;
+  color: #f3d67b;
+  background: rgba(212, 175, 55, 0.14);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.vault-tag-badge:hover {
+  background: rgba(212, 175, 55, 0.24);
+  border-color: rgba(212, 175, 55, 0.55);
+}
+
+.light-theme .vault-tag-badge {
+  color: #785c08;
+  background: rgba(212, 175, 55, 0.14);
+  border-color: rgba(146, 112, 12, 0.35);
+}
+
+.pillar-vault-card {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pillar-vault-card:hover {
+  transform: translateY(-4px);
+}
+
+.pillar-vault-card-meta {
+  padding: 0.85rem 1rem;
+}
+
+.pillar-vault-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem;
+}
+
+.pillar-vault-card-sub {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ============================================================================
+   UNIFIED PILLAR & ABOUT TITLE HEADER TYPOGRAPHY
+   Matches primary "Zeta Beta Mu Fraternity" header (.landing-hero-title)
+   font-family, weight (600), and letter-spacing (-0.02em)
+   ============================================================================ */
+
+.landing-page .landing-section-title,
+.landing-page .about-title,
+.landing-page .about-pillars-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================================
+   ABOUT US — THE NINETEEN FOUNDERS SHOWCASE (1971) & YEAR-BY-YEAR VAULT
+   ============================================================================ */
+
+.founders-showcase {
+  margin-bottom: 4.5rem;
+}
+
+.founders-showcase-header {
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+
+.founders-showcase-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.15rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.founders-showcase-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.founders-grid {
+  --founders-cols: 5;
+  --founders-gap: 1.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--founders-gap);
+}
+
+.founders-grid > .founder-card {
+  flex: 0 0 calc((100% - (var(--founders-cols) - 1) * var(--founders-gap)) / var(--founders-cols));
+  max-width: calc((100% - (var(--founders-cols) - 1) * var(--founders-gap)) / var(--founders-cols));
+}
+
+@media (max-width: 1024px) {
+  .founders-grid {
+    --founders-cols: 4;
+  }
+}
+
+@media (max-width: 800px) {
+  .founders-grid {
+    --founders-cols: 3;
+  }
+}
+
+.founder-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(2, 28, 22, 0.42);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.founder-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+}
+
+.light-theme .founder-card {
+  background: #ffffff;
+  border: 1px solid rgba(6, 78, 59, 0.12);
+  box-shadow: 0 8px 24px rgba(6, 78, 59, 0.07);
+}
+
+.light-theme .founder-card:hover {
+  border-color: rgba(197, 160, 89, 0.55);
+  box-shadow: 0 14px 32px rgba(6, 78, 59, 0.12);
+}
+
+.founder-photo-wrap {
+  width: 100%;
+  aspect-ratio: 416 / 576;
+  background: #e8e6e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.light-theme .founder-photo-wrap {
+  border-bottom-color: rgba(6, 78, 59, 0.1);
+}
+
+.founder-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.founder-info {
+  padding: 0.85rem 0.9rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.founder-role {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #d4af37;
+}
+
+.light-theme .founder-role {
+  color: #92700c;
+}
+
+.founder-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #ffffff;
+  margin: 0;
+}
+
+.light-theme .founder-name {
+  color: #064e3b;
+}
+
+@media (max-width: 640px) {
+  .founders-grid {
+    --founders-cols: 2;
+    --founders-gap: 0.9rem;
+  }
+
+  .founder-info {
+    padding: 0.65rem 0.5rem 0.8rem;
+  }
+
+  .founder-name {
+    font-size: 0.9rem;
+  }
+}
+
+/* About Us Bottom Year-by-Year Vault Filter Bar */
+.about-vault-years {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2.25rem;
+}
+
+.about-vault-year-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 40px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.about-vault-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.about-vault-year-trigger {
+  min-width: 170px;
+  justify-content: center;
+}
+
+.about-vault-chevron {
+  transition: transform 0.2s ease;
+}
+
+.about-vault-dropdown.open .about-vault-chevron {
+  transform: rotate(180deg);
+}
+
+.about-vault-year-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  min-width: 100%;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 0.35rem;
+  border-radius: 14px;
+  background: #0b2a21;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+}
+
+.about-vault-dropdown.open .about-vault-year-menu {
+  display: block;
+}
+
+.about-vault-year-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  width: 100%;
+  padding: 0.55rem 0.9rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.about-vault-year-option:hover {
+  background: rgba(212, 175, 55, 0.12);
+  color: #ffffff;
+}
+
+.about-vault-year-option.active {
+  background: var(--landing-gold, #d4af37);
+  color: #0f281e;
+}
+
+.about-vault-year-count {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.light-theme .about-vault-year-menu {
+  background: #ffffff;
+  border-color: rgba(6, 78, 59, 0.2);
+  box-shadow: 0 16px 36px rgba(6, 78, 59, 0.15);
+}
+
+.light-theme .about-vault-year-option {
+  color: #1e4038;
+}
+
+.light-theme .about-vault-year-option:hover {
+  background: rgba(6, 78, 59, 0.08);
+  color: #064e3b;
+}
+
+.light-theme .about-vault-year-option.active {
+  background: #0f281e;
+  color: #f3d67b;
+}
+
+.about-vault-year-chip:hover {
+  border-color: rgba(212, 175, 55, 0.6);
+  color: var(--text-primary);
+}
+
+.about-vault-year-chip.active {
+  background: var(--landing-gold, #d4af37);
+  border-color: var(--landing-gold, #d4af37);
+  color: #0f281e;
+}
+
+.light-theme .about-vault-year-chip {
+  background: #ffffff;
+  border-color: rgba(6, 78, 59, 0.15);
+  color: #1e4038;
+}
+
+.light-theme .about-vault-year-chip.active {
+  background: #0f281e;
+  border-color: #0f281e;
+  color: #f3d67b;
+}
+
+
+

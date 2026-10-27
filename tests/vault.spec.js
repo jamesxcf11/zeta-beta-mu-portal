@@ -98,6 +98,22 @@ test.describe('Vault (vault.html)', () => {
     await expect(page.locator('#vault-submit-btn')).toBeEnabled();
   });
 
+  test('upload modal: hashtag/tag field is parsed and shown in review step', async ({ page }) => {
+    await page.click('button:has-text("Upload Photos")');
+    await page.fill('#upload-album-name', 'PLE Board Passers 2026');
+    await page.fill('#upload-tags', '#scholarship, #ple, revalida');
+    await page.setInputFiles('#vault-file-input', {
+      name: 'passers.jpg',
+      mimeType: 'image/jpeg',
+      buffer: Buffer.from('fake-image'),
+    });
+    await page.click('#vault-submit-btn');
+    await expect(page.locator('#vault-upload-step-2')).toBeVisible();
+    await expect(page.locator('#vault-review-content')).toContainText('#scholarship');
+    await expect(page.locator('#vault-review-content')).toContainText('#ple');
+    await expect(page.locator('#vault-review-content')).toContainText('#revalida');
+  });
+
   test('member-only session: officer View button is hidden (role gating)', async ({ page }) => {
     // applyRoleGating() in vault.js sets display:none on #officer-view-btn for non-officer sessions.
     const btn = page.locator('#officer-view-btn');

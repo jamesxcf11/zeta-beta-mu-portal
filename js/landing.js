@@ -17,6 +17,7 @@ const LandingModule = {
       category: 'Annual Gala',
       year: 2025,
       location: 'The Grand Hotel Ballroom',
+      tags: ['sociability', 'yearender', 'gala', 'party'],
       coverImage: 'sample vault/012ec369-ea52-42fc-912a-d1ef7504950a.jpg',
       photoCount: 5,
       photos: [
@@ -33,6 +34,7 @@ const LandingModule = {
       category: 'Induction',
       year: 2024,
       location: 'University Great Hall',
+      tags: ['induction', 'brotherhood'],
       coverImage: 'sample vault/2f8a6a33-7bd4-4672-9cdf-3cd4449d616e.jpg',
       photoCount: 4,
       photos: [
@@ -48,6 +50,7 @@ const LandingModule = {
       category: 'Conference',
       year: 2025,
       location: 'Medical School Auditorium',
+      tags: ['scholarship', 'revalida', 'ple', 'board', 'research', 'conference'],
       coverImage: 'sample vault/6525a973-34cf-40e0-b1e0-417e675d8d41.jpg',
       photoCount: 3,
       photos: [
@@ -62,6 +65,7 @@ const LandingModule = {
       category: 'Reunion',
       year: 2024,
       location: 'Fraternity House & Campus',
+      tags: ['sociability', 'backtoschool', 'hangout', 'reunion'],
       coverImage: 'sample vault/8ecbf87d-4371-4e5d-8f92-4976f4500daf.jpg',
       photoCount: 4,
       photos: [
@@ -76,7 +80,8 @@ const LandingModule = {
       title: 'Charity Medical Mission',
       category: 'Charity',
       year: 2023,
-      location: 'Rural Health Clinic',
+      location: 'Porac, Pampanga',
+      tags: ['service', 'porac', 'villamaria', 'mission', 'outreach', 'charity'],
       coverImage: 'sample vault/cc5273a3-24ce-414a-82dc-d54406d977bf.jpg',
       photoCount: 4,
       photos: [
@@ -92,6 +97,7 @@ const LandingModule = {
       category: 'Founders Day',
       year: 2024,
       location: 'Fraternity Memorial Garden',
+      tags: ['founders', 'tradition'],
       coverImage: 'sample vault/47db4c7e-009a-4261-a8e2-d7a2f6f4eb55.jpg',
       photoCount: 3,
       photos: [
@@ -106,6 +112,7 @@ const LandingModule = {
       category: 'Induction',
       year: 2023,
       location: 'University Chapel',
+      tags: ['scholarship', 'induction'],
       coverImage: 'sample vault/ac6376cd-926d-4cde-881b-8038f5c14a65.jpg',
       photoCount: 4,
       photos: [
@@ -120,13 +127,14 @@ const LandingModule = {
       title: 'Community Health Fair',
       category: 'Community Service',
       year: 2023,
-      location: 'Community Center',
+      location: 'Porac, Pampanga',
+      tags: ['service', 'porac', 'villamaria', 'outreach'],
       coverImage: 'sample vault/ceb34cb3-f492-4828-bfe2-628662bfad4f.jpg',
       photoCount: 3,
       photos: [
+        'sample vault/66ac2a3f-ed7a-44cc-9d5e-0db23b1b86d4.jpg',
         'sample vault/ceb34cb3-f492-4828-bfe2-628662bfad4f.jpg',
-        'sample vault/10cd9e8d-2106-42c5-996a-ba7b590fe852.jpg',
-        'sample vault/21f815ad-4772-4ed3-b327-9aa23fee294e.jpg'
+        'sample vault/10cd9e8d-2106-42c5-996a-ba7b590fe852.jpg'
       ]
     }
   ],
@@ -157,6 +165,11 @@ const LandingModule = {
 
   // Gallery expansion state
   showArchive: false,
+  pillarViewerExpanded: false,
+  pillarViewerPhotos: [],
+  aboutVaultAlbums: [],
+  aboutVaultSelectedYear: 'all',
+  aboutVaultShowAll: false,
 
   /**
    * Initialize landing page
@@ -165,8 +178,342 @@ const LandingModule = {
     this.setupStickyNavbar();
     this.setupNavDropdown();
     this.renderPublicGallery();
+    this.initPillarVaultViewer();
+    this.initAboutVaultGallery();
     this.setupAboutAnimations();
     this.setupScrollReveal();
+  },
+
+  /**
+   * Initialize the About Us page "Through the Years" Vault Gallery.
+   * Pulls approved public albums/photos from Supabase (editable by officers/admins)
+   * or falls back to curated historical albums sorted by year.
+   */
+  async initAboutVaultGallery() {
+    const galleryEl = document.getElementById('about-vault-gallery');
+    if (!galleryEl) return;
+
+    // Seed with curated albums across the years first for instant rendering
+    const baseAlbums = [...this.albums, ...this.archiveAlbums]
+      .map(a => ({ ...a }))
+      .sort((a, b) => (b.year || 0) - (a.year || 0));
+
+    this.aboutVaultAlbums = baseAlbums;
+    this.renderAboutVaultYears();
+    this.renderAboutVaultGallery();
+
+    // Query live approved public vault_items from Supabase so officer/admin edits reflect automatically
+    const hasSupabase = typeof db !== 'undefined' && db &&
+      typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT');
+
+    if (hasSupabase) {
+      try {
+        const { data, error } = await db
+          .from('vault_items')
+          .select('id, album_id, year, title, caption, media_url, thumbnail_url, category, location, is_public')
+          .eq('approval_status', 'approved')
+          .eq('is_public', true)
+          .is('deleted_at', null)
+          .order('year', { ascending: true })
+          .order('id', { ascending: true });
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+          const albumMap = {};
+          data.forEach(item => {
+            if (!item.media_url) return;
+            const key = item.album_id || `album-${item.year}-${item.title}`;
+            if (!albumMap[key]) {
+              albumMap[key] = {
+                id: key,
+                title: item.title || `Fraternity Archive ${item.year}`,
+                category: item.category || 'Archive',
+                year: item.year || 1971,
+                location: item.location || 'University of Santo Tomas',
+                coverImage: item.thumbnail_url || item.media_url,
+                photoCount: 0,
+                photos: []
+              };
+            }
+            albumMap[key].photos.push(item.media_url);
+            albumMap[key].photoCount = albumMap[key].photos.length;
+          });
+          const liveAlbums = Object.values(albumMap).sort((a, b) => (b.year || 0) - (a.year || 0));
+          if (liveAlbums.length > 0) {
+            this.aboutVaultAlbums = liveAlbums;
+            this.renderAboutVaultYears();
+            this.renderAboutVaultGallery();
+          }
+        }
+      } catch (err) {
+        // Keep baseAlbums fallback
+      }
+    }
+  },
+
+  renderAboutVaultYears() {
+    const yearsEl = document.getElementById('about-vault-years');
+    if (!yearsEl) return;
+
+    const years = [...new Set(this.aboutVaultAlbums.map(a => a.year).filter(Boolean))].sort((a, b) => b - a);
+    const e = (s) => this.escapeHTML(s);
+
+    const selected = this.aboutVaultSelectedYear;
+    const isAll = selected === 'all';
+    const open = !!this.aboutVaultYearMenuOpen;
+    const option = (value, label, count) => {
+      const active = String(selected) === String(value);
+      return `<button type="button" role="option" aria-selected="${active}" class="about-vault-year-option ${active ? 'active' : ''}" onclick="LandingModule.filterAboutVaultByYear('${e(value)}')"><span>${label}</span><span class="about-vault-year-count">${count}</span></button>`;
+    };
+
+    yearsEl.innerHTML = `
+      <div class="about-vault-dropdown ${open ? 'open' : ''}">
+        <button type="button" class="about-vault-year-chip about-vault-year-trigger ${isAll ? '' : 'active'}" aria-haspopup="listbox" aria-expanded="${open}" onclick="LandingModule.toggleAboutVaultYearMenu(event)">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          <span>${isAll ? 'All Years' : e(selected)}</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 about-vault-chevron"></i>
+        </button>
+        <div class="about-vault-year-menu" role="listbox" aria-label="Filter albums by year">
+          ${option('all', 'All Years', this.aboutVaultAlbums.length)}
+          ${years.map(y => option(y, e(y), this.aboutVaultAlbums.filter(a => a.year === y).length)).join('')}
+        </div>
+      </div>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  toggleAboutVaultYearMenu(event) {
+    if (event) event.stopPropagation();
+    this.aboutVaultYearMenuOpen = !this.aboutVaultYearMenuOpen;
+    if (!this.aboutVaultYearMenuBound) {
+      this.aboutVaultYearMenuBound = true;
+      const close = () => {
+        if (!this.aboutVaultYearMenuOpen) return;
+        this.aboutVaultYearMenuOpen = false;
+        this.renderAboutVaultYears();
+      };
+      document.addEventListener('click', (ev) => {
+        if (!ev.target.closest('.about-vault-dropdown')) close();
+      });
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') close();
+      });
+    }
+    this.renderAboutVaultYears();
+  },
+
+  filterAboutVaultByYear(year) {
+    this.aboutVaultSelectedYear = year;
+    this.aboutVaultShowAll = false;
+    this.aboutVaultYearMenuOpen = false;
+    this.renderAboutVaultYears();
+    this.renderAboutVaultGallery();
+  },
+
+  toggleAboutVaultShowAll() {
+    this.aboutVaultShowAll = !this.aboutVaultShowAll;
+    this.renderAboutVaultGallery();
+  },
+
+  openAboutVaultAlbum(albumIdx) {
+    const filtered = this.getFilteredAboutVaultAlbums();
+    const album = filtered[albumIdx];
+    if (!album) return;
+    this.currentAlbum = album;
+    this.currentPhotoIndex = 0;
+    this.lightboxOpen = true;
+    this.isInitialOpen = true;
+    this.renderLightbox();
+    document.body.style.overflow = 'hidden';
+  },
+
+  getFilteredAboutVaultAlbums() {
+    if (this.aboutVaultSelectedYear === 'all') {
+      return this.aboutVaultAlbums;
+    }
+    return this.aboutVaultAlbums.filter(a => String(a.year) === String(this.aboutVaultSelectedYear));
+  },
+
+  renderAboutVaultGallery() {
+    const container = document.getElementById('about-vault-gallery');
+    if (!container) return;
+
+    const filtered = this.getFilteredAboutVaultAlbums();
+    const limit = 8;
+    const visible = this.aboutVaultShowAll ? filtered : filtered.slice(0, limit);
+    const e = (s) => this.escapeHTML(s);
+
+    let html = visible.map((album, idx) => `
+      <div class="landing-gallery-card glass-card" onclick="LandingModule.openAboutVaultAlbum(${idx})" style="cursor: pointer;">
+        <div class="landing-gallery-image-wrapper">
+          <img src="${e(album.coverImage)}" alt="${e(album.title)}" loading="lazy">
+          <div class="landing-gallery-overlay">
+            <span class="landing-gallery-category">${e(album.year)} &middot; ${e(album.category)}</span>
+          </div>
+          <div class="album-photo-count">
+            <i data-lucide="images" class="w-4 h-4"></i>
+            <span>${album.photoCount} photos</span>
+          </div>
+        </div>
+        <div class="landing-gallery-info">
+          <h3>${e(album.title)}</h3>
+          <p>
+            <i data-lucide="map-pin" class="w-3 h-3"></i>
+            ${e(album.location)} &middot; ${e(album.year)}
+          </p>
+        </div>
+      </div>
+    `).join('');
+
+    if (filtered.length > limit) {
+      html += `
+        <div class="gallery-see-more-wrapper">
+          <button class="btn btn-outline-gold gallery-see-more-btn" onclick="LandingModule.toggleAboutVaultShowAll()">
+            <i data-lucide="${this.aboutVaultShowAll ? 'chevron-up' : 'chevron-down'}" class="w-4 h-4"></i>
+            <span>${this.aboutVaultShowAll ? 'Show Less' : `See More (${filtered.length - limit} more)`}</span>
+          </button>
+        </div>
+      `;
+    }
+
+    container.innerHTML = html;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Initialize the Embedded Vault Viewer on dedicated Pillar pages.
+   * Dynamically filters public approved vault items by the page's
+   * data-vault-tags and caps initial display at data-vault-limit (default 6).
+   */
+  async initPillarVaultViewer() {
+    const container = document.querySelector('[data-vault-viewer]');
+    if (!container) return;
+
+    const rawTags = container.getAttribute('data-vault-tags') || '';
+    const targetTags = rawTags
+      .split(/[\s,]+/)
+      .map(t => t.trim().replace(/^#+/, '').toLowerCase())
+      .filter(Boolean);
+    const limit = parseInt(container.getAttribute('data-vault-limit') || '6', 10) || 6;
+    const pillarName = container.getAttribute('data-vault-pillar') || 'Pillar';
+
+    // Collect existing static fallback photos already rendered in the container
+    const fallbackImgs = Array.from(container.querySelectorAll('img')).map(img => ({
+      src: img.getAttribute('src'),
+      alt: img.getAttribute('alt') || `${pillarName} photo`,
+      title: `${pillarName.charAt(0).toUpperCase() + pillarName.slice(1)} Archive`,
+      year: 2025,
+      location: 'University of Santo Tomas',
+      tags: targetTags.slice(0, 2)
+    })).filter(p => p.src);
+
+    // Render initial fallback photos immediately (no async flash)
+    this.pillarViewerPhotos = fallbackImgs;
+    this.pillarViewerLimit = limit;
+    this.pillarViewerTitle = `${pillarName.charAt(0).toUpperCase() + pillarName.slice(1)} Vault`;
+    this.renderPillarVaultViewer();
+
+    let matchedPhotos = [];
+
+    // Query live public approved vault_items when Supabase is configured
+    const hasSupabase = typeof db !== 'undefined' && db &&
+      typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT');
+
+    if (hasSupabase && targetTags.length > 0) {
+      try {
+        const { data, error } = await db
+          .from('vault_items')
+          .select('id, year, title, caption, media_url, thumbnail_url, category, location, is_public')
+          .eq('approval_status', 'approved')
+          .eq('is_public', true)
+          .is('deleted_at', null)
+          .order('year', { ascending: false })
+          .limit(48);
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+          data.forEach(item => {
+            const captionTags = ((item.caption || '').match(/#([a-zA-Z0-9_-]+)/g) || [])
+              .map(t => t.replace(/^#+/, '').toLowerCase());
+            const hay = `${item.title || ''} ${item.caption || ''} ${item.category || ''} ${item.location || ''}`.toLowerCase();
+            const isMatch = targetTags.some(tag =>
+              captionTags.includes(tag) || hay.includes(tag)
+            );
+            if (isMatch && item.media_url) {
+              matchedPhotos.push({
+                src: item.media_url,
+                thumb: item.thumbnail_url || item.media_url,
+                alt: item.title || `${pillarName} photo`,
+                title: item.title || `${pillarName} Archive`,
+                year: item.year || '',
+                location: item.location || 'UST',
+                tags: captionTags.length ? captionTags : targetTags.slice(0, 2)
+              });
+            }
+          });
+        }
+      } catch (err) {
+        // Keep initial fallback photos
+      }
+    }
+
+    if (matchedPhotos.length > 0) {
+      this.pillarViewerPhotos = matchedPhotos;
+      this.renderPillarVaultViewer();
+    }
+  },
+
+  /**
+   * Render the Embedded Pillar Vault Viewer with max-photo limit (6 per page) and lightbox click
+   */
+  renderPillarVaultViewer() {
+    const container = document.querySelector('[data-vault-viewer]');
+    if (!container || !this.pillarViewerPhotos.length) return;
+
+    const limit = this.pillarViewerLimit || 6;
+    const visiblePhotos = this.pillarViewerExpanded
+      ? this.pillarViewerPhotos
+      : this.pillarViewerPhotos.slice(0, limit);
+    const e = (s) => this.escapeHTML(s);
+
+    let html = visiblePhotos.map((photo, index) => `
+      <div class="glass-card overflow-hidden pillar-vault-card" onclick="LandingModule.openPillarPhoto(${index})">
+        <img src="${e(photo.thumb || photo.src)}" alt="${e(photo.alt)}" class="w-full h-56 object-cover" loading="lazy">
+      </div>
+    `).join('');
+
+    if (this.pillarViewerPhotos.length > limit) {
+      html += `
+        <div class="gallery-see-more-wrapper">
+          <button class="btn btn-outline-gold gallery-see-more-btn" onclick="LandingModule.togglePillarVaultViewer()">
+            <i data-lucide="${this.pillarViewerExpanded ? 'chevron-up' : 'chevron-down'}" class="w-4 h-4"></i>
+            <span>${this.pillarViewerExpanded ? 'Show Less' : `See More (${this.pillarViewerPhotos.length - limit} more)`}</span>
+          </button>
+        </div>
+      `;
+    }
+
+    container.innerHTML = html;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  togglePillarVaultViewer() {
+    this.pillarViewerExpanded = !this.pillarViewerExpanded;
+    this.renderPillarVaultViewer();
+  },
+
+  openPillarPhoto(photoIndex) {
+    if (!this.pillarViewerPhotos || !this.pillarViewerPhotos.length) return;
+    const first = this.pillarViewerPhotos[photoIndex] || this.pillarViewerPhotos[0];
+    this.currentAlbum = {
+      title: first.title || this.pillarViewerTitle || 'From the Vault',
+      category: this.pillarViewerTitle || 'Vault',
+      year: first.year || 2025,
+      location: first.location || 'University of Santo Tomas',
+      photos: this.pillarViewerPhotos.map(p => p.src)
+    };
+    this.currentPhotoIndex = photoIndex;
+    this.lightboxOpen = true;
+    this.isInitialOpen = true;
+    this.renderLightbox();
+    document.body.style.overflow = 'hidden';
   },
 
   /**

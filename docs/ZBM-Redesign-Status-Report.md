@@ -14,7 +14,7 @@ Status legend: ✅ Done · 🟡 Pending client input/asset · ⏸ Deferred (expl
 | --- | --- | --- |
 | Use full name "Zeta Beta Mu Fraternity" | ✅ Done | Applied across hero, footer, nav drawer, page titles |
 | Do not italicize "Mu" | ✅ Done | Removed the `<em>` styling on the hero title |
-| Better/more appropriate font | 🟡 Pending | Left on the site's existing font (Playfair Display) since no replacement typeface was specified. Flag if you want an actual different typeface explored |
+| Pillar & About Us titles match primary header font | ✅ Done | All pillar and About Us titles now share the exact `Playfair Display` (weight `600`, `-0.02em` letter-spacing) styling of the `"Zeta Beta Mu Fraternity"` header |
 | Upper-left nav tab: Greek letters ΖΒΜ, not logo+name | ✅ Done | Verified this renders as genuine Greek Unicode (Ζ Β Μ — U+0396/U+0392/U+039C), not a stylized logotype |
 | Logo placement below "Zeta Beta Mu Fraternity" | ✅ Done | Logo now sits below the wordmark in the hero, not beside it |
 | Remove pillar icons & header styling / Roman numerals | ✅ Done | Icons and I–V Roman numeral counters removed from the Pillars section site-wide |
@@ -68,7 +68,7 @@ Status legend: ✅ Done · 🟡 Pending client input/asset · ⏸ Deferred (expl
 | Item | Status | Notes |
 | --- | --- | --- |
 | Landing page: short description only | ✅ Done | Placeholder short copy in place, marked `TODO` — swap in your finalized copy when sent |
-| Dedicated About Us page with full history | 🟡 **Pending client content** | `about.html` created and live; placeholder text + note that full history/archival photos are still to come |
+| Dedicated About Us page with 19 Founders, full history & Vault timeline | ✅ Done | `about.html` now features: (1) all 19 Founding Members' archival portraits at the top ("The Nineteen Pioneers"), (2) the full 10-paragraph 50-year "Our History" write-up in the middle, and (3) a dynamic year-by-year "From the Vault: Through the Years" gallery at the bottom (editable by officers/admins) |
 
 ---
 
@@ -78,11 +78,12 @@ Status legend: ✅ Done · 🟡 Pending client input/asset · ⏸ Deferred (expl
 | --- | --- | --- |
 | "Pillars" as a nav tab with dropdown | ✅ Done | Desktop hover dropdown + indented mobile sub-menu, both verified working |
 | Each pillar has its own page | ✅ Done | `pillars.html` (hub) + 5 sub-pages |
-| **Scholarship** page | ✅ Done | Built with your exact provided copy. Photos are placeholders (gala/symposium stand-ins) — 🟡 pending real Revalida/PLE passer photos |
-| **Service** page | ✅ Done | Built with your exact provided copy. Photos are placeholders — 🟡 pending real Porac/medical mission album |
-| **Sociability** page | ✅ Done | Built with your exact provided copy. Photos are placeholders — 🟡 pending real Year-Ender/Back-to-School/hangout albums |
-| **Sacrifice** page | ⏸ Placeholder | Short generic intro added + "Full Story Coming Soon" notice. Awaiting your final direction (possibly Doc Ef's speech, or a description of time given to the fraternity) |
-| **Idealism** page | ⏸ Placeholder | Short generic intro added + "Full Story Coming Soon" notice. Explicitly **not** framed as "Distinguished Alumni," per your instruction. Awaiting your final direction |
+| **Scholarship** page | ✅ Done | Built with your exact provided copy + dynamic Embedded Vault Viewer (capped at 6 photos per page with "See More" & lightbox). 🟡 Pending real Revalida/PLE passer photos |
+| **Service** page | ✅ Done | Built with your exact provided copy + dynamic Embedded Vault Viewer (6 photos max per page). 🟡 Pending real Porac/medical mission album |
+| **Sociability** page | ✅ Done | Built with your exact provided copy + dynamic Embedded Vault Viewer (6 photos max per page). 🟡 Pending real Year-Ender/Back-to-School/hangout albums |
+| **Sacrifice** page | ⏸ Phase 2/3 | Per client direction, this page will feature the *In Memoriam* brothers once built in Phase 2/3. Currently displays the `Sacrifice` header with a clean *"In Memoriam — Coming Soon"* placeholder |
+| **Idealism** page | ✅ Done | Built with unified chronological alumni profile cards (2005 → 2022 → 2023): Patrix Dr. John Hubert C. Pua ("Message to follow"), Patrix Dr. Roberto Armando M. Cruz Jr., and Patrix Dr. Renz Dwine L. Mendoza. 🟡 Pending Dr. Pua's quote and additional hospital head permissions |
+| **Vault & Tagging System** | ✅ Done | Added hashtag/tag metadata input (`#upload-tags`), review step display, tag badges, and dynamic tag-filtered Vault Viewer on pillar pages (max 6 photos/page) |
 
 ---
 

@@ -152,10 +152,6 @@
   <section class="landing-section" style="padding-top: 120px;">
     <div class="landing-section-inner">
       <div class="landing-section-header">
-        <span class="landing-section-badge">
-          <i data-lucide="archive" class="w-4 h-4"></i>
-          Historical Vault
-        </span>
         <h2 class="landing-section-title">Photo Archives</h2>
         <p class="landing-section-subtitle">
           Preserving our fraternity's rich history through photographs and memories spanning over 50 years.
@@ -171,7 +167,7 @@
       <div class="vault-toolbar">
         <div class="vault-toolbar-search">
           <i data-lucide="search" class="w-5 h-5"></i>
-          <input type="text" id="vault-search" class="glass-input" placeholder="Search albums by title, location, or event...">
+          <input type="text" id="vault-search" class="glass-input" placeholder="Search albums by title, location, event, or #tag...">
         </div>
         <div class="vault-toolbar-actions">
           <button class="btn btn-gold btn-sm" onclick="VaultModule.openUploadModal()">
@@ -315,6 +311,10 @@
             <label class="form-label" for="upload-category">Category</label>
             <select id="upload-category" class="glass-input">
             </select>
+          </div>
+          <div class="form-group md:col-span-2">
+            <label class="form-label" for="upload-tags">Tags / Hashtags</label>
+            <input id="upload-tags" type="text" class="glass-input" placeholder="e.g., #scholarship, #revalida, #ple, #service, #porac, #sociability">
           </div>
         </div>
 

@@ -290,7 +290,13 @@ const AuthModule = {
           password: document.getElementById('password').value,
           confirmPassword: document.getElementById('confirm-password').value,
           graduationYear: document.getElementById('graduation-year').value,
-          fieldOfMedicine: document.getElementById('field-of-medicine').value,
+          fieldOfMedicine: document.getElementById('field-of-medicine').value === 'Other'
+            ? document.getElementById('field-other').value.trim()
+            : document.getElementById('field-of-medicine').value,
+          hospital: [
+            ...Array.from(document.querySelectorAll('.hospital-option:checked')).map(el => el.value),
+            ...document.getElementById('hospital-other').value.split(',').map(h => h.trim()).filter(Boolean)
+          ].join(', '),
           specialization: document.getElementById('specialization').value.trim(),
           batch: document.getElementById('batch').value.trim(),
           mobile: document.getElementById('mobile').value.trim(),
@@ -352,7 +358,7 @@ const AuthModule = {
           nickname: isWizard ? formData.nickname : null,
           birthday: isWizard ? formData.birthday : null,
           graduation_year: parseInt(formData.graduationYear),
-          hospital: isWizard ? (formData.address || 'Not provided') : formData.hospital,
+          hospital: isWizard ? (formData.hospital || 'Not provided') : formData.hospital,
           field_of_medicine: isWizard ? formData.fieldOfMedicine : formData.field,
           specialization: isWizard ? formData.specialization : null,
           batch: isWizard ? formData.batch : null,
@@ -391,7 +397,7 @@ const AuthModule = {
           name: formData.fullName,
           email: formData.email,
           graduationYear: parseInt(formData.graduationYear),
-          hospital: isWizard ? (formData.address || 'Not provided') : formData.hospital,
+          hospital: isWizard ? (formData.hospital || 'Not provided') : formData.hospital,
           field: isWizard ? formData.fieldOfMedicine : formData.field,
           role: 'member',
           avatar: `image/placeholders/avatars/a${[10, 13, 14, 20, 25][this.mockUsers.length % 5]}.jpg`,
@@ -444,6 +450,9 @@ const AuthModule = {
       }
       if (!data.graduationYear || !data.fieldOfMedicine || !data.batch) {
         return 'Please fill in all required medical background fields';
+      }
+      if (!data.address) {
+        return 'Please provide your home address or current residence';
       }
       if (!data.hasContact) {
         return 'Please provide at least one contact number';

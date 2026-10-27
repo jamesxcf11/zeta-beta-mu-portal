@@ -98,6 +98,39 @@ const VaultModule = {
   },
 
   /**
+   * Parse comma/space-separated tag input or caption hashtags into normalized lowercase tokens (without #)
+   */
+  parseTags(raw) {
+    if (!raw) return [];
+    if (Array.isArray(raw)) {
+      return [...new Set(raw.map(t => String(t).trim().replace(/^#+/, '').toLowerCase()).filter(Boolean))];
+    }
+    return [...new Set(
+      String(raw)
+        .split(/[\s,]+/)
+        .map(t => t.trim().replace(/^#+/, '').toLowerCase())
+        .filter(Boolean)
+    )];
+  },
+
+  /**
+   * Extract #hashtags embedded inside a caption string
+   */
+  extractCaptionTags(caption) {
+    if (!caption) return [];
+    const matches = String(caption).match(/#([a-zA-Z0-9_-]+)/g) || [];
+    return this.parseTags(matches);
+  },
+
+  /**
+   * Format a normalized tag token with a leading #
+   */
+  formatTag(tag) {
+    const clean = String(tag || '').trim().replace(/^#+/, '');
+    return clean ? `#${clean}` : '';
+  },
+
+  /**
    * Check if Supabase is configured
    */
   hasSupabase() {
@@ -149,6 +182,10 @@ const VaultModule = {
     const albumMap = {};
     data.forEach(item => {
       const albumId = item.album_id || `album-${item.year}-${item.title}`;
+      const itemTags = this.parseTags([
+        ...(Array.isArray(item.tags) ? item.tags : []),
+        ...this.extractCaptionTags(item.caption)
+      ]);
       if (!albumMap[albumId]) {
         const displayCategory = this.CATEGORY_MAP[item.category] || 'Other';
         const meta = this.CATEGORY_META[displayCategory] || this.CATEGORY_META['Other'];
@@ -166,13 +203,17 @@ const VaultModule = {
           categoryIcon: meta.icon,
           categoryColor: meta.color,
           isPublic: item.is_public,
+          tags: itemTags,
           photos: []
         };
+      } else if (itemTags.length > 0) {
+        albumMap[albumId].tags = this.parseTags([...(albumMap[albumId].tags || []), ...itemTags]);
       }
       albumMap[albumId].photos.push({
         src: item.media_url,
         thumb: item.thumbnail_url || item.media_url,
         caption: item.caption || '',
+        tags: itemTags,
         fileKey: item.file_key,
         thumbKey: item.thumb_key
       });
@@ -500,8 +541,10 @@ const VaultModule = {
     const visibility = visibilitySelect?.value || 'private';
     const dateValue = dateInput?.value || '';
     const locationValue = locationInput?.value.trim() || '';
+    const tagsInput = document.getElementById('upload-tags');
+    const tags = this.parseTags(tagsInput?.value || '');
 
-    this.reviewData = { albumName, existingAlbumId, categoryValue, visibility, dateValue, locationValue };
+    this.reviewData = { albumName, existingAlbumId, categoryValue, visibility, dateValue, locationValue, tags };
     this.renderReviewStep();
     this.goToStep2();
   },
@@ -540,6 +583,10 @@ const VaultModule = {
       `;
     }).join('');
 
+    const tagsHtml = r.tags && r.tags.length > 0
+      ? `<div class="vault-review-tags">${r.tags.map(t => `<span class="vault-tag-badge">${e(this.formatTag(t))}</span>`).join('')}</div>`
+      : 'None';
+
     container.innerHTML = `
       <div class="vault-review-card">
         <div class="vault-review-section">
@@ -563,6 +610,10 @@ const VaultModule = {
             <div class="vault-review-label">Location</div>
             <div class="vault-review-value">${r.locationValue ? e(r.locationValue) : 'Not specified'}</div>
           </div>
+        </div>
+        <div class="vault-review-section">
+          <div class="vault-review-label">Tags</div>
+          <div class="vault-review-value">${tagsHtml}</div>
         </div>
         <div class="vault-review-section">
           <div class="vault-review-label">Files (${this.stagedFiles.length} &middot; ${fmtSize(totalSize)})</div>
@@ -842,6 +893,15 @@ const VaultModule = {
     this.renderAlbumGrid();
   },
 
+  filterByTag(tag, event) {
+    if (event) event.stopPropagation();
+    const formatted = this.formatTag(tag);
+    this.searchQuery = formatted;
+    const searchInput = document.getElementById('vault-search');
+    if (searchInput) searchInput.value = formatted;
+    this.renderAlbumGrid();
+  },
+
   setSort(value) {
     this.sortBy = value;
     this.renderAlbumGrid();
@@ -881,12 +941,13 @@ const VaultModule = {
     // Apply search filter (title, description, location, category, captions, tags)
     if (this.searchQuery) {
       const query = this.searchQuery.toLowerCase();
+      const cleanTagQuery = query.replace(/^#+/, '');
       filteredAlbums = filteredAlbums.filter(album =>
         album.title.toLowerCase().includes(query) ||
         album.description.toLowerCase().includes(query) ||
         album.location.toLowerCase().includes(query) ||
         album.category.toLowerCase().includes(query) ||
-        (album.tags || []).some(t => t.toLowerCase().includes(query)) ||
+        (album.tags || []).some(t => t.toLowerCase().includes(cleanTagQuery)) ||
         album.photos.some(p => (p.caption || '').toLowerCase().includes(query))
       );
     }
@@ -969,6 +1030,11 @@ const VaultModule = {
               ${e(album.location)}
             </span>
           </div>
+          ${album.tags && album.tags.length > 0 ? `
+            <div class="album-tags">
+              ${album.tags.map(t => `<span class="vault-tag-badge" onclick="VaultModule.filterByTag('${e(t)}', event)">${e(this.formatTag(t))}</span>`).join('')}
+            </div>
+          ` : ''}
           <div class="album-engagement">
             <span><i data-lucide="heart" class="w-3 h-3"></i> ${likes}</span>
             <span><i data-lucide="message-circle" class="w-3 h-3"></i> ${comments}</span>
@@ -1107,6 +1173,9 @@ const VaultModule = {
     const visibility = visibilitySelect?.value || 'private';
     const dateValue = dateInput?.value || '';
     const locationValue = locationInput?.value.trim() || '';
+    const tagsInput = document.getElementById('upload-tags');
+    const tags = this.parseTags(tagsInput?.value || '');
+    const captionWithTags = tags.map(t => this.formatTag(t)).join(' ');
 
     // Show upload progress
     this.uploadInProgress = true;
@@ -1140,7 +1209,7 @@ const VaultModule = {
             album_id: albumId,
             year: year,
             title: albumName,
-            caption: '',
+            caption: captionWithTags,
             media_url: full.publicUrl,
             thumbnail_url: thumb ? thumb.publicUrl : full.publicUrl,
             file_key: full.fileKey,
@@ -1195,7 +1264,7 @@ const VaultModule = {
           album_id: albumId,
           year: year,
           title: albumName,
-          caption: '',
+          caption: captionWithTags,
           media_url: '',
           thumbnail_url: '',
           item_type: 'photo',
@@ -1235,6 +1304,7 @@ const VaultModule = {
         location: locationValue,
         visibility,
         category: categoryValue,
+        tags,
         fileCount: files.length,
         submittedBy: 'Local dev',
         submittedAt: new Date()
@@ -1650,6 +1720,8 @@ const VaultModule = {
     if (dateInput) dateInput.value = '';
     const locationInput = document.getElementById('upload-location');
     if (locationInput) locationInput.value = '';
+    const tagsInput = document.getElementById('upload-tags');
+    if (tagsInput) tagsInput.value = '';
     this.backToStep1();
     this.reviewData = null;
     const modal = document.getElementById('vault-upload-modal');

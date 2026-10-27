@@ -1078,19 +1078,3 @@ window.Router = Router;
 window.AuthHelper = AuthHelper;
 window.smoothScrollTo = smoothScrollTo;
 window.formatDate = formatDate;
-
-// ============================================
-// LOCALHOST-ONLY DEV INSPECTOR
-// ============================================
-(function loadDevInspectorOnLocalhost() {
-  const host = window.location.hostname;
-  const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]';
-  const forceEnable = new URLSearchParams(window.location.search).get('dev-inspector') === '1';
-  if (!isLocalhost || (navigator.webdriver && !forceEnable)) return;
-  if (window.__devInspector || document.querySelector('script[src*="dev-inspector.js"]')) return;
-
-  const script = document.createElement('script');
-  script.src = 'js/dev-inspector.js';
-  script.defer = true;
-  document.head.appendChild(script);
-})();
