@@ -198,7 +198,15 @@ const AuthModule = {
         }
 
         if (member.status === 'pending') {
-          this.showError('Your account is pending verification. Please check your email.');
+          this.showError('Your account is pending admin approval. You will receive an email once approved.');
+          this.setLoading(false);
+          return;
+        }
+
+        if (member.status !== 'active') {
+          this.showError(member.status === 'rejected'
+            ? 'Your application was not approved. Please contact a chapter officer.'
+            : 'This account is not active. Please contact a chapter officer.');
           this.setLoading(false);
           return;
         }
@@ -207,6 +215,11 @@ const AuthModule = {
           .signInWithPassword({ email: member.email, password });
 
         if (authError) {
+          if (/email not confirmed/i.test(authError.message || '')) {
+            this.showError('Please confirm your email address first. Check your inbox for the confirmation link.');
+            this.setLoading(false);
+            return;
+          }
           this.recordFailedAttempt();
           const remaining = this.MAX_LOGIN_ATTEMPTS - parseInt(localStorage.getItem('zbm-login-attempts') || '0', 10);
           if (remaining > 0) {
@@ -332,51 +345,56 @@ const AuthModule = {
       this.setLoading(true);
 
       if (this.hasSupabase()) {
-        // Supabase auth — create auth user then insert profile
-        const { data: authData, error: authError } = await db.auth.signUp({
-          email: formData.email,
-          password: formData.password
-        });
-
-        if (authError) {
-          this.showError(authError.message || 'Registration failed');
+        // Supabase auth — the pending member profile is created server-side
+        // by the handle_new_auth_user trigger (sql/migrations/005) from this metadata.
+        const { data: taken } = await db.from('members').select('id').eq('username', formData.username).limit(1);
+        if (taken && taken.length) {
+          this.showError('That username is already taken. Please choose another.');
           this.setLoading(false);
           return;
         }
 
-        const authId = authData.user?.id;
+        const captchaToken = window.ZBMTurnstile ? ZBMTurnstile.token() : undefined;
+        if (window.ZBMTurnstile && ZBMTurnstile.enabled() && !captchaToken) {
+          this.showError('Please complete the human verification check.');
+          this.setLoading(false);
+          return;
+        }
 
-        // Insert member profile
-        const memberRow = {
+        const metadata = {
           username: formData.username,
-          email: formData.email,
-          password_hash: 'managed_by_supabase_auth',
-          auth_id: authId,
           first_name: isWizard ? formData.firstName : formData.fullName.split(' ')[0],
           last_name: isWizard ? formData.lastName : formData.fullName.split(' ').slice(1).join(' '),
-          middle_name: isWizard ? formData.middleName : null,
-          nickname: isWizard ? formData.nickname : null,
-          birthday: isWizard ? formData.birthday : null,
-          graduation_year: parseInt(formData.graduationYear),
+          middle_name: isWizard ? formData.middleName : '',
+          nickname: isWizard ? formData.nickname : '',
+          birthday: isWizard ? formData.birthday : '',
+          graduation_year: String(parseInt(formData.graduationYear)),
           hospital: isWizard ? (formData.hospital || 'Not provided') : formData.hospital,
           field_of_medicine: isWizard ? formData.fieldOfMedicine : formData.field,
-          specialization: isWizard ? formData.specialization : null,
-          batch: isWizard ? formData.batch : null,
-          mobile: isWizard ? formData.mobile : null,
-          telephone: isWizard ? formData.telephone : null,
-          home_phone: isWizard ? formData.homePhone : null,
-          facebook: isWizard ? formData.facebook : null,
-          instagram: isWizard ? formData.instagram : null,
-          address: isWizard ? formData.address : null,
-          role: 'member',
-          status: 'pending',
+          specialization: isWizard ? formData.specialization : '',
+          batch: isWizard ? formData.batch : '',
+          mobile: isWizard ? formData.mobile : '',
+          telephone: isWizard ? formData.telephone : '',
+          home_phone: isWizard ? formData.homePhone : '',
+          facebook: isWizard ? formData.facebook : '',
+          instagram: isWizard ? formData.instagram : '',
+          address: isWizard ? formData.address : '',
           avatar_url: `image/placeholders/avatars/a${[10, 13, 14, 20, 25][Math.floor(Math.random() * 5)]}.jpg`
         };
 
-        const { error: insertError } = await db.from('members').insert(memberRow);
+        const { error: authError } = await db.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            emailRedirectTo: new URL('under-review.html', window.location.href).href,
+            data: metadata,
+            ...(captchaToken ? { captchaToken } : {})
+          }
+        });
 
-        if (insertError) {
-          this.showError('Profile creation failed: ' + insertError.message);
+        if (authError) {
+          if (window.ZBMTurnstile) ZBMTurnstile.reset();
+          this.showError(authError.message || 'Registration failed');
           this.setLoading(false);
           return;
         }
@@ -429,7 +447,7 @@ const AuthModule = {
       }
 
       this.showSuccess(
-        'Registration submitted! Your account is pending admin verification. You will be notified via email once approved.',
+        'Registration submitted! Please confirm your email using the link we sent. An officer will then review your application and you will be notified by email.',
         () => {
           window.location.href = 'index.html';
         }

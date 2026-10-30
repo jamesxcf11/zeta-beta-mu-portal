@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Under Review | Zeta Beta Mu Fraternity</title>
+  <link rel="stylesheet" href="css/tailwind.css">
+  <link rel="stylesheet" href="css/styles.min.css?v=8">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0" integrity="sha384-fPWur1rx/DE6YtXP/x0MD6dd90RgnVsz5yX/DIg7CcVAnTBZsENWuIcpvVTM39ti" crossorigin="anonymous"></script>
+  <script src="js/supabase-config.js"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-white font-sans text-[var(--zbm-forest)] p-4">
+  <main class="w-full max-w-md space-y-5 text-center">
+    <h1 id="title" class="text-3xl font-semibold">Confirming your email...</h1>
+    <p id="message" class="text-sm opacity-80" role="status" aria-live="polite">One moment.</p>
+    <a href="index.html" class="inline-block text-sm underline">Return to home</a>
+  </main>
+  <script>
+    const titleEl = document.getElementById('title');
+    const messageEl = document.getElementById('message');
+    let handled = false;
+
+    async function finish(session) {
+      if (handled) return;
+      handled = true;
+      if (session) {
+        try {
+          await fetch('/api/notify-signup', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${session.access_token}` }
+          });
+        } catch (e) { /* the application is still visible to officers */ }
+        await db.auth.signOut();
+        titleEl.textContent = 'Email confirmed';
+        messageEl.textContent = 'Your application is now under review. Fraternity officers will review it and you will be notified by email once a decision is made.';
+        return;
+      }
+      titleEl.textContent = 'Link not recognized';
+      messageEl.textContent = 'This confirmation link is invalid or has expired. If you already confirmed your email, your application is under review and you will be notified by email.';
+    }
+
+    db.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) finish(session);
+    });
+    setTimeout(async () => {
+      const { data } = await db.auth.getSession();
+      finish(data.session);
+    }, 3000);
+  </script>
+</body>
+</html>

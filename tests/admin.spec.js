@@ -44,14 +44,11 @@ test.describe('Admin (admin.html) - admin session', () => {
     await expect(page.locator('#members-table-body')).toBeAttached();
   });
 
-  test('pagination Previous/Next buttons are hidden when no data', async ({ page }) => {
+  test('pagination Previous/Next buttons cannot be used with a single page of data', async ({ page }) => {
     await page.evaluate(() => AdminModule.switchTab('members'));
     await expect(page.locator('#panel-members')).toBeVisible({ timeout: 10000 });
-    const prevBtn = page.locator('#member-prev');
-    const nextBtn = page.locator('#member-next');
-    // Buttons are hidden entirely when there are no members to paginate (mock returns empty).
-    await expect(prevBtn).toBeHidden();
-    await expect(nextBtn).toBeHidden();
+    await expect(page.locator('#member-prev')).not.toBeEnabled();
+    await expect(page.locator('#member-next')).not.toBeEnabled();
   });
 
   test('magazine upload form rejects empty required fields', async ({ page }) => {

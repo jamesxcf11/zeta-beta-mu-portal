@@ -52,6 +52,15 @@ const AdminModule = {
     }
   },
 
+  isAdminSession() {
+    try {
+      const session = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      return !!session && session.role === 'admin';
+    } catch (e) {
+      return false;
+    }
+  },
+
   /**
    * Initialize admin module
    */
@@ -82,7 +91,7 @@ const AdminModule = {
   async loadStats() {
     const [members, pending, posts, events] = await Promise.all([
       db.from('members').select('id', { count: 'exact', head: true }).eq('status', 'active').is('deleted_at', null),
-      db.from('members').select('id', { count: 'exact', head: true }).eq('status', 'pending').is('deleted_at', null),
+      db.from('members').select('id', { count: 'exact', head: true }).eq('status', 'pending').not('email_verified_at', 'is', null).is('deleted_at', null),
       db.from('posts').select('id', { count: 'exact', head: true }).eq('status', 'published').is('deleted_at', null),
       db.from('events').select('id', { count: 'exact', head: true }).eq('status', 'published')
     ]);
@@ -103,6 +112,7 @@ const AdminModule = {
       .from('members')
       .select('id, name, email, username, first_name, last_name, middle_name, nickname, birthday, graduation_year, hospital, field_of_medicine, specialization, batch, mobile, telephone, home_phone, facebook, instagram, address, avatar_url, created_at')
       .eq('status', 'pending')
+      .not('email_verified_at', 'is', null)
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
@@ -432,11 +442,11 @@ const AdminModule = {
 
     const member = this.pendingMembers[index];
 
+    let emailSent = false;
     if (this.hasSupabase()) {
-      const { error } = await db.from('members')
-        .update({ status: 'active' })
-        .eq('id', memberId);
-      if (error) { this.showToast('Failed to approve member', 'error'); return; }
+      const result = await this.reviewMember('approve', memberId);
+      if (result.error) { this.showToast(result.error, 'error'); return; }
+      emailSent = result.emailSent;
     }
 
     this.pendingMembers.splice(index, 1);
@@ -445,7 +455,39 @@ const AdminModule = {
 
     this.renderStats();
     this.renderPendingMembers();
-    this.showToast(`${member.name} has been approved!`, 'success');
+    this.showToast(`${member.name} has been approved!${this.hasSupabase() && !emailSent ? ' (notification email was not sent)' : ''}`, 'success');
+  },
+
+  /**
+   * Approve/reject through the officer-only server function, which updates
+   * the member and sends the notification email.
+   * @returns {Promise<{error?: string, emailSent?: boolean}>}
+   */
+  async reviewMember(action, memberId) {
+    const result = await this.callApi('member-status', { action, memberId });
+    return result.error ? result : { emailSent: !!result.emailSent };
+  },
+
+  /**
+   * POST to an officer-only Netlify function with the verified Supabase JWT.
+   * @returns {Promise<object>} payload, or { error } on failure
+   */
+  async callApi(endpoint, body) {
+    try {
+      const { data } = await db.auth.getSession();
+      const token = data && data.session ? data.session.access_token : null;
+      if (!token) return { error: 'Your session has expired. Please sign in again.' };
+      const response = await fetch(`/api/${endpoint}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) return { error: payload.error || 'Request failed' };
+      return payload;
+    } catch (e) {
+      return { error: 'Request failed' };
+    }
   },
 
   /**
@@ -459,10 +501,8 @@ const AdminModule = {
     const member = this.pendingMembers[index];
 
     if (this.hasSupabase()) {
-      const { error } = await db.from('members')
-        .update({ status: 'rejected' })
-        .eq('id', memberId);
-      if (error) { this.showToast('Failed to reject member', 'error'); return; }
+      const result = await this.reviewMember('reject', memberId);
+      if (result.error) { this.showToast(result.error, 'error'); return; }
     }
 
     this.pendingMembers.splice(index, 1);
@@ -496,10 +536,8 @@ const AdminModule = {
     if (!confirm(`${newStatus === 'suspended' ? 'Suspend' : 'Reactivate'} ${member.name}'s account?`)) return;
 
     if (this.hasSupabase()) {
-      const { error } = await db.from('members')
-        .update({ status: newStatus })
-        .eq('id', memberId);
-      if (error) { this.showToast('Failed to update status', 'error'); return; }
+      const result = await this.callApi('admin-members', { action: 'set-status', memberId, status: newStatus });
+      if (result.error) { this.showToast(result.error, 'error'); return; }
     }
 
     member.status = newStatus;
@@ -769,14 +807,13 @@ const AdminModule = {
       </div>
       <div><label class="form-label">Email *</label><input id="am-email" type="email" class="glass-input w-full" required></div>
       <div><label class="form-label">Username *</label><input id="am-username" class="glass-input w-full" required></div>
-      <div><label class="form-label">Temporary Password *</label><input id="am-password" type="text" class="glass-input w-full" value="ZBM-temp-1234" required></div>
       <div class="form-grid-2">
         <div><label class="form-label">Graduation Year</label><select id="am-year" class="glass-input w-full">${years.map(y => `<option>${y}</option>`).join('')}</select></div>
         <div><label class="form-label">Field of Medicine</label><input id="am-field" class="glass-input w-full" value="General Medicine"></div>
       </div>
       <div><label class="form-label">Hospital</label><input id="am-hospital" class="glass-input w-full" value="Not provided"></div>
       <div class="form-grid-2">
-        <div><label class="form-label">Role</label><select id="am-role" class="glass-input w-full"><option value="member">Member</option><option value="moderator">Moderator</option><option value="officer">Officer</option><option value="alumni">Alumni</option><option value="admin">Admin</option></select></div>
+        <div><label class="form-label">Role</label><select id="am-role" class="glass-input w-full"><option value="member">Member</option><option value="moderator">Moderator</option><option value="alumni">Alumni</option>${this.isAdminSession() ? '<option value="officer">Officer</option><option value="admin">Admin</option>' : ''}</select></div>
         <div><label class="form-label">Status</label><select id="am-status" class="glass-input w-full"><option value="active">Active</option><option value="pending">Pending</option><option value="suspended">Suspended</option></select></div>
       </div>
     `;
@@ -789,32 +826,24 @@ const AdminModule = {
     const last = get('am-last');
     const email = get('am-email');
     const username = get('am-username');
-    const password = get('am-password');
     const year = parseInt(get('am-year'));
     const field = get('am-field') || 'General Medicine';
     const hospital = get('am-hospital') || 'Not provided';
     const role = document.getElementById('am-role').value;
     const status = document.getElementById('am-status').value;
 
-    if (!first || !last || !email || !username || !password) {
+    if (!first || !last || !email || !username) {
       this.showToast('Please fill in all required fields', 'error');
       return;
     }
 
     if (this.hasSupabase()) {
-      const { error: authError } = await db.auth.signUp({ email, password });
-      if (authError) { this.showToast('Auth error: ' + authError.message, 'error'); return; }
-
-      const { error: insertError } = await db.from('members').insert({
-        username, email,
-        password_hash: 'managed_by_supabase_auth',
-        first_name: first, last_name: last,
-        graduation_year: year || 2000,
-        hospital, field_of_medicine: field,
-        role, status,
-        avatar_url: `image/placeholders/avatars/a${[10, 13, 14, 20, 25][Math.floor(Math.random() * 5)]}.jpg`
+      const result = await this.callApi('admin-members', {
+        action: 'create', firstName: first, lastName: last, email, username,
+        graduationYear: year, field, hospital, role, status
       });
-      if (insertError) { this.showToast('Insert failed: ' + insertError.message, 'error'); return; }
+      if (result.error) { this.showToast(result.error, 'error'); return; }
+      if (!result.inviteSent) this.showToast('Member created, but the invite email could not be sent. Use "Forgot password" to send one.', 'info');
 
       await this.loadManagedMembers();
       await this.loadStats();
@@ -826,7 +855,7 @@ const AdminModule = {
 
     this.renderMemberTable();
     this.closeModal();
-    this.showToast(`${first} ${last} has been added.`, 'success');
+    this.showToast(`${first} ${last} has been added. A link to set their password was emailed.`, 'success');
   },
 
   openEditMemberModal(member) {
@@ -836,7 +865,7 @@ const AdminModule = {
       <div><label class="form-label">Name</label><input id="em-name" class="glass-input w-full" value="${this.escapeHTML(member.name) || ''}"></div>
       <div><label class="form-label">Email</label><input id="em-email" type="email" class="glass-input w-full" value="${this.escapeHTML(member.email) || ''}"></div>
       <div class="form-grid-2">
-        <div><label class="form-label">Role</label><select id="em-role" class="glass-input w-full">${roleOpt('member', 'Member')}${roleOpt('moderator', 'Moderator')}${roleOpt('officer', 'Officer')}${roleOpt('alumni', 'Alumni')}${roleOpt('admin', 'Admin')}</select></div>
+        <div><label class="form-label">Role</label><select id="em-role" class="glass-input w-full">${roleOpt('member', 'Member')}${roleOpt('moderator', 'Moderator')}${roleOpt('alumni', 'Alumni')}${this.isAdminSession() || member.role === 'officer' || member.role === 'admin' ? roleOpt('officer', 'Officer') + roleOpt('admin', 'Admin') : ''}</select></div>
         <div><label class="form-label">Status</label><select id="em-status" class="glass-input w-full">${statOpt('active', 'Active')}${statOpt('pending', 'Pending')}${statOpt('suspended', 'Suspended')}${statOpt('inactive', 'Inactive')}</select></div>
       </div>
     `;
@@ -852,14 +881,8 @@ const AdminModule = {
     if (!member) return;
 
     if (this.hasSupabase()) {
-      const parts = name.split(' ').filter(Boolean);
-      const update = {
-        first_name: parts[0] || member.name,
-        last_name: parts.slice(1).join(' ') || parts[0] || '',
-        email, role, status
-      };
-      const { error } = await db.from('members').update(update).eq('id', memberId);
-      if (error) { this.showToast('Update failed: ' + error.message, 'error'); return; }
+      const result = await this.callApi('admin-members', { action: 'update', memberId, name, email, role, status });
+      if (result.error) { this.showToast(result.error, 'error'); return; }
     }
 
     member.name = name;

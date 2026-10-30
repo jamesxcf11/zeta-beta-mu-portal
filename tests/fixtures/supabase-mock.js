@@ -195,14 +195,14 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
     const url = new URL(request.url());
 
     if (method === 'GET') {
-      const isSingle = request.headers()['accept'] === 'application/vnd.pgrst.object+json';
+      const isSingle = (request.headers()['accept'] || '').includes('application/vnd.pgrst.object+json');
       const body = isSingle || url.searchParams.get('select')?.includes('email, status')
         ? JSON.stringify(member)
         : JSON.stringify([member]);
       return route.fulfill({ status: 200, contentType: 'application/json', body });
     }
     if (method === 'POST') {
-      const isSingle = request.headers()['accept'] === 'application/vnd.pgrst.object+json';
+      const isSingle = (request.headers()['accept'] || '').includes('application/vnd.pgrst.object+json');
       const body = isSingle
         ? JSON.stringify({ ...member, id: Date.now() })
         : JSON.stringify([{ ...member, id: Date.now() }]);
@@ -249,6 +249,7 @@ async function mockSupabase(page, { member = makeMember(), authError = null, vau
 
   // Catch-all: any other Supabase REST table not explicitly mocked above.
   await page.route('**/rest/v1/**', async (route) => {
+    if (new URL(route.request().url()).pathname.endsWith('/rest/v1/members')) return route.fallback();
     const method = route.request().method();
     if (method === 'GET') {
       return route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });

@@ -10,3 +10,5 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 });
 
 window.db = db;
+
+const TURNSTILE_SITE_KEY = '';

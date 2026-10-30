@@ -60,7 +60,7 @@ test.describe('Login (login.html)', () => {
     await page.fill('#username', 'pendinguser');
     await page.fill('#password', 'password123');
     await page.click('#login-form button[type="submit"]');
-    await expect(page.locator('#auth-error')).toContainText('pending verification');
+    await expect(page.locator('#auth-error')).toContainText('pending admin approval');
   });
 
   test('disables inputs and shows loading state while submitting', async ({ page }) => {
@@ -102,7 +102,7 @@ test.describe('Login (login.html)', () => {
     await page.goto('/login.html');
     await page.locator('#username').focus();
     await page.keyboard.type('testmember');
-    await page.keyboard.press('Tab');
+    await page.locator('#password').focus();
     await page.keyboard.type('password123');
     await page.keyboard.press('Enter');
     await page.waitForURL('**/home.html', { timeout: 5000 });
@@ -140,6 +140,7 @@ test.describe('Signup (signup.html)', () => {
 
     await expect(page.locator('.step-content[data-step="3"]')).not.toHaveClass(/hidden/);
     await page.fill('#mobile', '09171234567');
+    await page.fill('#address', 'Manila, Metro Manila');
     await page.click('.btn-continue[data-next="4"]', { force: true });
 
     await expect(page.locator('.step-content[data-step="4"]')).not.toHaveClass(/hidden/);

@@ -88,23 +88,28 @@
 <body class="login-page light-theme min-h-screen flex flex-col bg-[var(--login-bg-alt)] font-sans text-[var(--login-text-alt)] antialiased" style="padding-top: 68px">
 
   <!-- ===== Shared Landing Navbar ===== -->
-  <nav id="landing-navbar" class="landing-navbar">
+  <nav id="landing-navbar" class="landing-navbar navbar-scrolled">
     <div class="landing-navbar-inner">
-      <a href="index.html#home" class="landing-navbar-logo">
-        <div class="landing-navbar-logo-icon">
-          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
-        </div>
-        <div class="landing-navbar-logo-text">
-          <span class="landing-navbar-logo-title">Zeta Beta Mu</span>
-          <span class="landing-navbar-logo-subtitle">MEDICAL FRATERNITY</span>
-        </div>
+      <a href="index.html" class="landing-navbar-logo landing-navbar-logo--mark" aria-label="Zeta Beta Mu Fraternity home">
+        <span class="landing-navbar-greek-mark">ζβμ</span>
       </a>
       <div class="landing-navbar-links">
-        <a href="index.html#home">Home</a>
+        <a href="index.html">Home</a>
         <a href="about.html">About</a>
-        <a href="pillars.html">Pillars</a>
+        <div class="landing-navbar-dropdown">
+          <a href="pillars.html" class="landing-navbar-dropdown-trigger">
+            Pillars
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+          </a>
+          <div class="landing-navbar-dropdown-menu">
+            <a href="pillars-scholarship.html">Scholarship</a>
+            <a href="pillars-service.html">Service</a>
+            <a href="pillars-sociability.html">Sociability</a>
+            <a href="pillars-sacrifice.html">Sacrifice</a>
+            <a href="pillars-idealism.html">Idealism</a>
+          </div>
+        </div>
         <a href="index.html#vault">Gallery</a>
-        <a href="index.html#vault">Vault</a>
         <a href="index.html#contact">Contact</a>
       </div>
       <div class="landing-navbar-actions">
@@ -125,19 +130,23 @@
   <aside id="landing-mobile-menu" class="landing-mobile-menu">
     <div class="landing-mobile-menu-logo">
       <div class="landing-mobile-menu-logo-icon">
-        <img src="image/logo1.png" alt="ZBM Logo" class="w-12 h-12 object-contain">
+        <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
       </div>
       <div class="landing-mobile-menu-logo-text">
-        <h1 class="landing-mobile-menu-title">Zeta Beta Mu</h1>
-        <p class="landing-mobile-menu-subtitle">Medical Fraternity</p>
+        <h1 class="landing-mobile-menu-title">Zeta Beta Mu Fraternity</h1>
       </div>
     </div>
+
     <nav class="landing-mobile-menu-nav">
-      <a href="index.html#home" class="nav-link"><i data-lucide="home"></i><span>Home</span></a>
+      <a href="index.html" class="nav-link"><i data-lucide="home"></i><span>Home</span></a>
       <a href="about.html" class="nav-link"><i data-lucide="info"></i><span>About</span></a>
       <a href="pillars.html" class="nav-link"><i data-lucide="columns-3"></i><span>Pillars</span></a>
+      <a href="pillars-scholarship.html" class="nav-link nav-link-sub"><span>Scholarship</span></a>
+      <a href="pillars-service.html" class="nav-link nav-link-sub"><span>Service</span></a>
+      <a href="pillars-sociability.html" class="nav-link nav-link-sub"><span>Sociability</span></a>
+      <a href="pillars-sacrifice.html" class="nav-link nav-link-sub"><span>Sacrifice</span></a>
+      <a href="pillars-idealism.html" class="nav-link nav-link-sub"><span>Idealism</span></a>
       <a href="index.html#vault" class="nav-link"><i data-lucide="image"></i><span>Gallery</span></a>
-      <a href="index.html#vault" class="nav-link"><i data-lucide="archive"></i><span>Vault</span></a>
       <a href="index.html#contact" class="nav-link"><i data-lucide="mail"></i><span>Contact</span></a>
     </nav>
     <div class="landing-mobile-menu-footer">
@@ -236,6 +245,7 @@
               <label for="password" class="block text-sm font-medium text-[var(--login-text-alt)]">
                 Password
               </label>
+              <a href="forgot-password.html" class="text-sm text-[var(--login-accent)] hover:underline">Forgot password?</a>
             </div>
             <div class="relative">
               <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--login-muted-alt)]"></i>
