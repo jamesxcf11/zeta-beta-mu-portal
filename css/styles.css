@@ -14746,3 +14746,49 @@ body.dark-theme.landing-page {
 
 
 
+
+
+/* --- Pillars hub polish --- */
+.about-grid-pillars .about-service-card { padding: 2rem 1.25rem; }
+.about-grid-pillars .about-service-card:hover .about-service-divider { width: 64px; }
+.about-grid-pillars .about-service-divider { transition: width 0.3s ease; }
+.pillar-card-desc {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 0.75rem;
+}
+.light-theme .pillar-card-desc { color: rgba(6, 78, 59, 0.8); }
+.about-grid-pillars .about-service-link { font-size: 0.9rem; }
+.light-theme .about-grid-pillars .about-service-link { color: #7a5c0a; }
+.light-theme .about-grid-pillars .about-service-card:not(:hover) {
+  background: #fff;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 10px 30px rgba(6, 78, 59, 0.12);
+}
+.about-grid-pillars .about-service-card:focus-visible {
+  outline: 2px solid #d4af37;
+  outline-offset: 3px;
+}
+
+/* --- Pillars hub alignment --- */
+.about-grid-pillars .about-service-card { justify-content: flex-start; }
+.pillar-card-desc {
+  flex: 1;
+  font-size: 0.95rem;
+  text-wrap: balance;
+}
+.about-grid-pillars { margin-top: 1rem; }
+.pillars-hub-section { padding-bottom: 4rem; }
+
+/* --- Pillars hub final polish --- */
+.pillars-hub-section { padding-bottom: 3rem; }
+.pillar-card-desc { font-size: 1rem; }
+.light-theme .pillar-card-desc { color: rgba(6, 78, 59, 0.9); }
+
+@media (max-width: 1024px) and (min-width: 641px) {
+  .about-grid-pillars { grid-template-columns: repeat(6, 1fr); }
+  .about-grid-pillars .about-service-card { grid-column: span 2; }
+  .about-grid-pillars .about-service-card:nth-child(4) { grid-column: 2 / span 2; }
+  .about-grid-pillars .about-service-card:nth-child(5) { grid-column: 4 / span 2; }
+}
