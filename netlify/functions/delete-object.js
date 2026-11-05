@@ -57,7 +57,7 @@ exports.handler = async (event) => {
   const forbidden = keys.some((key) => {
     if (typeof key !== 'string') return true;
     if (key.startsWith(ownProfilePrefix) || key.startsWith(ownPostPrefix)) return false;
-    return !isOfficer(auth.member) || !key.startsWith('vault/');
+    return !isOfficer(auth.member) || !(key.startsWith('vault/') || key.startsWith('memorials/'));
   });
   if (forbidden) {
     return json(403, { error: 'You may only delete your own profile or post images' });

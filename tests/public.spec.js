@@ -51,9 +51,32 @@ test.describe('About Us & Pillar Pages', () => {
   });
 
   test('pillars-sacrifice.html displays clean Sacrifice header and In Memoriam placeholder', async ({ page }) => {
+    await page.route('**/rest/v1/memorials**', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }));
     await page.goto('/pillars-sacrifice.html');
     await expect(page.locator('h1.landing-section-title')).toHaveText('Sacrifice');
     await expect(page.locator('.vault-empty-title')).toContainText('In Memoriam');
+  });
+
+  test('pillars-sacrifice.html shows the public honor roll without comments', async ({ page }) => {
+    let query = '';
+    await page.route('**/rest/v1/memorials**', (route) => {
+      query = route.request().url();
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          { id: 1, full_name: 'Dr. Public <b>Brother</b>', nickname: null, batch: '1980', specialty: 'Surgery', birth_year: 1950, death_year: 2020, tribute: 'Remembered.', photo_url: null },
+        ]),
+      });
+    });
+    await page.goto('/pillars-sacrifice.html');
+    await expect(page.locator('#sacrifice-roll .memoriam-card')).toHaveCount(1);
+    await expect(page.locator('.memoriam-name')).toHaveText('Dr. Public <b>Brother</b>');
+    await expect(page.locator('#sacrifice-placeholder')).toHaveCount(0);
+    await expect(page.locator('#sacrifice-roll a[href="memoriam.html"]')).toBeVisible();
+    await expect(page.locator('#sacrifice-roll a.memoriam-card-link')).toHaveCount(0);
+    expect(query).toContain('is_public=eq.true');
   });
 
   test('pillar and About Us title headers match primary Zeta Beta Mu Fraternity header font family and weight (600)', async ({ page }) => {

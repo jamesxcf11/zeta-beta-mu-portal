@@ -6,7 +6,7 @@
  *
  * Request body:
  *   {
- *     scope:       'vault' | 'post',
+ *     scope:       'vault' | 'post' | 'profile' | 'memorial',
  *     contentType: 'image/webp' | 'image/jpeg' | 'image/png',
  *     size:        <bytes>,
  *     albumId?:    string   // required when scope === 'vault'
@@ -69,8 +69,8 @@ exports.handler = async (event) => {
 
   const { scope, contentType, size, albumId, variant } = body;
 
-  if (scope !== 'vault' && scope !== 'post' && scope !== 'profile') {
-    return json(400, { error: 'scope must be "vault", "post", or "profile"' });
+  if (scope !== 'vault' && scope !== 'post' && scope !== 'profile' && scope !== 'memorial') {
+    return json(400, { error: 'scope must be "vault", "post", "profile", or "memorial"' });
   }
 
   if (!r2.ALLOWED_MIME.includes(contentType)) {
@@ -102,6 +102,9 @@ exports.handler = async (event) => {
   if (scope === 'vault' && !isOfficer(member)) {
     return json(403, { error: 'Only officers may upload to the vault' });
   }
+  if (scope === 'memorial' && !isOfficer(member)) {
+    return json(403, { error: 'Only officers may upload memorial photos' });
+  }
 
   // ---- Build the key server-side ----
   const extension = r2.MIME_EXTENSIONS[contentType];
@@ -117,6 +120,8 @@ exports.handler = async (event) => {
       variant === 'thumb'
         ? `vault/${album}/thumbs/${uuid}.${extension}`
         : `vault/${album}/${uuid}.${extension}`;
+  } else if (scope === 'memorial') {
+    fileKey = `memorials/${uuid}.${extension}`;
   } else if (scope === 'profile') {
     fileKey = `profiles/${member.id}/${uuid}.${extension}`;
   } else {

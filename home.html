@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
   
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.min.css?v=17">
+  <link rel="stylesheet" href="css/styles.min.css?v=19">
 
 
   <!-- Supabase SDK -->
@@ -141,7 +141,7 @@
       
       <!-- Header -->
       <header class="top-header mb-8">
-        <h1 id="page-title" class="header-title">Feed</h1>
+        <div class="header-heading"><span class="header-eyebrow">Member Portal</span><h1 id="page-title" class="header-title">Feed</h1></div>
         <div class="header-actions">
           <div class="header-search">
             <i data-lucide="search" class="w-4 h-4"></i>
@@ -521,15 +521,22 @@
       const sidebar = document.getElementById('sidebar');
       const collapseBtn = document.getElementById('sidebar-collapse');
       if (!sidebar || !collapseBtn) return;
-
-      collapseBtn.addEventListener('click', function () {
-        const collapsed = sidebar.classList.toggle('is-collapsed');
+      const KEY = 'zbm-sidebar-collapsed';
+      const apply = function (collapsed) {
+        sidebar.classList.toggle('is-collapsed', collapsed);
         const label = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
         collapseBtn.setAttribute('aria-label', label);
+        collapseBtn.setAttribute('aria-expanded', String(!collapsed));
         collapseBtn.setAttribute('title', label);
-        const iconName = collapsed ? 'chevrons-right' : 'chevrons-left';
-        collapseBtn.innerHTML = '<i data-lucide="' + iconName + '"></i>';
+        collapseBtn.innerHTML = '<i data-lucide="' + (collapsed ? 'chevrons-right' : 'chevrons-left') + '"></i>';
         if (typeof lucide !== 'undefined') lucide.createIcons();
+      };
+      if (localStorage.getItem(KEY) === '1') apply(true);
+      requestAnimationFrame(function () { sidebar.classList.add('sb-anim'); });
+      collapseBtn.addEventListener('click', function () {
+        const collapsed = !sidebar.classList.contains('is-collapsed');
+        apply(collapsed);
+        localStorage.setItem(KEY, collapsed ? '1' : '0');
       });
     })();
   </script>

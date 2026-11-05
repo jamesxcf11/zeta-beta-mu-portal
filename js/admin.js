@@ -80,7 +80,7 @@ const AdminModule = {
 
     // Deep-link support: e.g. admin.html#members opens straight to that tab
     const hashTab = (window.location.hash || '').replace('#', '');
-    if (['overview', 'members', 'content', 'moderation'].includes(hashTab)) {
+    if (['overview', 'members', 'content', 'memorials', 'moderation'].includes(hashTab)) {
       this.switchTab(hashTab);
     }
   },

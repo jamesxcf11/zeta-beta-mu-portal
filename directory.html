@@ -12,7 +12,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=GFS+Didot&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
@@ -116,11 +116,8 @@
        ============================================ -->
   <nav class="landing-navbar" style="opacity: 1; transform: translateY(0);">
     <div class="landing-navbar-inner">
-      <a href="home.html" class="landing-navbar-logo">
-        <div class="landing-navbar-logo-icon">
-          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
-        </div>
-        <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
+      <a href="home.html" class="landing-navbar-logo landing-navbar-logo--mark" aria-label="Zeta Beta Mu home">
+        <span class="landing-navbar-greek-mark">ζβμ</span>
       </a>
       <div class="landing-navbar-links">
         <a href="home.html">Home</a>
@@ -135,7 +132,7 @@
           <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
           <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
         </button>
-        <a href="home.html" class="btn btn-glass btn-sm">
+        <a href="home.html" class="nav-login-btn">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
           Back to Portal
         </a>
@@ -168,8 +165,8 @@
       <div class="directory-admin-toolbar">
         <span class="directory-admin-label"><i data-lucide="lock" class="w-4 h-4"></i> Admin Tools</span>
         <div class="directory-admin-actions">
-          <button class="btn btn-glass btn-sm" onclick="goToAddMember()"><i data-lucide="user-plus" class="w-4 h-4"></i> Add Member</button>
-          <button class="btn btn-gold btn-sm" onclick="openImportModal()"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Import from Excel</button>
+          <button class="btn btn-glass btn-sm" onclick="DirectoryModule.openForm()"><i data-lucide="user-plus" class="w-4 h-4"></i> Add Alumnus</button>
+          <button class="btn btn-gold btn-sm" onclick="openImportModal()"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Import from CSV</button>
           <button class="btn btn-glass btn-sm" onclick="exportDirectoryCSV()"><i data-lucide="download" class="w-4 h-4"></i> Export</button>
         </div>
       </div>
@@ -221,39 +218,54 @@
   <!-- ============================================
        FOOTER
        ============================================ -->
-  <footer class="landing-footer">
+  <footer class="landing-footer landing-footer--premium">
     <div class="landing-footer-inner">
       <div class="landing-footer-brand">
-        <div class="flex items-center gap-3 mb-4">
+        <div class="landing-footer-logo">
           <div class="landing-footer-logo-icon">
             <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
           </div>
-          <span class="font-serif font-semibold text-lg landing-footer-title">Zeta Beta Mu</span>
+          <div class="landing-footer-logo-text">
+            <span class="landing-footer-logo-title">Zeta Beta Mu Fraternity</span>
+          </div>
         </div>
-        <p class="landing-muted-text text-sm leading-relaxed max-w-sm">
-          A fraternity of medical excellence since 1971. United by purpose, driven by service, bound by brotherhood.
+        <p class="landing-footer-desc">
+          A brotherhood forged through medicine, strengthened by tradition, and united by a commitment to one another and to the communities we serve.
         </p>
+        <div class="landing-footer-social">
+          <a href="https://www.facebook.com/ZetaBetaMuFraternity" target="_blank" rel="noopener" aria-label="Facebook"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+          <a href="https://www.instagram.com/zetabetamufraternity/" target="_blank" rel="noopener" aria-label="Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+        </div>
       </div>
       <div class="landing-footer-links">
-        <h4>Quick Links</h4>
+        <h4>QUICK LINKS</h4>
         <a href="about.html">About Us</a>
+        <a href="pillars.html">The Five Pillars</a>
         <a href="vault.html">Vault</a>
         <a href="memoriam.html">In Memoriam</a>
         <a href="merchandise.html">Merchandise</a>
-      </div>
-      <div class="landing-footer-links">
-        <h4>Members</h4>
         <a href="home.html">Member Portal</a>
-        <a href="signup.html">Create Account</a>
+      </div>
+      <div class="landing-footer-contact">
+        <h4>CONTACT</h4>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="map-pin" class="w-4 h-4"></i>
+          <span>University of Santo Tomas<br>España Blvd., Sampaloc<br>Manila, Philippines</span>
+        </div>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span>contact@zetabetamu.org</span>
+        </div>
       </div>
     </div>
     <div class="landing-footer-bottom">
-      <p>&copy; 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+      <p>&copy; 2026 Zeta Beta Mu Medical Fraternity. All rights reserved.</p>
+      <span>EST. 1971 &middot; UNIVERSITY OF SANTO TOMAS</span>
     </div>
   </footer>
 
   <!-- ============================================
-       EXCEL IMPORT MODAL (UI mock)
+       ALUMNI CSV IMPORT MODAL
        ============================================ -->
   <div id="import-modal" class="vault-modal hidden">
     <div class="vault-modal-backdrop" onclick="closeImportModal()"></div>
@@ -263,23 +275,24 @@
       </button>
       <h3 class="vault-modal-title">
         <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
-        Import Members from Excel
+        Import Alumni from CSV
       </h3>
-      <p class="vault-modal-sub">Bulk-add members from a spreadsheet. Columns are mapped automatically.</p>
+      <p class="vault-modal-sub">Bulk-add alumni from a spreadsheet saved as CSV. Columns are matched by header name.</p>
 
       <div class="vault-dropzone" id="import-dropzone">
         <i data-lucide="upload-cloud" class="w-8 h-8"></i>
         <p id="import-dropzone-text">Drop your file here or click to browse</p>
-        <span>Accepted: .xlsx, .xls, .csv</span>
-        <input type="file" id="import-file-input" accept=".xlsx,.xls,.csv">
+        <span>Accepted: .csv (Excel: File &gt; Save As &gt; CSV)</span>
+        <input type="file" id="import-file-input" accept=".csv">
       </div>
 
       <div class="import-columns">
         <p class="import-columns-title">Expected columns</p>
         <div class="import-columns-list">
           <span>Full Name</span><span>Nickname</span><span>Batch</span>
-          <span>Specialization</span><span>Hospital</span><span>Email</span>
-          <span>Contact Number</span><span>Birthday</span>
+          <span>Graduation Year</span><span>Hospital</span><span>Field of Medicine</span>
+          <span>Specialization</span><span>Email</span><span>Mobile</span>
+          <span>Telephone</span><span>Address</span>
         </div>
       </div>
 
@@ -317,103 +330,8 @@
       if (file && text) text.textContent = `Selected: ${file.name}`;
     });
 
-    // TODO(cloud): once Supabase is configured, also bulk-insert the
-    // parsed rows via db.from('members').insert([...]). For now the
-    // import updates the local member list for this session only.
-    // .xlsx needs SheetJS — until it's added, only .csv is parsed and
-    // other formats get a clear message.
-    function notify(msg) {
-      if (typeof FeedModule !== 'undefined' && FeedModule.showToast) FeedModule.showToast(msg);
-      else alert(msg);
-    }
-
-    // Minimal CSV parser that understands quoted fields and "" escapes
-    // (matches the quoting exportDirectoryCSV produces).
-    function parseCSV(text) {
-      const rows = [];
-      let row = [], field = '', inQuotes = false;
-      for (let i = 0; i < text.length; i++) {
-        const c = text[i];
-        if (inQuotes) {
-          if (c === '"') {
-            if (text[i + 1] === '"') { field += '"'; i++; }
-            else inQuotes = false;
-          } else field += c;
-        } else if (c === '"') inQuotes = true;
-        else if (c === ',') { row.push(field); field = ''; }
-        else if (c === '\n' || c === '\r') {
-          if (c === '\r' && text[i + 1] === '\n') i++;
-          row.push(field); field = '';
-          if (row.some(v => v.trim() !== '')) rows.push(row);
-          row = [];
-        } else field += c;
-      }
-      row.push(field);
-      if (row.some(v => v.trim() !== '')) rows.push(row);
-      return rows;
-    }
-
     function handleImportReview() {
-      const input = document.getElementById('import-file-input');
-      const file = input?.files?.[0];
-      if (!file) {
-        notify('Please select a file first');
-        return;
-      }
-
-      if (!file.name.toLowerCase().endsWith('.csv')) {
-        notify(`"${file.name}" — Excel parsing isn't available yet; please export the spreadsheet as .csv`);
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const rows = parseCSV(e.target.result);
-        if (rows.length < 2) {
-          notify(`"${file.name}" has no member rows to import`);
-          return;
-        }
-
-        // Map the header row to member fields (tolerates both the export
-        // format and the modal's advertised column names)
-        const header = rows[0].map(h => h.trim().toLowerCase());
-        const col = (...names) => header.findIndex(h => names.some(n => h.includes(n)));
-        const cName = col('name');
-        const cYear = col('year', 'batch');
-        const cHospital = col('hospital');
-        const cField = col('field', 'special', 'medicine');
-        if (cName === -1) {
-          notify(`"${file.name}" — couldn't find a name column in the header row`);
-          return;
-        }
-
-        const baseId = Date.now();
-        const newMembers = rows.slice(1).map((r, i) => ({
-          id: `imported-${baseId}-${i}`,
-          name: (r[cName] || '').trim(),
-          year: cYear === -1 ? '' : (r[cYear] || '').trim(),
-          hospital: cHospital === -1 ? '' : (r[cHospital] || '').trim(),
-          field: cField === -1 ? '' : (r[cField] || '').trim(),
-          avatar: 'image/placeholders/avatars/a11.jpg'
-        })).filter(m => m.name);
-
-        if (!newMembers.length) {
-          notify(`"${file.name}" — no valid member rows found`);
-          return;
-        }
-
-        DirectoryModule.members.push(...newMembers);
-        DirectoryModule.renderMembers();
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-        closeImportModal();
-        notify(`Imported ${newMembers.length} member(s) from "${file.name}" — local preview only until cloud sync is enabled`);
-      };
-      reader.readAsText(file);
-    }
-
-    // Send admins to the Member Management tab in Officer Tools
-    function goToAddMember() {
-      window.location.href = 'admin.html#members';
+      return DirectoryModule.handleImport();
     }
 
     // Client-side CSV export of the currently filtered directory (no backend required)
@@ -421,12 +339,13 @@
       if (typeof DirectoryModule === 'undefined') return;
       const rows = DirectoryModule.getFilteredMembers();
       if (!rows.length) {
-        if (typeof FeedModule !== 'undefined') FeedModule.showToast('No members to export');
+        DirectoryModule.notify('No members to export');
         return;
       }
-      const header = ['Name', 'Graduation Year', 'Hospital', 'Field of Medicine'];
+      const header = ['Full Name', 'Nickname', 'Batch', 'Graduation Year', 'Hospital', 'Field of Medicine', 'Specialization', 'Email', 'Mobile'];
       const csvLines = [header.join(',')].concat(
-        rows.map(m => [m.name, m.year, m.hospital, m.field].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','))
+        rows.map(m => [m.name, m.nickname, m.batch, m.year, m.hospital, m.fieldOfMedicine || m.field, m.specialization, m.email, m.mobile]
+          .map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','))
       );
       const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -450,7 +369,7 @@
         if (countEl) {
           const shown = this.getFilteredMembers().length;
           const total = this.members.length;
-          countEl.innerHTML = `<i data-lucide="users" class="w-4 h-4 inline-block mr-1 align-middle"></i> Showing ${shown} of ${total} registered medical professionals`;
+          countEl.innerHTML = `<i data-lucide="users" class="w-4 h-4 inline-block mr-1 align-middle"></i> Showing ${shown} of ${total} brothers in the directory`;
           if (typeof lucide !== 'undefined') lucide.createIcons();
         }
       };

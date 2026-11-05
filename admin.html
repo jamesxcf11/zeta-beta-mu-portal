@@ -85,6 +85,10 @@
           <i data-lucide="upload"></i>
           <span>Content Upload</span>
         </a>
+        <a href="#memorials" class="nav-link admin-tab" data-tab="memorials" title="In Memoriam">
+          <i data-lucide="flame"></i>
+          <span>In Memoriam</span>
+        </a>
         <a href="#moderation" class="nav-link admin-tab" data-tab="moderation" title="Moderation">
           <i data-lucide="shield-alert"></i>
           <span>Moderation</span>
@@ -370,6 +374,25 @@
 
     </section>
 
+    <!-- ==================== IN MEMORIAM PANEL ==================== -->
+    <section id="panel-memorials" class="admin-panel hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-serif text-[#d4af37]">In Memoriam</h2>
+        <button id="add-memorial-btn" class="btn btn-emerald btn-sm" type="button">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          Add Brother
+        </button>
+      </div>
+      <div class="glass-card admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Brother</th><th>Years</th><th>Batch</th><th>Specialty</th><th>Visibility</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="memorials-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- ==================== MODERATION PANEL ==================== -->
     <section id="panel-moderation" class="admin-panel hidden">
       
@@ -413,7 +436,9 @@
   <!-- JavaScript Modules -->
   <script src="js/main.js"></script>
   <script src="js/feed.js"></script>
+  <script src="js/media-upload.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/admin-memorials.js"></script>
 
   <script>
     (function () {

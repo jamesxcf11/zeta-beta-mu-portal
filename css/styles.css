@@ -14804,3 +14804,390 @@ body.dark-theme.landing-page {
   border-color: var(--landing-gold);
   color: var(--landing-gold);
 }
+
+/* Portal subpages: match landing navbar (centered links, pill action) */
+.subpage .landing-navbar-links {
+  justify-content: center;
+}
+
+.subpage .landing-navbar-links a {
+  font-size: 0.95rem;
+}
+
+.subpage .landing-navbar-actions .nav-login-btn {
+  gap: 0.4rem;
+}
+
+/* Portal subpages: circular gold logo in the premium footer (matches landing page) */
+.subpage .landing-footer-logo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.55);
+  flex-shrink: 0;
+}
+
+.subpage .landing-footer-logo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  background: #ffffff;
+  display: block;
+}
+
+/* ============================================
+   COLLAPSED SIDEBAR (icon rail) - desktop polish
+   ============================================ */
+@media (min-width: 1025px) {
+  .sidebar.sb-anim { transition: width 0.25s ease, padding 0.25s ease; }
+  .sidebar.sb-anim + .main-content { transition: margin-left 0.25s ease; }
+
+  .sidebar.is-collapsed {
+    padding: var(--space-lg) 0;
+    align-items: center;
+  }
+
+  .sidebar.is-collapsed .sidebar-logo {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-lg);
+    width: 100%;
+  }
+
+  .sidebar.is-collapsed .sidebar-logo-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    padding: 2px;
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.55);
+  }
+
+  .sidebar.is-collapsed .sidebar-logo-icon img {
+    object-fit: cover;
+    border-radius: 50%;
+    background: #ffffff;
+  }
+
+  .sidebar.is-collapsed .sidebar-collapse {
+    margin: 0;
+    width: 36px;
+    height: 28px;
+    color: var(--accent-gold);
+    border-color: rgba(212, 175, 55, 0.25);
+  }
+
+  .sidebar.is-collapsed .sidebar-nav {
+    width: 100%;
+    align-items: center;
+  }
+
+  .sidebar.is-collapsed .nav-group {
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .sidebar.is-collapsed .nav-group + .nav-group {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(212, 175, 55, 0.15);
+    width: 36px;
+  }
+
+  .sidebar.is-collapsed .nav-link {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 12px;
+  }
+
+  .sidebar.is-collapsed .nav-officer-badge { display: none; }
+
+  .sidebar.is-collapsed .nav-link-officer {
+    margin-top: 0.75rem;
+    color: var(--accent-gold);
+  }
+
+  .sidebar.is-collapsed .nav-link::after {
+    content: attr(title);
+    position: absolute;
+    left: calc(100% + 14px);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.35rem 0.7rem;
+    border-radius: 8px;
+    background: var(--bg-secondary, #0b2a20);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: #f3d67b;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 200;
+  }
+
+  .sidebar.is-collapsed .nav-link:hover::after,
+  .sidebar.is-collapsed .nav-link:focus-visible::after { opacity: 1; }
+
+  .sidebar.is-collapsed .sidebar-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: var(--space-md);
+  }
+
+  .sidebar.is-collapsed .user-card {
+    padding: 4px;
+    border-top: 0;
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  .sidebar.is-collapsed .user-avatar { width: 44px; height: 44px; }
+
+  .sidebar.is-collapsed .profile-dropdown {
+    left: calc(100% + 0.5rem);
+    bottom: 0;
+    width: 200px;
+  }
+}
+
+.light-theme .sidebar.is-collapsed .nav-link::after {
+  background: #ffffff;
+  color: #7a5c0a;
+}
+
+/* ============================================
+   PORTAL FEED POLISH (home.html)
+   Aligns the Feed with the landing page design language.
+   ============================================ */
+
+/* Sidebar (expanded): round gold-ring logo, gold chevron, gold role */
+.home-page .sidebar-logo-icon {
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.55);
+}
+
+.home-page .sidebar-logo-icon img {
+  object-fit: cover;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.home-page .sidebar-collapse {
+  color: var(--accent-gold);
+  border-color: rgba(212, 175, 55, 0.25);
+}
+
+.home-page .nav-section-divider {
+  color: var(--accent-gold);
+  letter-spacing: 0.12em;
+  border-top-color: rgba(212, 175, 55, 0.18);
+}
+
+.home-page .user-avatar {
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.35);
+}
+
+.home-page .user-role {
+  color: rgba(243, 214, 123, 0.75);
+}
+
+/* Header: eyebrow + Playfair title, gold hairline */
+.home-page .top-header {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+.header-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.header-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+
+.home-page .header-title {
+  font-size: 1.6rem;
+  line-height: 1.15;
+}
+
+/* Layout: a little wider so the rail is never cramped */
+.home-page .feed-layout {
+  max-width: 1180px;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 1.5rem;
+}
+
+/* Unified premium cards */
+.home-page .post-composer,
+.home-page .post-card,
+.home-page .feed-sidebar .sidebar-section {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02)), var(--feed-card-bg);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.home-page .post-card:hover,
+.home-page .feed-sidebar .sidebar-section:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.38);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.3);
+}
+
+.home-page .composer-input {
+  border-radius: 12px;
+}
+
+.home-page .composer-input:focus {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+
+.home-page .composer-btn {
+  border-radius: 9999px;
+}
+
+.home-page .post-composer .btn-gold {
+  border-radius: 9999px;
+}
+
+/* Right rail: gold eyebrows, Playfair titles, gold icons */
+.home-page .feed-sidebar .feed-eyebrow {
+  color: var(--accent-gold);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+}
+
+.home-page .feed-sidebar .sidebar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+}
+
+.home-page .feed-sidebar .sidebar-header svg,
+.home-page .feed-sidebar .widget-icon,
+.home-page .feed-sidebar .social-icon-facebook,
+.home-page .feed-sidebar .social-icon-instagram {
+  color: var(--accent-gold);
+}
+
+.home-page .feed-sidebar .view-all-link {
+  color: var(--accent-gold);
+  border-top-color: rgba(212, 175, 55, 0.18);
+}
+
+.home-page .feed-sidebar .view-all-link:hover {
+  color: #f3d67b;
+}
+
+/* Sticky rail below the header + slim gold scrollbars */
+.home-page .feed-sidebar {
+  top: 5.5rem;
+  max-height: calc(100vh - 7rem);
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.35) transparent;
+}
+
+.home-page .feed-sidebar::-webkit-scrollbar { width: 6px; }
+.home-page .feed-sidebar::-webkit-scrollbar-track { background: transparent; }
+.home-page .feed-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.35);
+  border-radius: 9999px;
+}
+
+html:has(body.home-page) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.35) transparent;
+}
+
+/* Light theme */
+.light-theme.home-page .post-composer,
+.light-theme.home-page .post-card,
+.light-theme.home-page .feed-sidebar .sidebar-section {
+  background: #ffffff;
+  border-color: rgba(184, 148, 31, 0.28);
+  box-shadow: 0 6px 20px rgba(1, 74, 54, 0.08);
+}
+
+.light-theme.home-page .header-eyebrow,
+.light-theme.home-page .feed-sidebar .feed-eyebrow,
+.light-theme.home-page .feed-sidebar .view-all-link,
+.light-theme.home-page .feed-sidebar .sidebar-header svg,
+.light-theme.home-page .feed-sidebar .widget-icon {
+  color: #92700c;
+}
+
+.light-theme.home-page .user-role { color: #7a5c0a; }
+
+@media (max-width: 1024px) {
+  .home-page .feed-layout { grid-template-columns: 1fr; }
+}
+
+/* Feed polish round 2: fill the width, no nested rail scroll, tidier sidebar */
+.home-page .feed-layout {
+  max-width: 1360px;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  padding: 0 0.5rem;
+}
+
+.home-page .feed-main {
+  max-width: 880px;
+}
+
+.home-page .feed-sidebar {
+  position: static;
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
+}
+
+@media (min-height: 860px) and (min-width: 1025px) {
+  .home-page .feed-sidebar {
+    position: sticky;
+    top: 5.5rem;
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+}
+
+.home-page .feed-sidebar .view-all-link {
+  display: flex;
+  width: 100%;
+}
+
+.home-page .sidebar-logo {
+  gap: 0.75rem;
+}
+
+.home-page .sidebar-logo-title {
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+.home-page .sidebar-nav .nav-group {
+  gap: 0.25rem;
+}
+
+.home-page .sidebar-nav .nav-group + .nav-group {
+  margin-top: 0.75rem;
+}

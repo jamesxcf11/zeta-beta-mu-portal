@@ -12,7 +12,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=GFS+Didot&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js" integrity="sha384-8nT3SpButyvenpAdKYPJzXdSz3zidMGduMoaMvwjKnAWVv238n6P1mhveiJJQWrV" crossorigin="anonymous"></script>
@@ -116,11 +116,8 @@
        ============================================ -->
   <nav class="landing-navbar" style="opacity: 1; transform: translateY(0);">
     <div class="landing-navbar-inner">
-      <a href="home.html" class="landing-navbar-logo">
-        <div class="landing-navbar-logo-icon">
-          <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
-        </div>
-        <span class="font-serif font-semibold text-lg">Zeta Beta Mu</span>
+      <a href="home.html" class="landing-navbar-logo landing-navbar-logo--mark" aria-label="Zeta Beta Mu home">
+        <span class="landing-navbar-greek-mark">ζβμ</span>
       </a>
       <div class="landing-navbar-links">
         <a href="home.html">Home</a>
@@ -135,7 +132,7 @@
           <i data-lucide="sun" class="navbar-theme-icon navbar-theme-icon-sun"></i>
           <i data-lucide="moon" class="navbar-theme-icon navbar-theme-icon-moon"></i>
         </button>
-        <a href="home.html" class="btn btn-glass btn-sm">
+        <a href="home.html" class="nav-login-btn">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
           Back to Portal
         </a>
@@ -302,34 +299,49 @@
   <!-- ============================================
        FOOTER
        ============================================ -->
-  <footer class="landing-footer">
+  <footer class="landing-footer landing-footer--premium">
     <div class="landing-footer-inner">
       <div class="landing-footer-brand">
-        <div class="flex items-center gap-3 mb-4">
+        <div class="landing-footer-logo">
           <div class="landing-footer-logo-icon">
             <img src="image/logo1.png" alt="ZBM Logo" class="landing-logo-img">
           </div>
-          <span class="font-serif font-semibold text-lg landing-footer-title">Zeta Beta Mu</span>
+          <div class="landing-footer-logo-text">
+            <span class="landing-footer-logo-title">Zeta Beta Mu Fraternity</span>
+          </div>
         </div>
-        <p class="landing-muted-text text-sm leading-relaxed max-w-sm">
-          A fraternity of medical excellence since 1971. United by purpose, driven by service, bound by brotherhood.
+        <p class="landing-footer-desc">
+          A brotherhood forged through medicine, strengthened by tradition, and united by a commitment to one another and to the communities we serve.
         </p>
+        <div class="landing-footer-social">
+          <a href="https://www.facebook.com/ZetaBetaMuFraternity" target="_blank" rel="noopener" aria-label="Facebook"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+          <a href="https://www.instagram.com/zetabetamufraternity/" target="_blank" rel="noopener" aria-label="Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+        </div>
       </div>
       <div class="landing-footer-links">
-        <h4>Quick Links</h4>
+        <h4>QUICK LINKS</h4>
         <a href="about.html">About Us</a>
+        <a href="pillars.html">The Five Pillars</a>
         <a href="vault.html">Vault</a>
         <a href="memoriam.html">In Memoriam</a>
         <a href="merchandise.html">Merchandise</a>
-      </div>
-      <div class="landing-footer-links">
-        <h4>Members</h4>
         <a href="home.html">Member Portal</a>
-        <a href="signup.html">Create Account</a>
+      </div>
+      <div class="landing-footer-contact">
+        <h4>CONTACT</h4>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="map-pin" class="w-4 h-4"></i>
+          <span>University of Santo Tomas<br>España Blvd., Sampaloc<br>Manila, Philippines</span>
+        </div>
+        <div class="landing-footer-contact-item">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span>contact@zetabetamu.org</span>
+        </div>
       </div>
     </div>
     <div class="landing-footer-bottom">
-      <p>&copy; 2026 Zeta Beta Mu Fraternity. All rights reserved.</p>
+      <p>&copy; 2026 Zeta Beta Mu Medical Fraternity. All rights reserved.</p>
+      <span>EST. 1971 &middot; UNIVERSITY OF SANTO TOMAS</span>
     </div>
   </footer>
 

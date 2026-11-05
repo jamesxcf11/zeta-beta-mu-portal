@@ -936,7 +936,7 @@ const LandingNav = {
             session.role = data.role;
             localStorage.setItem(CONFIG.sessionStorageKey, JSON.stringify(session));
             // Re-evaluate visibility with updated role
-            const isAdmin = data.role === 'admin';
+            const isAdmin = data.role === 'admin' || data.role === 'officer';
             if (!isAdmin) {
               document.querySelectorAll('#officer-tools-link, .directory-admin-toolbar').forEach(el => {
                 el.style.display = 'none';
@@ -948,7 +948,7 @@ const LandingNav = {
       .catch(() => { /* network error — keep existing session */ });
   }
 
-  const isAdmin = !!session && session.role === 'admin';
+  const isAdmin = !!session && (session.role === 'admin' || session.role === 'officer');
   if (!isAdmin) {
     document.querySelectorAll('#officer-tools-link, .directory-admin-toolbar').forEach(el => {
       el.style.display = 'none';
