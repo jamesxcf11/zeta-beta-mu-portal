@@ -16,9 +16,10 @@ const CHUNK = 200;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const TEXT_FIELDS = {
-  full_name: 255, nickname: 100, batch: 50, hospital: 255, field_of_medicine: 100,
-  specialization: 255, email: 255, mobile: 50, telephone: 50, address: 2000,
-  facebook: 255, instagram: 255, avatar_url: 500,
+  full_name: 255, nickname: 100, batch: 50, hospital: 2000, field_of_medicine: 100,
+  last_name: 100, first_name: 100, middle_name: 100, intl_location: 100, schedule: 2000,
+  specialization: 2000, email: 255, mobile: 255, telephone: 255, address: 2000,
+  facebook: 255, instagram: 255, avatar_url: 500, semester: 100, awards: 255, other_emails: 500,
 };
 
 function clean(input) {
@@ -32,6 +33,18 @@ function clean(input) {
     const y = parseInt(input.graduation_year, 10);
     out.graduation_year = y >= 1900 && y <= 2100 ? y : null;
   }
+  if (input.member_no !== undefined) {
+    const n = parseInt(input.member_no, 10);
+    out.member_no = n > 0 && n < 100000 ? n : null;
+  }
+  for (const flag of ['is_deceased', 'is_retired']) {
+    if (input[flag] !== undefined) out[flag] = input[flag] === true || /^(true|yes|1|y|\+)$/i.test(String(input[flag]).trim());
+  }
+  if (input.birthday !== undefined) {
+    const b = String(input.birthday).trim();
+    const t = /^\d{4}-\d{2}-\d{2}$/.test(b) ? Date.parse(`${b}T00:00:00Z`) : NaN;
+    out.birthday = Number.isNaN(t) || new Date(t).toISOString().slice(0, 10) !== b ? null : b;
+  }
   return out;
 }
 
@@ -40,6 +53,26 @@ function validate(record, { partial }) {
   if (partial && 'full_name' in record && !record.full_name) return 'Name is required';
   if (record.email && !EMAIL_RE.test(record.email)) return 'Invalid email address';
   return null;
+}
+
+function matchKey(record) {
+  return `${(record.full_name || '').trim().toLowerCase()}|${(record.batch || '').trim().toLowerCase()}`;
+}
+
+async function loadExisting(supabase) {
+  const map = new Map();
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase
+      .from('alumni')
+      .select('id, full_name, batch')
+      .is('deleted_at', null)
+      .order('id', { ascending: true })
+      .range(from, from + 999);
+    if (error) return null;
+    for (const row of data || []) if (!map.has(matchKey(row))) map.set(matchKey(row), row.id);
+    if (!data || data.length < 1000) break;
+  }
+  return map;
 }
 
 exports.handler = async (event) => {
@@ -101,11 +134,42 @@ exports.handler = async (event) => {
         else valid.push(record);
       });
 
-      for (let i = 0; i < valid.length; i += CHUNK) {
-        const { error } = await supabase.from('alumni').insert(valid.slice(i, i + CHUNK));
-        if (error) return json(500, { error: 'Import failed part-way', imported: i, skipped });
+      const existing = await loadExisting(supabase);
+      if (!existing) return json(500, { error: 'Could not read the current alumni list' });
+
+      // Re-importing an updated sheet updates people already on file (same
+      // name + batch) instead of duplicating them. Blank cells never erase data.
+      const toInsert = [];
+      const toUpdate = new Map();
+      for (const record of valid) {
+        const key = matchKey(record);
+        const id = existing.get(key);
+        if (id === -1) {
+          const pending = toInsert.find(r => matchKey(r) === key);
+          Object.entries(record).forEach(([k, v]) => { if (v !== null && v !== '' && v !== false) pending[k] = v; });
+        } else if (id) {
+          const changes = Object.fromEntries(Object.entries(record).filter(([, v]) => v !== null && v !== '' && v !== false));
+          toUpdate.set(id, { ...(toUpdate.get(id) || {}), ...changes });
+        } else {
+          existing.set(key, -1);
+          toInsert.push(record);
+        }
       }
-      return json(200, { ok: true, imported: valid.length, skipped });
+
+      let created = 0;
+      let updated = 0;
+      for (let i = 0; i < toInsert.length; i += CHUNK) {
+        const { error } = await supabase.from('alumni').insert(toInsert.slice(i, i + CHUNK));
+        if (error) return json(500, { error: 'Import failed part-way', created, updated, skipped });
+        created += Math.min(CHUNK, toInsert.length - i);
+      }
+      const updates = [...toUpdate.entries()];
+      for (let i = 0; i < updates.length; i += 25) {
+        const results = await Promise.all(updates.slice(i, i + 25).map(([id, changes]) => supabase.from('alumni').update(changes).eq('id', id)));
+        if (results.some(r => r.error)) return json(500, { error: 'Import failed part-way', created, updated, skipped });
+        updated += results.length;
+      }
+      return json(200, { ok: true, imported: created + updated, created, updated, skipped });
     }
     default:
       return json(400, { error: 'Unknown action' });

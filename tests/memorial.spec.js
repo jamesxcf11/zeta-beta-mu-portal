@@ -2,8 +2,8 @@ const { test, expect } = require('@playwright/test');
 const { mockSupabase, makeMember, seedSession } = require('./fixtures/supabase-mock');
 
 const BROTHERS = [
-  { id: 2, full_name: 'Dr. Antonio L. Cruz', nickname: null, batch: '1973', specialty: 'Neurosurgery', birth_year: 1948, death_year: 2022, tribute: 'A brilliant surgeon and mentor.', photo_url: null },
-  { id: 3, full_name: 'Dr. Manuel P. Reyes', nickname: 'Manny', batch: '1975', specialty: 'Pediatrics', birth_year: 1950, death_year: 2021, tribute: 'A gentle spirit.', photo_url: 'https://media.zetabetamu.com/memorials/x.webp' },
+  { id: 2, full_name: 'Antonio L. Cruz', nickname: null, batch: '1973', specialty: 'Neurosurgery', birth_year: 1948, death_year: 2022, tribute: 'A brilliant surgeon and mentor.', photo_url: null },
+  { id: 3, full_name: 'Manuel P. Reyes', nickname: 'Manny', batch: '1975', specialty: 'Pediatrics', birth_year: 1950, death_year: 2021, tribute: 'A gentle spirit.', photo_url: 'https://media.zetabetamu.com/memorials/x.webp' },
 ];
 
 /**
@@ -69,11 +69,24 @@ test.describe('In Memoriam list (memoriam.html)', () => {
     await mockMemorials(page);
     await page.goto('/memoriam.html');
     await expect(page.locator('.memoriam-card')).toHaveCount(2);
-    await expect(page.locator('.memoriam-name').first()).toHaveText('Dr. Antonio L. Cruz');
+    await expect(page.locator('.memoriam-name').first()).toHaveText('Patrix Dr. Antonio L. Cruz');
     await expect(page.locator('.memoriam-dates').first()).toContainText('1948');
     await page.locator('.memoriam-card-link[href="memorial.html?id=3"]').click();
     await page.waitForURL('**/memorial.html?id=3');
-    await expect(page.locator('.memorial-name')).toHaveText('Dr. Manuel P. Reyes');
+    await expect(page.locator('.memorial-name')).toHaveText('Patrix Dr. Manuel P. Reyes');
+  });
+
+  test('uses the ZBM logo placeholder when a brother has no photo', async ({ page }) => {
+    await mockSupabase(page);
+    await seedSession(page);
+    await mockMemorials(page);
+    await page.goto('/memoriam.html');
+    const noPhoto = page.locator('.memoriam-card').first().locator('img');
+    await expect(noPhoto).toHaveAttribute('src', 'image/logo1.png');
+    await expect(noPhoto).toHaveClass(/is-placeholder-photo/);
+    const withPhoto = page.locator('.memoriam-card').nth(1).locator('img');
+    await expect(withPhoto).toHaveAttribute('src', /media\.zetabetamu\.com/);
+    await expect(withPhoto).not.toHaveClass(/is-placeholder-photo/);
   });
 
   test('shows an empty state when there are no memorials', async ({ page }) => {
@@ -91,8 +104,8 @@ test.describe('Memorial detail (memorial.html)', () => {
     await seedSession(page);
     await mockMemorials(page);
     await page.goto('/memorial.html?id=2');
-    await expect(page.locator('.memorial-name')).toHaveText('Dr. Antonio L. Cruz');
-    await expect(page).toHaveTitle(/Dr\. Antonio L\. Cruz/);
+    await expect(page.locator('.memorial-name')).toHaveText('Patrix Dr. Antonio L. Cruz');
+    await expect(page).toHaveTitle(/Patrix Dr\. Antonio L\. Cruz/);
   });
 
   test('unknown memorial shows a not-found message', async ({ page }) => {

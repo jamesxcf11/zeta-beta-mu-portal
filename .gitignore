@@ -6,3 +6,9 @@ config.local.json
 .aider*
 test-results/
 playwright-report/
+
+# Personal alumni data (phones, emails, addresses, birthdays)
+directory/
+data/alumni-*.csv
+data/alumni-*.sql
+data/CSV database/

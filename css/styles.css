@@ -15191,3 +15191,12 @@ html:has(body.home-page) {
 .home-page .sidebar-nav .nav-group + .nav-group {
   margin-top: 0.75rem;
 }
+
+/* In Memoriam: ZBM logo shown when a brother has no photo yet */
+.memoriam-image.is-placeholder-photo,
+.memorial-portrait.is-placeholder-photo {
+  object-fit: contain;
+  padding: 16%;
+  background: rgba(6, 78, 59, 0.55);
+  filter: none;
+}

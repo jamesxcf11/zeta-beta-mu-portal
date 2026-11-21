@@ -2,51 +2,49 @@
  * Zeta Beta Mu Fraternity Portal
  * Directory Module - Alumni / Medical Directory Search
  *
- * Reads the `alumni` roster (falls back to portal `members`, then mock data),
- * supports searching every listed field, and gives admins/officers controls
- * to add, edit, remove and bulk-import alumni through /api/admin-alumni.
+ * Nothing is loaded or shown until a member searches (Search button or Enter,
+ * at least 2 characters). Searches run on the server (/api/directory-search),
+ * so the full directory never reaches the browser. Officers/admins also get
+ * controls to add, edit, remove and bulk-import alumni (/api/admin-alumni).
  */
 
 const DirectoryModule = {
-  // Mock member database (fallback when Supabase is not configured)
-  mockMembers: [
-    { id: 1, name: 'Dr. James Anderson', year: 1995, hospital: 'St. Luke\'s Medical Center', field: 'Cardiology', avatar: 'image/placeholders/avatars/a11.jpg' },
-    { id: 2, name: 'Dr. Sarah Mitchell', year: 2008, hospital: 'Mount Sinai Hospital', field: 'Neurology', avatar: 'image/placeholders/avatars/a5.jpg' },
-    { id: 3, name: 'Dr. Michael Chen', year: 2012, hospital: 'Johns Hopkins Medicine', field: 'Oncology', avatar: 'image/placeholders/avatars/a3.jpg' },
-    { id: 4, name: 'Dr. Emily Roberts', year: 2015, hospital: 'Children\'s Hospital', field: 'Pediatrics', avatar: 'image/placeholders/avatars/a9.jpg' },
-    { id: 5, name: 'Dr. Robert Kim', year: 2002, hospital: 'Mayo Clinic', field: 'Surgery', avatar: 'image/placeholders/avatars/a8.jpg' },
-    { id: 6, name: 'Dr. Lisa Wang', year: 2010, hospital: 'Cleveland Clinic', field: 'Cardiology', avatar: 'image/placeholders/avatars/a10.jpg' },
-    { id: 7, name: 'Dr. David Martinez', year: 2018, hospital: 'UCLA Medical Center', field: 'Orthopedics', avatar: 'image/placeholders/avatars/a12.jpg' },
-    { id: 8, name: 'Dr. Jennifer Adams', year: 2005, hospital: 'NYU Langone Health', field: 'Dermatology', avatar: 'image/placeholders/avatars/a6.jpg' },
-    { id: 9, name: 'Dr. William Turner', year: 1998, hospital: 'Stanford Health Care', field: 'Psychiatry', avatar: 'image/placeholders/avatars/a13.jpg' },
-    { id: 10, name: 'Dr. Amanda Foster', year: 2011, hospital: 'Mass General Brigham', field: 'Internal Medicine', avatar: 'image/placeholders/avatars/a7.jpg' },
-    { id: 11, name: 'Dr. Christopher Lee', year: 2007, hospital: 'Cedars-Sinai', field: 'Emergency Medicine', avatar: 'image/placeholders/avatars/a14.jpg' },
-    { id: 12, name: 'Dr. Michelle Park', year: 2014, hospital: 'UCSF Medical Center', field: 'Radiology', avatar: 'image/placeholders/avatars/a15.jpg' }
-  ],
+  MIN_QUERY: 2,
 
-  // Active directory data (alumni rows, or members/mock as a fallback)
-  members: [],
-  source: 'mock',
-
+  results: [],
+  total: 0,
+  nextOffset: null,
+  lastQuery: '',
+  searched: false,
+  loading: false,
+  searchToken: 0,
   currentFilter: 'All',
-  searchQuery: '',
-
-  ALUMNI_COLUMNS: 'id, full_name, nickname, batch, graduation_year, hospital, field_of_medicine, specialization, email, mobile, telephone, address, facebook, instagram, avatar_url',
 
   // Editable alumni fields: [column, label, wide?]
   FORM_FIELDS: [
     ['full_name', 'Full Name *'], ['nickname', 'Nickname'],
-    ['batch', 'Batch'], ['graduation_year', 'Graduation Year'],
+    ['batch', 'Batch'], ['semester', 'Semester'],
     ['hospital', 'Hospital'], ['field_of_medicine', 'Field of Medicine'],
     ['specialization', 'Specialization'], ['email', 'Email'],
-    ['mobile', 'Mobile / Contact Number'], ['telephone', 'Telephone'],
-    ['facebook', 'Facebook'], ['instagram', 'Instagram'],
-    ['address', 'Address', true]
+    ['other_emails', 'Other Emails'], ['mobile', 'Mobile / Contact Number'],
+    ['telephone', 'Telephone'], ['birthday', 'Birthday (YYYY-MM-DD)'],
+    ['intl_location', 'Location (if abroad)'], ['member_no', 'Roster No.'],
+    ['awards', 'Awards'], ['facebook', 'Facebook'], ['instagram', 'Instagram'],
+    ['address', 'Address', true], ['schedule', 'Clinic Schedule', true]
   ],
+
+  // Form column -> property on a search result
+  FIELD_PROP: {
+    full_name: 'name', field_of_medicine: 'field', other_emails: 'otherEmails',
+    member_no: 'memberNo', intl_location: 'location'
+  },
 
   // CSV header keywords -> alumni column (first unused matching header wins)
   CSV_COLUMNS: [
     ['full_name', ['full name', 'name']],
+    ['last_name', ['last name', 'last_name', 'surname']],
+    ['first_name', ['first name', 'first_name']],
+    ['middle_name', ['middle name', 'middle_name']],
     ['nickname', ['nickname', 'nick']],
     ['graduation_year', ['graduation', 'year', 'class of']],
     ['batch', ['batch']],
@@ -58,7 +56,16 @@ const DirectoryModule = {
     ['mobile', ['mobile', 'contact', 'cell', 'phone']],
     ['address', ['address']],
     ['facebook', ['facebook']],
-    ['instagram', ['instagram']]
+    ['instagram', ['instagram']],
+    ['semester', ['semester']],
+    ['member_no', ['member_no', 'member no', 'member #', 'roster no']],
+    ['awards', ['award']],
+    ['is_deceased', ['deceased']],
+    ['is_retired', ['retired']],
+    ['birthday', ['birthday', 'birthdate', 'birth']],
+    ['other_emails', ['other_email', 'other email', 'alt email']],
+    ['intl_location', ['intl_location', 'location', 'intl']],
+    ['schedule', ['schedule']]
   ],
 
   hasSupabase() {
@@ -80,110 +87,92 @@ const DirectoryModule = {
     return !!s && (s.role === 'admin' || s.role === 'officer');
   },
 
-  async init() {
-    await this.loadMembers();
-    this.renderMembers();
+  init() {
     this.setupEventListeners();
+    this.render();
   },
 
-  async loadAlumni() {
-    const rows = [];
-    for (let from = 0; ; from += 1000) {
-      const { data, error } = await db
-        .from('alumni')
-        .select(this.ALUMNI_COLUMNS)
-        .is('deleted_at', null)
-        .order('full_name', { ascending: true })
-        .order('id', { ascending: true })
-        .range(from, from + 999);
-      if (error) return null;
-      rows.push(...(data || []));
-      if (!data || data.length < 1000) break;
+  // ==========================================================================
+  // SEARCH
+  // ==========================================================================
+
+  async search(query, { append = false } = {}) {
+    const q = String(query || '').trim();
+    if (q.length < this.MIN_QUERY) {
+      this.searched = false;
+      this.results = [];
+      this.total = 0;
+      this.nextOffset = null;
+      this.render(`Type at least ${this.MIN_QUERY} characters, then press Search.`);
+      return;
     }
-    return rows.map(a => ({
-      id: a.id,
-      source: 'alumni',
-      name: a.full_name,
-      nickname: a.nickname,
-      batch: a.batch,
-      year: a.graduation_year,
-      hospital: a.hospital,
-      field: a.field_of_medicine || a.specialization,
-      fieldOfMedicine: a.field_of_medicine,
-      specialization: a.specialization,
-      email: a.email,
-      mobile: a.mobile,
-      telephone: a.telephone,
-      address: a.address,
-      facebook: a.facebook,
-      instagram: a.instagram,
-      avatar: a.avatar_url
-    }));
-  },
 
-  async loadMembers() {
-    if (this.hasSupabase()) {
-      const alumni = await this.loadAlumni();
-      if (alumni && alumni.length) {
-        this.members = alumni;
-        this.source = 'alumni';
-        return;
-      }
+    const token = ++this.searchToken;
+    this.loading = true;
+    this.lastQuery = q;
+    if (!append) { this.results = []; this.nextOffset = null; }
+    this.render();
 
-      const { data, error } = await db
-        .from('members')
-        .select('id, name, graduation_year, hospital, field_of_medicine, avatar_url')
-        .eq('status', 'active')
-        .is('deleted_at', null)
-        .order('name', { ascending: true });
+    const payload = await this.callApi({
+      q,
+      specialty: this.currentFilter === 'All' ? undefined : this.currentFilter,
+      offset: append ? (this.nextOffset || 0) : 0
+    }, '/api/directory-search');
+    if (token !== this.searchToken) return;
 
-      if (!error && data) {
-        this.members = data.map(m => ({
-          id: m.id,
-          source: 'members',
-          name: m.name,
-          year: m.graduation_year,
-          hospital: m.hospital,
-          field: m.field_of_medicine,
-          avatar: m.avatar_url
-        }));
-        this.source = 'members';
-        return;
-      }
+    this.loading = false;
+    this.searched = true;
+    if (payload.error) {
+      this.render(payload.error);
+      return;
     }
-    this.members = this.mockMembers.map(m => ({ ...m, source: 'mock' }));
-    this.source = 'mock';
+    this.results = append ? this.results.concat(payload.results || []) : (payload.results || []);
+    this.total = payload.total || 0;
+    this.nextOffset = payload.nextOffset;
+    this.render();
   },
 
-  renderMembers() {
+  rerun() {
+    return this.searched ? this.search(this.lastQuery) : Promise.resolve();
+  },
+
+  // ==========================================================================
+  // RENDERING
+  // ==========================================================================
+
+  render(message) {
     const grid = document.getElementById('directory-grid');
     if (!grid) return;
 
-    const filtered = this.getFilteredMembers();
-    if (filtered.length === 0) {
-      grid.innerHTML = this.getEmptyStateHTML();
-      return;
+    if (message) {
+      grid.innerHTML = this.getEmptyStateHTML('alert-circle', 'Search the directory', message);
+    } else if (this.loading && !this.results.length) {
+      grid.innerHTML = this.getEmptyStateHTML('loader', 'Searching\u2026', 'Looking through the directory.');
+    } else if (!this.searched) {
+      grid.innerHTML = this.getEmptyStateHTML('search', 'Search the directory',
+        'Enter a name, nickname, batch, hospital or specialty and press Search. Results appear only after you search.');
+    } else if (!this.results.length) {
+      grid.innerHTML = this.getEmptyStateHTML('search-x', 'No members found', 'Try a different spelling, or fewer words.');
+    } else {
+      grid.innerHTML = this.results.map(member => this.createMemberCardHTML(member)).join('');
     }
-    grid.innerHTML = filtered.map(member => this.createMemberCardHTML(member)).join('');
+
+    const countEl = document.getElementById('directory-count-text');
+    if (countEl) {
+      const text = this.searched && !message
+        ? `${this.total} ${this.total === 1 ? 'result' : 'results'} for \u201c${this.lastQuery}\u201d`
+        : 'Search to see members';
+      countEl.innerHTML = '<i data-lucide="users" class="w-4 h-4 inline-block mr-1 align-middle"></i> ';
+      countEl.append(document.createTextNode(text));
+    }
+
+    const more = document.getElementById('directory-more');
+    if (more) {
+      const hasMore = this.nextOffset !== null && this.nextOffset !== undefined && !message;
+      more.style.display = hasMore ? '' : 'none';
+      more.disabled = this.loading;
+    }
     if (typeof lucide !== 'undefined') lucide.createIcons();
-  },
-
-  searchText(m) {
-    return [m.name, m.nickname, m.batch, m.year, m.hospital, m.field, m.specialization,
-      m.fieldOfMedicine, m.email, m.mobile, m.telephone].filter(v => v !== null && v !== undefined).join(' ').toLowerCase();
-  },
-
-  getFilteredMembers() {
-    const query = this.searchQuery.trim().toLowerCase();
-    const terms = query ? query.split(/\s+/) : [];
-    return this.members.filter(member => {
-      const matchesFilter = this.currentFilter === 'All' ||
-        [member.field, member.fieldOfMedicine, member.specialization].some(f => f === this.currentFilter);
-      if (!matchesFilter) return false;
-      if (!terms.length) return true;
-      const text = this.searchText(member);
-      return terms.every(t => text.includes(t));
-    });
   },
 
   escapeHTML(str) {
@@ -207,26 +196,34 @@ const DirectoryModule = {
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   },
 
+  hospitalSummary(hospital) {
+    const parts = String(hospital || '').split(';').map(s => s.trim()).filter(Boolean);
+    if (!parts.length) return '';
+    return parts.length > 1 ? `${parts[0]} +${parts.length - 1} more` : parts[0];
+  },
+
   createMemberCardHTML(member) {
     const e = this.escapeHTML.bind(this);
-    const standing = member.year ? `Class of ${member.year}` : (member.batch ? `Batch ${member.batch}` : '');
+    const hospital = this.hospitalSummary(member.hospital);
+    const field = member.field || '';
     return `
-      <article class="glass-card member-card" data-member-id="${e(member.id)}" data-source="${e(member.source)}">
-        <img src="${e(this.avatarFor(member))}" alt="${e(member.name)}" class="member-avatar">
+      <article class="glass-card member-card" data-member-id="${e(member.id)}">
+        <img src="${e(this.avatarFor(member))}" alt="${e(member.name)}" class="member-avatar" loading="lazy">
         <h3 class="member-name">${e(member.name)}</h3>
         ${member.nickname ? `<p class="member-year">&ldquo;${e(member.nickname)}&rdquo;</p>` : ''}
-        ${standing ? `
+        ${member.batch ? `
         <p class="member-year flex items-center justify-center gap-1">
           <i data-lucide="graduation-cap" class="w-3 h-3"></i>
-          ${e(standing)}
+          ${e(member.batch)}
         </p>` : ''}
-        ${member.hospital ? `
+        ${hospital ? `
         <p class="member-hospital flex items-center justify-center gap-1">
           <i data-lucide="building-2" class="w-3 h-3"></i>
-          ${e(member.hospital)}
+          ${e(hospital)}
         </p>` : ''}
-        ${member.field ? `<span class="member-field">${e(member.field)}</span>` : ''}
-        ${member.source === 'alumni' && this.isOfficer() ? `
+        ${field ? `<span class="member-field">${e(field)}</span>` : ''}
+        ${member.deceased ? '<span class="member-field">In Memoriam</span>' : ''}
+        ${this.isOfficer() ? `
         <div class="mt-3">
           <button type="button" class="btn btn-glass btn-sm" data-action="edit-alumnus" data-id="${e(member.id)}">
             <i data-lucide="pencil" class="w-4 h-4"></i> Edit
@@ -236,14 +233,15 @@ const DirectoryModule = {
     `;
   },
 
-  getEmptyStateHTML() {
+  getEmptyStateHTML(icon, title, text) {
+    const e = this.escapeHTML.bind(this);
     return `
       <div class="empty-state col-span-full">
         <div class="empty-icon">
-          <i data-lucide="search-x" class="w-10 h-10"></i>
+          <i data-lucide="${e(icon)}" class="w-10 h-10"></i>
         </div>
-        <h3 class="empty-title">No members found</h3>
-        <p class="empty-text">Try adjusting your search or filter criteria to find members.</p>
+        <h3 class="empty-title">${e(title)}</h3>
+        <p class="empty-text">${e(text)}</p>
       </div>
     `;
   },
@@ -252,11 +250,12 @@ const DirectoryModule = {
     if (this.listenersBound) return;
     this.listenersBound = true;
 
-    const searchInput = document.getElementById('directory-search');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        this.searchQuery = e.target.value;
-        this.renderMembers();
+    const form = document.getElementById('directory-search-form');
+    const input = document.getElementById('directory-search');
+    if (form && input) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.search(input.value);
       });
     }
 
@@ -266,19 +265,23 @@ const DirectoryModule = {
         document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
         this.currentFilter = btn.textContent.trim();
-        this.renderMembers();
+        this.rerun();
       });
     });
 
     document.addEventListener('click', (e) => {
+      if (e.target.closest('#directory-more')) {
+        if (!this.loading && this.nextOffset !== null) this.search(this.lastQuery, { append: true });
+        return;
+      }
       const edit = e.target.closest('[data-action="edit-alumnus"]');
       if (edit) {
-        const alumnus = this.members.find(m => m.source === 'alumni' && String(m.id) === edit.dataset.id);
+        const alumnus = this.results.find(m => String(m.id) === edit.dataset.id);
         if (alumnus) this.openForm(alumnus);
         return;
       }
       const card = e.target.closest('.member-card');
-      if (card) this.showMemberDetails(card.dataset.memberId, card.dataset.source);
+      if (card) this.showMemberDetails(card.dataset.memberId);
     });
 
     document.addEventListener('keydown', (e) => {
@@ -311,34 +314,23 @@ const DirectoryModule = {
     document.getElementById('alumni-modal')?.remove();
   },
 
-  async showMemberDetails(memberId, source) {
-    const member = this.members.find(m => String(m.id) === String(memberId) && (!source || m.source === source));
+  showMemberDetails(memberId) {
+    const member = this.results.find(m => String(m.id) === String(memberId));
     if (!member) return;
 
-    let profile = { ...member };
-
-    if (member.source === 'members' && this.hasSupabase()) {
-      const { data } = await db.from('members').select('*').eq('id', memberId).single();
-      if (data) {
-        profile = {
-          ...profile,
-          email: data.email,
-          mobile: data.phone || data.mobile,
-          bio: data.bio
-        };
-      }
-    }
-
     const e = this.escapeHTML.bind(this);
+    const status = member.deceased ? 'Deceased' : (member.retired ? 'Retired' : '');
     const rows = [
-      ['Nickname', profile.nickname], ['Batch', profile.batch], ['Class of', profile.year],
-      ['Hospital', profile.hospital], ['Field', profile.fieldOfMedicine || profile.field],
-      ['Specialization', profile.specialization], ['Email', profile.email],
-      ['Mobile', profile.mobile], ['Telephone', profile.telephone], ['Address', profile.address],
-      ['Facebook', profile.facebook], ['Instagram', profile.instagram]
+      ['Nickname', member.nickname], ['Batch', member.batch], ['Semester', member.semester],
+      ['Roster No.', member.memberNo], ['Awards', member.awards], ['Status', status],
+      ['Hospital', member.hospital], ['Field', member.field], ['Specialization', member.specialization],
+      ['Clinic Schedule', member.schedule], ['Location', member.location], ['Birthday', member.birthday],
+      ['Email', member.email], ['Other Emails', member.otherEmails], ['Mobile', member.mobile],
+      ['Telephone', member.telephone], ['Address', member.address],
+      ['Facebook', member.facebook], ['Instagram', member.instagram]
     ].filter(([, v]) => v !== null && v !== undefined && String(v).trim() !== '');
 
-    const officerActions = member.source === 'alumni' && this.isOfficer() ? `
+    const officerActions = this.isOfficer() ? `
       <div class="vault-modal-actions">
         <button type="button" class="btn btn-glass" data-action="delete-alumnus">Remove</button>
         <button type="button" class="btn btn-gold" data-action="edit-from-detail">Edit</button>
@@ -346,12 +338,11 @@ const DirectoryModule = {
 
     const modal = this.openModal(`
       <div class="text-center mb-4">
-        <img src="${e(this.avatarFor(profile))}" alt="" class="member-avatar" style="margin:0 auto 0.75rem">
-        <h3 class="vault-modal-title" style="justify-content:center">${e(profile.name)}</h3>
+        <img src="${e(this.avatarFor(member))}" alt="" class="member-avatar" style="margin:0 auto 0.75rem">
+        <h3 class="vault-modal-title" style="justify-content:center">${e(member.name)}</h3>
       </div>
       <dl class="pending-details-grid" id="alumni-detail">
-        ${rows.map(([k, v]) => `<div><span class="pending-detail-label">${e(k)}</span><span class="pending-detail-value">${e(v)}</span></div>`).join('')}
-        ${profile.bio ? `<div style="grid-column:1/-1"><span class="pending-detail-label">About</span><span class="pending-detail-value">${e(profile.bio)}</span></div>` : ''}
+        ${rows.map(([k, v]) => `<div><span class="pending-detail-label">${e(k)}</span><span class="pending-detail-value" style="white-space:pre-line">${e(v)}</span></div>`).join('')}
       </dl>
       ${rows.length ? '' : '<p class="landing-muted-text text-center">No further details on file.</p>'}
       ${officerActions}`);
@@ -364,15 +355,15 @@ const DirectoryModule = {
     const e = this.escapeHTML.bind(this);
     const value = (col) => {
       if (!alumnus) return '';
-      const map = { full_name: alumnus.name, graduation_year: alumnus.year, field_of_medicine: alumnus.fieldOfMedicine };
-      return col in map ? map[col] : alumnus[col];
+      const v = alumnus[this.FIELD_PROP[col] || col];
+      return v === null || v === undefined ? '' : v;
     };
     const fields = this.FORM_FIELDS.map(([col, label, wide]) => `
       <div${wide ? ' style="grid-column:1/-1"' : ''}>
         <label class="form-label" for="al-${col}">${e(label)}</label>
-        ${col === 'address'
+        ${wide
           ? `<textarea id="al-${col}" name="${col}" class="glass-input w-full" rows="2">${e(value(col))}</textarea>`
-          : `<input id="al-${col}" name="${col}" class="glass-input w-full" ${col === 'graduation_year' ? 'type="number" min="1900" max="2100"' : col === 'email' ? 'type="email"' : ''} value="${e(value(col))}">`}
+          : `<input id="al-${col}" name="${col}" class="glass-input w-full" ${col === 'email' ? 'type="email"' : ''} value="${e(value(col))}">`}
       </div>`).join('');
 
     const modal = this.openModal(`
@@ -402,7 +393,7 @@ const DirectoryModule = {
     if (result.error) { this.notify(result.error); return; }
 
     this.closeModal();
-    await this.refresh();
+    await this.rerun();
     this.notify(alumnus ? 'Alumnus updated' : 'Alumnus added');
   },
 
@@ -411,13 +402,12 @@ const DirectoryModule = {
     const result = await this.callApi({ action: 'delete', id: member.id });
     if (result.error) { this.notify(result.error); return; }
     this.closeModal();
-    await this.refresh();
+    await this.rerun();
     this.notify('Alumnus removed');
   },
 
   async refresh() {
-    await this.loadMembers();
-    this.renderMembers();
+    await this.rerun();
   },
 
   // ==========================================================================
@@ -495,19 +485,20 @@ const DirectoryModule = {
     if (typeof closeImportModal === 'function') closeImportModal();
     await this.refresh();
     const skipped = result.skipped && result.skipped.length ? ` (${result.skipped.length} skipped)` : '';
-    this.notify(`Imported ${result.imported} alumni${skipped}`);
+    const counts = result.created !== undefined ? `${result.created} added, ${result.updated} updated` : `${result.imported} imported`;
+    this.notify(`Import complete: ${counts}${skipped}`);
   },
 
   // ==========================================================================
   // API
   // ==========================================================================
 
-  async callApi(body) {
+  async callApi(body, endpoint = '/api/admin-alumni') {
     try {
       const { data } = await db.auth.getSession();
       const token = data && data.session ? data.session.access_token : null;
       if (!token) return { error: 'Your session has expired. Please sign in again.' };
-      const response = await fetch('/api/admin-alumni', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(body)

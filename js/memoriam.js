@@ -61,15 +61,16 @@ const MemoriamModule = {
   cardHTML(m) {
     const e = this.escapeHTML.bind(this);
     const photo = m.photo_url || this.FALLBACK_PHOTO;
+    const name = MemorialCommon.displayName(m.full_name);
     const dates = this.formatDates(m);
     return `
       <a class="memoriam-card glass-card memoriam-card-link" href="memorial.html?id=${encodeURIComponent(m.id)}">
         <div class="memoriam-candle"><i data-lucide="flame" class="w-6 h-6"></i></div>
         <div class="memoriam-photo">
-          <img src="${e(photo)}" alt="${e(m.full_name)}" class="memoriam-image" loading="lazy" decoding="async">
+          <img src="${e(photo)}" alt="${e(name)}" class="memoriam-image${MemorialCommon.photoClass(m.photo_url)}" loading="lazy" decoding="async">
         </div>
         <div class="memoriam-info">
-          <h3 class="memoriam-name">${e(m.full_name)}</h3>
+          <h3 class="memoriam-name">${e(name)}</h3>
           ${dates ? `<p class="memoriam-dates">${e(dates)}</p>` : ''}
           ${m.specialty ? `<p class="memoriam-specialty">${e(m.specialty)}</p>` : ''}
           ${m.batch ? `<p class="memoriam-years">Batch ${e(m.batch)}</p>` : ''}

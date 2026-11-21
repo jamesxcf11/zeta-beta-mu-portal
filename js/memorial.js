@@ -96,18 +96,19 @@ const MemorialModule = {
     const hero = document.querySelector('.memorial-hero');
     if (!hero) return;
     const e = this.escapeHTML.bind(this);
+    const name = MemorialCommon.displayName(b.full_name);
     const meta = [b.specialty, b.batch ? `Batch ${b.batch}` : ''].filter(Boolean).join(' \u2022 ');
     const dates = this.formatDates(b);
     hero.innerHTML = `
       <div class="memorial-candle"><i data-lucide="flame" class="w-7 h-7"></i></div>
-      <img src="${e(b.photo_url || this.FALLBACK_PHOTO)}" alt="${e(b.full_name)}" class="memorial-portrait" decoding="async">
-      <h1 class="memorial-name">${e(b.full_name)}</h1>
+      <img src="${e(b.photo_url || this.FALLBACK_PHOTO)}" alt="${e(name)}" class="memorial-portrait${MemorialCommon.photoClass(b.photo_url)}" decoding="async">
+      <h1 class="memorial-name">${e(name)}</h1>
       ${b.nickname ? `<p class="memorial-meta">&ldquo;${e(b.nickname)}&rdquo;</p>` : ''}
       ${dates ? `<p class="memorial-dates">${e(dates)}</p>` : ''}
       ${meta ? `<p class="memorial-meta">${e(meta)}</p>` : ''}
       ${b.tribute ? `<p class="memorial-bio">${e(b.tribute)}</p>` : ''}
     `;
-    document.title = `${b.full_name} | In Memoriam | Zeta Beta Mu Fraternity`;
+    document.title = `${name} | In Memoriam | Zeta Beta Mu Fraternity`;
     if (typeof lucide !== 'undefined') lucide.createIcons();
   },
 

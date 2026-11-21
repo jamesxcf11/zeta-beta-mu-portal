@@ -121,6 +121,8 @@ const AdminMemorials = {
       }
     }
 
+    if (!item) record.sort_order = this.items.length ? Math.min(...this.items.map(m => m.sort_order || 0)) - 1 : 0;
+
     const query = item
       ? db.from('memorials').update(record).eq('id', item.id)
       : db.from('memorials').insert(record);

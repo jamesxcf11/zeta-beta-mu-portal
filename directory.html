@@ -172,12 +172,13 @@
       </div>
 
       <!-- Search Bar -->
-      <div class="max-w-2xl mx-auto mb-8">
-        <div class="relative">
+      <form id="directory-search-form" class="max-w-2xl mx-auto mb-8 flex gap-3" role="search" autocomplete="off">
+        <div class="relative flex-1">
           <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 directory-search-icon"></i>
-          <input type="text" id="directory-search" class="glass-input w-full pl-12 py-3" placeholder="Search by name, nickname, batch, hospital, specialization, or contact...">
+          <input type="search" id="directory-search" class="glass-input w-full pl-12 py-3" placeholder="Search by name, nickname, batch, hospital or specialty" aria-label="Search the directory" maxlength="80" enterkeyhint="search">
         </div>
-      </div>
+        <button type="submit" class="btn btn-gold" id="directory-search-btn">Search</button>
+      </form>
 
       <!-- Filter Chips (wired to DirectoryModule) -->
       <div class="flex flex-wrap justify-center gap-3 mb-10">
@@ -207,9 +208,10 @@
       </div>
 
       <div class="text-center mt-10">
-        <p class="landing-muted-text text-sm" id="directory-count-text">
+        <button type="button" class="btn btn-glass mb-4" id="directory-more" style="display:none">Show more results</button>
+        <p class="landing-muted-text text-sm" id="directory-count-text" aria-live="polite">
           <i data-lucide="users" class="w-4 h-4 inline-block mr-1 align-middle"></i>
-          Loading directory&hellip;
+          Search to see members
         </p>
       </div>
     </div>
@@ -290,9 +292,11 @@
         <p class="import-columns-title">Expected columns</p>
         <div class="import-columns-list">
           <span>Full Name</span><span>Nickname</span><span>Batch</span>
-          <span>Graduation Year</span><span>Hospital</span><span>Field of Medicine</span>
-          <span>Specialization</span><span>Email</span><span>Mobile</span>
-          <span>Telephone</span><span>Address</span>
+          <span>Hospital</span><span>Field of Medicine</span><span>Specialization</span>
+          <span>Email</span><span>Other Emails</span><span>Mobile</span>
+          <span>Telephone</span><span>Birthday</span><span>Address</span>
+          <span>Schedule</span><span>Location</span><span>Roster No.</span>
+          <span>Is Deceased</span><span>Is Retired</span>
         </div>
       </div>
 
@@ -334,17 +338,17 @@
       return DirectoryModule.handleImport();
     }
 
-    // Client-side CSV export of the currently filtered directory (no backend required)
+    // Client-side CSV export of the current search results (officers only; nothing is exported before searching)
     function exportDirectoryCSV() {
       if (typeof DirectoryModule === 'undefined') return;
-      const rows = DirectoryModule.getFilteredMembers();
+      const rows = DirectoryModule.results;
       if (!rows.length) {
-        DirectoryModule.notify('No members to export');
+        DirectoryModule.notify('Search first, then export the results');
         return;
       }
-      const header = ['Full Name', 'Nickname', 'Batch', 'Graduation Year', 'Hospital', 'Field of Medicine', 'Specialization', 'Email', 'Mobile'];
+      const header = ['Full Name', 'Nickname', 'Batch', 'Hospital', 'Field of Medicine', 'Specialization', 'Email', 'Mobile'];
       const csvLines = [header.join(',')].concat(
-        rows.map(m => [m.name, m.nickname, m.batch, m.year, m.hospital, m.fieldOfMedicine || m.field, m.specialization, m.email, m.mobile]
+        rows.map(m => [m.name, m.nickname, m.batch, m.hospital, m.field, m.specialization, m.email, m.mobile]
           .map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','))
       );
       const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
@@ -360,20 +364,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       DirectoryModule.init();
-
-      // Update the "Showing X of Y" footer text after each render
-      const originalRender = DirectoryModule.renderMembers.bind(DirectoryModule);
-      DirectoryModule.renderMembers = function () {
-        originalRender();
-        const countEl = document.getElementById('directory-count-text');
-        if (countEl) {
-          const shown = this.getFilteredMembers().length;
-          const total = this.members.length;
-          countEl.innerHTML = `<i data-lucide="users" class="w-4 h-4 inline-block mr-1 align-middle"></i> Showing ${shown} of ${total} brothers in the directory`;
-          if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-      };
-      DirectoryModule.renderMembers();
     });
 
     lucide.createIcons();

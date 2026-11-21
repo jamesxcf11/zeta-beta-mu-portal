@@ -1,0 +1,586 @@
+[
+  {
+    "full_name": "Herman L. Dy",
+    "batch": "Founders",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 72
+  },
+  {
+    "full_name": "Romeo T. Maniulit",
+    "batch": "Founders",
+    "birth_year": 1949,
+    "death_year": 1993,
+    "specialty": null,
+    "sort_order": 71
+  },
+  {
+    "full_name": "Eldon Felipe",
+    "batch": null,
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 70
+  },
+  {
+    "full_name": "Lupo C. Guiab",
+    "batch": "Trio Los Lobos",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 69
+  },
+  {
+    "full_name": "Antonio L. Horca",
+    "batch": "Magnificent Seven",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 68
+  },
+  {
+    "full_name": "Ernesto L. Pineda",
+    "batch": "Anak Zeta",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 67
+  },
+  {
+    "full_name": "Aristeo R. Ramos",
+    "batch": "Master's Race",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 66
+  },
+  {
+    "full_name": "Mauro Del Casal",
+    "batch": null,
+    "birth_year": null,
+    "death_year": null,
+    "specialty": "Fraternity Adviser",
+    "sort_order": 65
+  },
+  {
+    "full_name": "Lorenzo M. Barredo",
+    "batch": "Wizcracks",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 64
+  },
+  {
+    "full_name": "Raymond Everette B. Zingapan",
+    "batch": "Wizcracks",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 63
+  },
+  {
+    "full_name": "Joselito F. Villanueva",
+    "batch": "Los Caballeros",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 62
+  },
+  {
+    "full_name": "Benjamin C. De Castro",
+    "batch": "Los Muskiteros",
+    "birth_year": 1966,
+    "death_year": 1993,
+    "specialty": null,
+    "sort_order": 61
+  },
+  {
+    "full_name": "Jose Rodel P. Galang",
+    "batch": "Batchamacallit",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 60
+  },
+  {
+    "full_name": "Bernard F. Hosaka",
+    "batch": "Los Caballeros",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 59
+  },
+  {
+    "full_name": "Amrafael A. Alfonso",
+    "batch": "Eye of Horus",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 58
+  },
+  {
+    "full_name": "Victor T. Jong Jr.",
+    "batch": "Batchamacallit",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 57
+  },
+  {
+    "full_name": "Ernesto C. Espanol",
+    "batch": "Anak Zeta",
+    "birth_year": 1954,
+    "death_year": 2007,
+    "specialty": null,
+    "sort_order": 56
+  },
+  {
+    "full_name": "Douglas L. Abadco",
+    "batch": "Guapitos",
+    "birth_year": 1955,
+    "death_year": 2007,
+    "specialty": null,
+    "sort_order": 55
+  },
+  {
+    "full_name": "Leopoldo G. Diaz Jr.",
+    "batch": "Old but Gold",
+    "birth_year": 1966,
+    "death_year": 2007,
+    "specialty": null,
+    "sort_order": 54
+  },
+  {
+    "full_name": "Emmanuel M. Roxas",
+    "batch": "Guapitos",
+    "birth_year": 1955,
+    "death_year": 2008,
+    "specialty": null,
+    "sort_order": 53
+  },
+  {
+    "full_name": "Edmundo M. Fullido",
+    "batch": "Koine",
+    "birth_year": 1959,
+    "death_year": 2010,
+    "specialty": null,
+    "sort_order": 52
+  },
+  {
+    "full_name": "Jaime D. Inawat",
+    "batch": "Founders",
+    "birth_year": 1950,
+    "death_year": 2009,
+    "specialty": null,
+    "sort_order": 51
+  },
+  {
+    "full_name": "Antonio T. Lavadia",
+    "batch": "Cosa Nostra",
+    "birth_year": 1951,
+    "death_year": 2011,
+    "specialty": null,
+    "sort_order": 50
+  },
+  {
+    "full_name": "Leandrito L. Rojas",
+    "batch": "Zetan Sheiks",
+    "birth_year": 1955,
+    "death_year": 2011,
+    "specialty": null,
+    "sort_order": 49
+  },
+  {
+    "full_name": "Antonio R. Saludo",
+    "batch": "Cosa Nostra",
+    "birth_year": 1952,
+    "death_year": 2013,
+    "specialty": null,
+    "sort_order": 48
+  },
+  {
+    "full_name": "Joseph L. Ortiz",
+    "batch": "Lone Ranger",
+    "birth_year": 1966,
+    "death_year": 2013,
+    "specialty": null,
+    "sort_order": 47
+  },
+  {
+    "full_name": "Albert G. Galut",
+    "batch": "Master's Race",
+    "birth_year": 1954,
+    "death_year": 2013,
+    "specialty": null,
+    "sort_order": 46
+  },
+  {
+    "full_name": "Dennis N. Dela Paz",
+    "batch": "Twin Peaks",
+    "birth_year": 1970,
+    "death_year": 2014,
+    "specialty": null,
+    "sort_order": 45
+  },
+  {
+    "full_name": "Malvin Ace D. Mindanao",
+    "batch": "Emeritus",
+    "birth_year": 1983,
+    "death_year": 2014,
+    "specialty": null,
+    "sort_order": 44
+  },
+  {
+    "full_name": "Vladimir Hilario P. Liwanag",
+    "batch": "Cosa Nostra",
+    "birth_year": 1953,
+    "death_year": 2015,
+    "specialty": null,
+    "sort_order": 43
+  },
+  {
+    "full_name": "Rafael M. Manicad",
+    "batch": "Cosa Nostra",
+    "birth_year": 1951,
+    "death_year": 2016,
+    "specialty": null,
+    "sort_order": 42
+  },
+  {
+    "full_name": "Oscar R. Henson",
+    "batch": "Founders",
+    "birth_year": 1947,
+    "death_year": 2016,
+    "specialty": null,
+    "sort_order": 41
+  },
+  {
+    "full_name": "Michael F. Ison",
+    "batch": "Adasperas",
+    "birth_year": 1972,
+    "death_year": 2016,
+    "specialty": null,
+    "sort_order": 40
+  },
+  {
+    "full_name": "Godofredo Gaza",
+    "batch": "Magnificent Seven",
+    "birth_year": 1948,
+    "death_year": 2016,
+    "specialty": null,
+    "sort_order": 39
+  },
+  {
+    "full_name": "Mario C. Muñoz",
+    "batch": "Patent",
+    "birth_year": 1954,
+    "death_year": 2016,
+    "specialty": null,
+    "sort_order": 38
+  },
+  {
+    "full_name": "Joel Tañedo",
+    "batch": "Coup D' Batch",
+    "birth_year": 1968,
+    "death_year": 2016,
+    "specialty": null,
+    "sort_order": 37
+  },
+  {
+    "full_name": "Danilo F. Inocencio",
+    "batch": "Cosa Nostra",
+    "birth_year": 1952,
+    "death_year": 2018,
+    "specialty": null,
+    "sort_order": 36
+  },
+  {
+    "full_name": "Edgar L. Astilla",
+    "batch": "Dirty Dozen",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 35
+  },
+  {
+    "full_name": "Luigi Ignacio C. Yap",
+    "batch": "Testosterone",
+    "birth_year": 1964,
+    "death_year": 2018,
+    "specialty": null,
+    "sort_order": 34
+  },
+  {
+    "full_name": "Mel Christian P. Calletor",
+    "batch": "Imperium",
+    "birth_year": 1991,
+    "death_year": 2019,
+    "specialty": null,
+    "sort_order": 33
+  },
+  {
+    "full_name": "Raymond R. Marbella",
+    "batch": "Koine",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 32
+  },
+  {
+    "full_name": "Jose Larry M. Oblena",
+    "batch": "Tulisan",
+    "birth_year": 1966,
+    "death_year": 2019,
+    "specialty": null,
+    "sort_order": 31
+  },
+  {
+    "full_name": "Arturo Jose M. Pua",
+    "batch": "Lahi ni Adan",
+    "birth_year": 1953,
+    "death_year": 2020,
+    "specialty": null,
+    "sort_order": 30
+  },
+  {
+    "full_name": "Ariel M. Ferreras",
+    "batch": "Patent",
+    "birth_year": 1957,
+    "death_year": 2020,
+    "specialty": null,
+    "sort_order": 29
+  },
+  {
+    "full_name": "David Jonathan Pagaduan",
+    "batch": "Twin Peaks",
+    "birth_year": 1971,
+    "death_year": 2020,
+    "specialty": null,
+    "sort_order": 28
+  },
+  {
+    "full_name": "Crisanto D. Bordador",
+    "batch": "Dirty Dozen",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 27
+  },
+  {
+    "full_name": "Edgardo H. Elazegui",
+    "batch": "Whizcracks",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 26
+  },
+  {
+    "full_name": "Ely Pe Benito",
+    "batch": null,
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 25
+  },
+  {
+    "full_name": "Asterio G. Saquing",
+    "batch": "Dirty Dozen",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 24
+  },
+  {
+    "full_name": "Edwin T. Talamayan",
+    "batch": "Lahi ni Adan",
+    "birth_year": 1953,
+    "death_year": 2021,
+    "specialty": null,
+    "sort_order": 23
+  },
+  {
+    "full_name": "Eduardo C. Co",
+    "batch": "Lahi ni Adan",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 22
+  },
+  {
+    "full_name": "Michael M. Mendoza",
+    "batch": "Koine",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 21
+  },
+  {
+    "full_name": "Nilo Ramirez Jr.",
+    "batch": "Twin Peaks",
+    "birth_year": 1971,
+    "death_year": 2023,
+    "specialty": null,
+    "sort_order": 20
+  },
+  {
+    "full_name": "Peter Ramon C. Wassmer",
+    "batch": "Compañeros",
+    "birth_year": 1960,
+    "death_year": 2023,
+    "specialty": null,
+    "sort_order": 19
+  },
+  {
+    "full_name": "Victor Mendoza",
+    "batch": "Cosa Nostra",
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 18
+  },
+  {
+    "full_name": "Cirilo Galvez",
+    "batch": null,
+    "birth_year": null,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 17
+  },
+  {
+    "full_name": "Adolfo R. Badillo Jr.",
+    "batch": "Dos Castillos",
+    "birth_year": 1963,
+    "death_year": 2023,
+    "specialty": null,
+    "sort_order": 16
+  },
+  {
+    "full_name": "Jonathan Feliciano A. Dizon",
+    "batch": "Koine",
+    "birth_year": 1960,
+    "death_year": null,
+    "specialty": null,
+    "sort_order": 15
+  },
+  {
+    "full_name": "Jose Giancarlo R. Pastor",
+    "batch": "Lipana",
+    "birth_year": 1963,
+    "death_year": 2023,
+    "specialty": null,
+    "sort_order": 14
+  },
+  {
+    "full_name": "Luthgardo H. Acosta",
+    "batch": "Los Muskiteros",
+    "birth_year": 1968,
+    "death_year": 2023,
+    "specialty": null,
+    "sort_order": 13
+  },
+  {
+    "full_name": "Poderoso B. Casuela Jr.",
+    "batch": "Lahi ni Adan",
+    "birth_year": 1953,
+    "death_year": 2024,
+    "specialty": null,
+    "sort_order": 12
+  },
+  {
+    "full_name": "Donald S. Camero",
+    "batch": "Compañeros",
+    "birth_year": 1961,
+    "death_year": 2024,
+    "specialty": null,
+    "sort_order": 11
+  },
+  {
+    "full_name": "Roy J. Cuison",
+    "batch": "Sexy Six",
+    "birth_year": 1953,
+    "death_year": 2024,
+    "specialty": null,
+    "sort_order": 10
+  },
+  {
+    "full_name": "Renato V. Torres",
+    "batch": "Zetan Sheiks",
+    "birth_year": 1954,
+    "death_year": 2024,
+    "specialty": null,
+    "sort_order": 9
+  },
+  {
+    "full_name": "Reynaldo C. Guerra",
+    "batch": "Founders",
+    "birth_year": 1948,
+    "death_year": 2024,
+    "specialty": null,
+    "sort_order": 8
+  },
+  {
+    "full_name": "Alfredo T. Gatmaitan",
+    "batch": "Guapitos",
+    "birth_year": 1955,
+    "death_year": 2025,
+    "specialty": null,
+    "sort_order": 7
+  },
+  {
+    "full_name": "Marlo H. Adalia",
+    "batch": "Guapitos",
+    "birth_year": 1955,
+    "death_year": 2025,
+    "specialty": null,
+    "sort_order": 6
+  },
+  {
+    "full_name": "Rolando Gerardo Dela Cruz",
+    "batch": "Kamikaze",
+    "birth_year": 1959,
+    "death_year": 2025,
+    "specialty": null,
+    "sort_order": 5
+  },
+  {
+    "full_name": "Tomas M. Realiza",
+    "batch": "Patent",
+    "birth_year": 1956,
+    "death_year": 2025,
+    "specialty": null,
+    "sort_order": 4
+  },
+  {
+    "full_name": "Nicasio Rommel D. Yatco",
+    "batch": "Testosterone",
+    "birth_year": 1965,
+    "death_year": 2025,
+    "specialty": null,
+    "sort_order": 3
+  },
+  {
+    "full_name": "David Salom Jr.",
+    "batch": null,
+    "birth_year": 1952,
+    "death_year": 2026,
+    "specialty": null,
+    "sort_order": 2
+  },
+  {
+    "full_name": "Gumersindo Garcia III",
+    "batch": null,
+    "birth_year": 1964,
+    "death_year": 2026,
+    "specialty": null,
+    "sort_order": 1
+  },
+  {
+    "full_name": "Emilio Hernandez Jr.",
+    "batch": null,
+    "birth_year": 1950,
+    "death_year": 2026,
+    "specialty": null,
+    "sort_order": 0
+  }
+]

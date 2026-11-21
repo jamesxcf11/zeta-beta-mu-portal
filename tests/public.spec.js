@@ -66,13 +66,13 @@ test.describe('About Us & Pillar Pages', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify([
-          { id: 1, full_name: 'Dr. Public <b>Brother</b>', nickname: null, batch: '1980', specialty: 'Surgery', birth_year: 1950, death_year: 2020, tribute: 'Remembered.', photo_url: null },
+          { id: 1, full_name: 'Public <b>Brother</b>', nickname: null, batch: '1980', specialty: 'Surgery', birth_year: 1950, death_year: 2020, tribute: 'Remembered.', photo_url: null },
         ]),
       });
     });
     await page.goto('/pillars-sacrifice.html');
     await expect(page.locator('#sacrifice-roll .memoriam-card')).toHaveCount(1);
-    await expect(page.locator('.memoriam-name')).toHaveText('Dr. Public <b>Brother</b>');
+    await expect(page.locator('.memoriam-name')).toHaveText('Patrix Dr. Public <b>Brother</b>');
     await expect(page.locator('#sacrifice-placeholder')).toHaveCount(0);
     await expect(page.locator('#sacrifice-roll a[href="memoriam.html"]')).toBeVisible();
     await expect(page.locator('#sacrifice-roll a.memoriam-card-link')).toHaveCount(0);
