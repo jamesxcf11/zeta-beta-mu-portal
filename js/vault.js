@@ -170,13 +170,17 @@ const VaultModule = {
    * Load vault items from Supabase and group into albums
    */
   async loadVaultItems() {
-    const { data, error } = await db
+    const cols = 'id, album_id, year, title, caption, media_url, thumbnail_url, file_key, thumb_key, category, event_date, location, is_featured, is_public';
+    const run = (c) => db
       .from('vault_items')
-      .select('id, album_id, year, title, caption, tags, media_url, thumbnail_url, file_key, thumb_key, category, event_date, location, is_featured, is_public')
+      .select(c)
       .eq('approval_status', 'approved')
       .is('deleted_at', null)
       .order('year', { ascending: false })
       .order('id', { ascending: true });
+    let { data, error } = await run(cols + ', tags');
+    // Older databases without migration 004 have no tags column; fall back to caption hashtags
+    if (error && error.code === '42703') ({ data, error } = await run(cols));
 
     if (error) {
       console.error('vault: loadVaultItems error', error);
@@ -235,12 +239,15 @@ const VaultModule = {
    * Load pending vault uploads from Supabase for officer review
    */
   async loadPendingUploads() {
-    const { data, error } = await db
+    const cols = 'id, album_id, title, category, caption, event_date, location, is_public, created_at, uploaded_by, file_key, thumb_key, media_url, thumbnail_url';
+    const run = (c) => db
       .from('vault_items')
-      .select('id, album_id, title, category, tags, caption, event_date, location, is_public, created_at, uploaded_by, file_key, thumb_key, media_url, thumbnail_url')
+      .select(c)
       .eq('approval_status', 'pending')
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
+    let { data, error } = await run(cols + ', tags');
+    if (error && error.code === '42703') ({ data, error } = await run(cols));
 
     if (error || !data) return;
 
@@ -1208,6 +1215,19 @@ const VaultModule = {
     }
   },
 
+  /**
+   * Insert a vault row; if the tags column doesn't exist yet (migration 004
+   * not applied), retry with the hashtags kept in the caption instead.
+   */
+  async insertVaultItem(row) {
+    const res = await db.from('vault_items').insert(row);
+    if (res.error && res.error.code === 'PGRST204' || (res.error && /tags/.test(res.error.message || ''))) {
+      const { tags, ...rest } = row;
+      return db.from('vault_items').insert({ ...rest, caption: (tags || []).map(t => this.formatTag(t)).join(' ') });
+    }
+    return res;
+  },
+
   async submitUploadForApproval() {
     const nameInput = document.getElementById('upload-album-name');
     const existingSelect = document.getElementById('upload-existing-album');
@@ -1282,7 +1302,7 @@ const VaultModule = {
             },
           });
 
-          const { error: insertError } = await db.from('vault_items').insert({
+          const { error: insertError } = await this.insertVaultItem({
             album_id: albumId,
             year: year,
             title: albumName,
@@ -1338,7 +1358,7 @@ const VaultModule = {
           errors.push(`"${file.name}" is not an image`);
           continue;
         }
-        const { error: insertError } = await db.from('vault_items').insert({
+        const { error: insertError } = await this.insertVaultItem({
           album_id: albumId,
           year: year,
           title: albumName,
