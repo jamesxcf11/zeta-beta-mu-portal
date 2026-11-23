@@ -198,18 +198,21 @@ const FeedModule = {
   async loadPosts() {
     this.feedLoadError = null;
     let result;
+    const fetchPosts = (extra) => db
+      .from('posts')
+      .select(`
+        id, content, image_url, image_key, is_pinned, post_type, status, created_at, updated_at${extra},
+        member_id, members:member_id (name, avatar_url, hospital, field_of_medicine, role)
+      `)
+      .eq('status', 'published')
+      .is('deleted_at', null)
+      .order('is_pinned', { ascending: false })
+      .order('created_at', { ascending: false })
+      .limit(20);
     try {
-      result = await db
-        .from('posts')
-        .select(`
-          id, content, image_url, image_key, is_pinned, post_type, status, created_at, updated_at,
-          member_id, members:member_id (name, avatar_url, hospital, field_of_medicine, role)
-        `)
-        .eq('status', 'published')
-        .is('deleted_at', null)
-        .order('is_pinned', { ascending: false })
-        .order('created_at', { ascending: false })
-        .limit(20);
+      result = await fetchPosts(', vault_album_id');
+      // Databases without migration 014 have no vault_album_id column
+      if (result.error && result.error.code === '42703') result = await fetchPosts('');
     } catch (error) {
       result = { error };
     }
@@ -269,6 +272,7 @@ const FeedModule = {
         timestamp: new Date(p.created_at),
         updatedAt: new Date(p.updated_at || p.created_at),
         isPinned: p.is_pinned,
+        vaultAlbumId: p.vault_album_id || null,
         type: p.post_type || 'general',
         reactions: {
           like: reactionCounts.like || 0,
@@ -295,12 +299,16 @@ const FeedModule = {
    * Load announcements from Supabase
    */
   async loadAnnouncements() {
-    const { data, error } = await db
+    const fetchAnnouncements = (extra) => db
       .from('announcements')
-      .select('id, title, content, priority, is_pinned, starts_at, created_at')
+      .select('id, title, content, priority, is_pinned, starts_at, created_at' + extra)
       .is('deleted_at', null)
       .order('is_pinned', { ascending: false })
       .order('created_at', { ascending: false });
+
+    let { data, error } = await fetchAnnouncements(', vault_album_id');
+    // Databases without migration 014 have no vault_album_id column
+    if (error && error.code === '42703') ({ data, error } = await fetchAnnouncements(''));
 
     if (error || !data) return;
 
@@ -315,6 +323,7 @@ const FeedModule = {
       content: a.content,
       icon: iconMap[a.priority] || 'megaphone',
       accent: accentMap[a.priority] || 'gold',
+      vaultAlbumId: a.vault_album_id || null,
       unread: false
     }));
   },
@@ -675,6 +684,7 @@ const FeedModule = {
         ${isEditing ? this.createEditFormHTML(post) : `
           <div class="post-content">${safeContent}</div>
           ${post.image ? `<img src="${this.escapeHTML(post.image)}" alt="Post image" class="post-image" loading="lazy" decoding="async">` : ''}
+          ${post.vaultAlbumId ? `<a class="btn btn-gold btn-sm post-vault-link" href="vault.html?album=${encodeURIComponent(post.vaultAlbumId)}"><i data-lucide="archive" class="w-4 h-4"></i> View album in the Vault</a>` : ''}
         `}
         
         <div class="post-actions">
@@ -972,6 +982,7 @@ const FeedModule = {
         <div class="widget-content">
           <div class="announcement-title">${safeTitle}</div>
           <div class="announcement-desc">${safeContent}</div>
+          ${announcement.vaultAlbumId ? `<a class="announcement-link" href="vault.html?album=${encodeURIComponent(announcement.vaultAlbumId)}">View album</a>` : ''}
           <div class="announcement-date">${dateLabel}</div>
         </div>
         ${unreadDot}

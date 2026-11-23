@@ -15671,8 +15671,6 @@ html:has(body.home-page) {
   color: #fff;
 }
 
-.vault-view-all { white-space: nowrap; flex-shrink: 0; }
-.vault-sort { flex-wrap: wrap; }
 
 /* Officer: edit album details */
 .vault-edit-btn {
@@ -15694,3 +15692,48 @@ html:has(body.home-page) {
 .vault-hero-edit { margin: 0.75rem 0 0; }
 .vault-edit-card { max-width: 480px; }
 .vault-edit-card .form-group { margin-bottom: 0.9rem; }
+
+.vault-stat-button {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.vault-stat-button:focus-visible {
+  outline: 2px solid var(--gold-text);
+  outline-offset: 2px;
+}
+
+/* Share album with members */
+.vault-queue-share {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  padding: 0.6rem 0;
+  font-size: 0.85rem;
+  color: var(--text-subtle);
+  border-bottom: 1px solid var(--feed-card-border, rgba(255, 255, 255, 0.1));
+}
+
+.vault-queue-share label,
+.vault-share-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.vault-share-option {
+  display: flex;
+  margin: 0.75rem 0;
+  color: var(--text-on-card);
+}
+
+.vault-share-option em { color: var(--text-subtle); font-style: normal; }
+.vault-edit-btn:disabled { opacity: 0.6; cursor: default; }
+
+.post-vault-link { margin: 0.75rem 1rem 1rem; text-decoration: none; }
+.announcement-link { font-size: 0.8rem; font-weight: 600; color: var(--gold-text, var(--accent-gold)); text-decoration: underline; }

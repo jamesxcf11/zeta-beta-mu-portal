@@ -148,6 +148,27 @@ test.describe('Vault (vault.html)', () => {
     await expect(page.locator('#vault-review-content')).toContainText('#revalida');
   });
 
+  test('Albums stat is a button that returns to the default vault view', async ({ page }) => {
+    await page.fill('#vault-search', 'zzz');
+    await expect(page.locator('.album-card')).toHaveCount(0);
+    await page.click('button.vault-stat-button');
+    await expect(page.locator('#vault-search')).toHaveValue('');
+    await expect(page.locator('.album-card')).toHaveCount(1);
+
+    await page.locator('.album-card').first().click();
+    await expect(page.locator('.album-hero-card')).toBeVisible();
+    await page.click('button.vault-stat-button');
+    await expect(page.locator('.album-hero-card')).toHaveCount(0);
+    await expect(page.locator('.album-card')).toHaveCount(1);
+
+    // Photos stat opens the all-photos view
+    await page.locator('button.vault-stat-button', { hasText: 'Photos' }).click();
+    await expect(page.locator('.album-hero-title')).toHaveText('All Photos');
+    await expect(page.locator('.album-grid-item')).toHaveCount(2);
+    await page.locator('button.vault-stat-button', { hasText: 'Albums' }).click();
+    await expect(page.locator('.album-card')).toHaveCount(1);
+  });
+
   test('upload form rejects blank/"none" titles and a missing date', async ({ page }) => {
     await page.click('button:has-text("Upload Photos")');
     await page.setInputFiles('#vault-file-input', { name: 'a.jpg', mimeType: 'image/jpeg', buffer: Buffer.from('x') });
@@ -257,6 +278,66 @@ test.describe('Vault - officer/admin session', () => {
     const all = await page.evaluate(() => window.__patches);
     expect(all.at(-1).body).toEqual({ approval_status: 'approved' });
     expect(all.at(-1).url).toContain('album_id=in.');
+  });
+
+  test('approving with share options posts to the feed and announcements once', async ({ page }) => {
+    const rows = [pendingRow(1, 'test-album-2025', 'Gala 2025')];
+    await openOfficerVault(page, rows);
+    const posts = [];
+    await page.route('**/rest/v1/posts**', async (route) => {
+      if (route.request().method() === 'POST') {
+        posts.push({ t: 'posts', body: route.request().postDataJSON() });
+        return route.fulfill({ status: 201, contentType: 'application/json', body: '{"id":901}' });
+      }
+      return route.fallback();
+    });
+    await page.route('**/rest/v1/announcements**', async (route) => {
+      if (route.request().method() === 'POST') {
+        posts.push({ t: 'announcements', body: route.request().postDataJSON() });
+        return route.fulfill({ status: 201, contentType: 'application/json', body: '{"id":902}' });
+      }
+      return route.fallback();
+    });
+
+    await page.click('#vault-review-queue-btn');
+    const drawer = page.locator('#vault-queue-drawer');
+    await expect(drawer.locator('#queue-share-feed')).not.toBeChecked();
+    await expect(drawer.locator('#queue-share-announce')).not.toBeChecked();
+    await drawer.locator('#queue-share-feed').check();
+    await drawer.locator('#queue-share-announce').check();
+    await drawer.locator('.vault-approval-item').first().getByRole('button', { name: 'Approve' }).click();
+
+    await expect.poll(() => posts.length).toBe(2);
+    const feed = posts.find(p => p.t === 'posts').body;
+    expect(feed).toMatchObject({ post_type: 'vault_album', vault_album_id: 'test-album-2025', status: 'published' });
+    expect(feed.content).toContain('New in the Vault');
+    const ann = posts.find(p => p.t === 'announcements').body;
+    expect(ann).toMatchObject({ vault_album_id: 'test-album-2025', priority: 'normal' });
+    const patches = await page.evaluate(() => window.__patches);
+    expect(patches.some(p => p.body.shared_post_id === 901 && p.body.shared_announcement_id === 902)).toBeTruthy();
+
+    // Already shared: the card button is now disabled
+    await expect(page.locator('.album-card').getByRole('button', { name: /Already shared/ })).toBeDisabled();
+  });
+
+  test('share dialog on an approved album', async ({ page }) => {
+    await openOfficerVault(page);
+    const calls = [];
+    await page.route('**/rest/v1/posts**', async (route) => {
+      if (route.request().method() === 'POST') {
+        calls.push(route.request().postDataJSON());
+        return route.fulfill({ status: 201, contentType: 'application/json', body: '{"id":5}' });
+      }
+      return route.fallback();
+    });
+    await page.locator('.album-card').getByRole('button', { name: /Share/ }).first().click();
+    await page.locator('.vault-share [data-act="ok"]').click();
+    await expect(page.locator('.vault-share')).toHaveCount(1); // nothing chosen: stays open
+    await page.locator('#share-feed').check();
+    await page.locator('.vault-share [data-act="ok"]').click();
+    await expect(page.locator('.vault-share')).toHaveCount(0);
+    expect(calls).toHaveLength(1);
+    expect(calls[0].vault_album_id).toBe('test-album-2025');
   });
 
   test('making an album public needs confirmation', async ({ page }) => {

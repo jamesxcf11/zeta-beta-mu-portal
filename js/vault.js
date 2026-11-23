@@ -197,6 +197,10 @@ const VaultModule = {
     this.setupEventListeners();
     this.setupUploadModalListeners();
     this.renderStats();
+
+    // Deep link from a feed post / announcement: vault.html?album=<id>
+    const linked = new URLSearchParams(window.location.search).get('album');
+    if (linked && this.albums.some(a => a.id === linked)) this.openAlbum(linked);
   },
 
   /**
@@ -211,8 +215,9 @@ const VaultModule = {
       .is('deleted_at', null)
       .order('year', { ascending: false })
       .order('id', { ascending: true });
-    let { data, error } = await run(cols + ', tags');
-    // Older databases without migration 004 have no tags column; fall back to caption hashtags
+    // Older databases may lack the tags (004) / sharing (014) columns; fall back step by step
+    let { data, error } = await run(cols + ', tags, shared_post_id, shared_announcement_id');
+    if (error && error.code === '42703') ({ data, error } = await run(cols + ', tags'));
     if (error && error.code === '42703') ({ data, error } = await run(cols));
 
     if (error) {
@@ -252,12 +257,16 @@ const VaultModule = {
           categoryColor: meta.color,
           isPublic: item.is_public,
           eventDate: item.event_date || '',
+          sharedPostId: null,
+          sharedAnnouncementId: null,
           tags: itemTags,
           photos: []
         };
       } else if (itemTags.length > 0) {
         albumMap[albumId].tags = this.parseTags([...(albumMap[albumId].tags || []), ...itemTags]);
       }
+      if (item.shared_post_id) albumMap[albumId].sharedPostId = item.shared_post_id;
+      if (item.shared_announcement_id) albumMap[albumId].sharedAnnouncementId = item.shared_announcement_id;
       albumMap[albumId].photos.push({
         src: item.media_url,
         thumb: item.thumbnail_url || item.media_url,
@@ -983,7 +992,6 @@ const VaultModule = {
     container.innerHTML = `
       <div class="vault-filter-chips">${chips}</div>
       <div class="vault-sort">
-        ${this.albums.length ? `<button class="btn btn-glass btn-sm vault-view-all" onclick="VaultModule.showAllPhotos()"><i data-lucide="images" class="w-4 h-4"></i> View all photos</button>` : ''}
         <label for="vault-sort-select" class="vault-sort-label">Sort</label>
         <select id="vault-sort-select" class="glass-input vault-sort-select" onchange="VaultModule.setSort(this.value)">
           <option value="newest" ${this.sortBy === 'newest' ? 'selected' : ''}>Newest first</option>
@@ -1090,6 +1098,14 @@ const VaultModule = {
     this.applyFilters();
   },
 
+  /**
+   * Back to the default vault view: leave any open album/lightbox and clear all filters
+   */
+  resetView() {
+    this.clearAllFilters();
+    document.getElementById('vault-filters')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
+
   setSort(value) {
     this.sortBy = value;
     this.applyFilters();
@@ -1149,8 +1165,10 @@ const VaultModule = {
              <span class="vault-vis-text">${isPublic ? 'Public' : 'Members only'}</span>
            </button>`
         : '';
+      const fullyShared = !!(album.sharedPostId && album.sharedAnnouncementId);
       const editBtn = this.officerView && this.isOfficer()
-        ? `<button class="vault-edit-btn" onclick="VaultModule.openEditAlbum('${e(album.id)}', event)" aria-label="Edit details of ${e(album.title)}"><i data-lucide="pencil" class="w-3 h-3"></i> Edit</button>`
+        ? `<button class="vault-edit-btn" onclick="VaultModule.openEditAlbum('${e(album.id)}', event)" aria-label="Edit details of ${e(album.title)}"><i data-lucide="pencil" class="w-3 h-3"></i> Edit</button>
+           <button class="vault-edit-btn" ${fullyShared ? 'disabled' : ''} onclick="VaultModule.openShareAlbum('${e(album.id)}', event)" aria-label="${fullyShared ? 'Already shared' : 'Share'} ${e(album.title)} with members"><i data-lucide="${fullyShared ? 'check' : 'share-2'}" class="w-3 h-3"></i> ${fullyShared ? 'Shared' : (album.sharedPostId || album.sharedAnnouncementId ? 'Share more' : 'Share')}</button>`
         : '';
       return `
       <div class="album-card glass-card" tabindex="0" aria-label="Open album ${e(album.title)}" onclick="VaultModule.openAlbum('${e(album.id)}')" onkeydown="if (event.target === this && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); VaultModule.openAlbum('${e(album.id)}'); }">
@@ -1216,6 +1234,155 @@ const VaultModule = {
     const panel = document.getElementById('officer-approval-panel');
     if (panel) panel.style.display = this.officerView ? 'block' : 'none';
     this.renderAlbumGrid();
+  },
+
+  /**
+   * Share an approved album to members: a Home feed post and/or an announcement.
+   * Officer-only. Records the created ids on the album's vault_items rows so it
+   * can't be shared twice. Returns { posted, announced, errors }.
+   */
+  async shareAlbum(albumId, { feed = false, announce = false } = {}) {
+    const result = { posted: false, announced: false, errors: [] };
+    if (!this.isOfficer() || (!feed && !announce)) return result;
+    const album = this.albums.find(a => a.id === albumId);
+    if (!album) {
+      result.errors.push('Album not found');
+      return result;
+    }
+
+    let memberId = null;
+    try { memberId = JSON.parse(localStorage.getItem('zbm-session') || 'null')?.id || null; } catch (e) { /* no session */ }
+    if (this.hasSupabase() && !memberId) {
+      result.errors.push('Please log in again to share');
+      return result;
+    }
+
+    const count = album.photos.length;
+    const photos = `${count} photo${count === 1 ? '' : 's'}`;
+    const title = album.title;
+    const patch = {};
+
+    if (feed && !album.sharedPostId) {
+      const row = {
+        member_id: memberId,
+        content: `New in the Vault: ${title} (${photos})`,
+        image_url: album.photos[0]?.src || album.coverImage || null,
+        post_type: 'vault_album',
+        status: 'published',
+        vault_album_id: album.id
+      };
+      if (this.hasSupabase()) {
+        const { data, error } = await db.from('posts').insert(row).select('id').single();
+        if (error) result.errors.push('Feed post failed: ' + error.message);
+        else { patch.shared_post_id = data.id; result.posted = true; }
+      } else {
+        patch.shared_post_id = Date.now();
+        result.posted = true;
+      }
+    }
+
+    if (announce && !album.sharedAnnouncementId) {
+      const row = {
+        title: `New in the Vault: ${title}`,
+        content: `${title}${album.date ? ' (' + album.date + ')' : ''} - ${photos}. Open the Vault to view the album.`,
+        author_id: memberId,
+        priority: 'normal',
+        vault_album_id: album.id
+      };
+      if (this.hasSupabase()) {
+        const { data, error } = await db.from('announcements').insert(row).select('id').single();
+        if (error) result.errors.push('Announcement failed: ' + error.message);
+        else { patch.shared_announcement_id = data.id; result.announced = true; }
+      } else {
+        patch.shared_announcement_id = Date.now();
+        result.announced = true;
+      }
+    }
+
+    if (Object.keys(patch).length) {
+      if (this.hasSupabase()) {
+        const { error } = await db.from('vault_items').update(patch).eq('album_id', album.id);
+        if (error) result.errors.push('Could not record sharing: ' + error.message);
+      }
+      if (patch.shared_post_id) album.sharedPostId = patch.shared_post_id;
+      if (patch.shared_announcement_id) album.sharedAnnouncementId = patch.shared_announcement_id;
+    }
+    return result;
+  },
+
+  shareSummary(result) {
+    const parts = [];
+    if (result.posted) parts.push('posted to the Home feed');
+    if (result.announced) parts.push('announcement sent');
+    return parts.join(' and ');
+  },
+
+  /**
+   * Dialog for sharing an already-approved album (feed post and/or announcement)
+   */
+  openShareAlbum(albumId, event) {
+    if (event) event.stopPropagation();
+    if (!this.isOfficer()) return;
+    const album = this.albums.find(a => a.id === albumId);
+    if (!album) return;
+
+    const prev = document.activeElement;
+    const e = (s) => this.escapeHTML(s);
+    const modal = document.createElement('div');
+    modal.className = 'vault-modal vault-confirm vault-share';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Share album with members');
+    const opt = (id, label, done) => `
+      <label class="vault-share-option ${done ? 'is-done' : ''}">
+        <input type="checkbox" id="${id}" ${done ? 'checked disabled' : ''}>
+        <span>${label}${done ? ' <em>(already shared)</em>' : ''}</span>
+      </label>`;
+    modal.innerHTML = `
+      <div class="vault-modal-backdrop" data-act="cancel"></div>
+      <div class="vault-modal-card glass-heavy vault-confirm-card">
+        <h3 class="vault-modal-title"><i data-lucide="share-2" class="w-5 h-5"></i> Share with members</h3>
+        <p class="vault-modal-sub">${e(album.title)}</p>
+        ${opt('share-feed', 'Post to Home feed', !!album.sharedPostId)}
+        ${opt('share-announce', 'Send announcement', !!album.sharedAnnouncementId)}
+        <div class="vault-modal-actions">
+          <button type="button" class="btn btn-glass btn-sm" data-act="cancel">Cancel</button>
+          <button type="button" class="btn btn-gold btn-sm btn-gold-filled" data-act="ok">Share</button>
+        </div>
+      </div>`;
+
+    const close = () => {
+      modal.remove();
+      if (prev && prev.focus && document.body.contains(prev)) prev.focus();
+    };
+    modal.addEventListener('click', async (ev) => {
+      const act = ev.target.closest('[data-act]')?.dataset.act;
+      if (act === 'cancel') return close();
+      if (act !== 'ok') return;
+      const feed = !album.sharedPostId && modal.querySelector('#share-feed').checked;
+      const announce = !album.sharedAnnouncementId && modal.querySelector('#share-announce').checked;
+      if (!feed && !announce) {
+        this.showToast('Choose where to share this album');
+        return;
+      }
+      ev.target.closest('[data-act]').disabled = true;
+      const res = await this.shareAlbum(album.id, { feed, announce });
+      close();
+      this.renderAlbumGrid();
+      if (res.errors.length) this.showToast(res.errors[0]);
+      else this.showToast(`"${album.title}": ${this.shareSummary(res)}`);
+    });
+    modal.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') { ev.stopPropagation(); close(); return; }
+      if (ev.key !== 'Tab') return;
+      const f = [...modal.querySelectorAll('input:not([disabled]), button:not([disabled])')];
+      const first = f[0], last = f[f.length - 1];
+      if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+      else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+    });
+    document.body.appendChild(modal);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    (modal.querySelector('input:not([disabled])') || modal.querySelector('[data-act="cancel"]')).focus();
   },
 
   /**
@@ -1679,6 +1846,7 @@ const VaultModule = {
     return this.pendingUploads.find(p => this.pendingKey(p) === String(key) || String(p.id) === String(key));
   },
 
+  queueShare: { feed: false, announce: false },
   queueSelected: new Set(),
   queueRejectKey: null,
   queueLastFocus: null,
@@ -1737,6 +1905,7 @@ const VaultModule = {
     this.queueLastFocus = document.activeElement;
     this.queueSelected = new Set();
     this.queueRejectKey = null;
+    this.queueShare = { feed: false, announce: false };
     this.renderQueue();
     drawer.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -1748,6 +1917,7 @@ const VaultModule = {
     if (drawer) drawer.classList.add('hidden');
     document.body.style.overflow = '';
     this.queueRejectKey = null;
+    this.queueShare = { feed: false, announce: false };
     if (this.queueLastFocus && this.queueLastFocus.focus) this.queueLastFocus.focus();
   },
 
@@ -1816,6 +1986,11 @@ const VaultModule = {
               <button class="btn btn-gold btn-sm btn-gold-filled" ${sel ? '' : 'disabled'} onclick="VaultModule.approveSelected()">Approve selected (${sel})</button>
               <button class="btn btn-gold btn-sm" onclick="VaultModule.approveAll()">Approve all</button>
             </div>
+          </div>
+          <div class="vault-queue-share" role="group" aria-label="Share with members when approved">
+            <span class="vault-queue-share-label">When approved, also:</span>
+            <label><input type="checkbox" id="queue-share-feed" ${this.queueShare.feed ? 'checked' : ''} onchange="VaultModule.queueShare.feed = this.checked"> Post to Home feed</label>
+            <label><input type="checkbox" id="queue-share-announce" ${this.queueShare.announce ? 'checked' : ''} onchange="VaultModule.queueShare.announce = this.checked"> Send announcement</label>
           </div>
           <div class="vault-queue-list">${rows}</div>` : '<p class="vault-approval-empty">No pending uploads awaiting review.</p>'}
       </div>
@@ -2125,12 +2300,28 @@ const VaultModule = {
     this.queueSelected = new Set();
     this.closePendingPreview();
     await this.loadVaultItems();
+
+    // Optional: share the newly approved albums with members
+    const { feed, announce } = this.queueShare;
+    let shared = 0;
+    const shareErrors = [];
+    if (feed || announce) {
+      for (const id of albumIds) {
+        const res = await this.shareAlbum(id, { feed, announce });
+        if (res.posted || res.announced) shared++;
+        shareErrors.push(...res.errors);
+      }
+    }
+
     this.renderPendingApprovals();
     this.applyFilters();
     this.renderWeeklyHighlights();
-    this.showToast(items.length === 1
+    const approvedMsg = items.length === 1
       ? `"${items[0].albumName}" approved and published to the Vault`
-      : `${items.length} submissions approved and published to the Vault`);
+      : `${items.length} submissions approved and published to the Vault`;
+    this.showToast(shareErrors.length
+      ? `${approvedMsg}, but sharing failed: ${shareErrors[0]}`
+      : approvedMsg + (shared ? ` and shared with members` : ''));
   },
 
   /**
@@ -2517,20 +2708,20 @@ const VaultModule = {
       </div>` : '';
 
     statsContainer.innerHTML = `
-      <div class="vault-stat">
+      <button type="button" class="vault-stat vault-stat-clickable vault-stat-button" onclick="VaultModule.resetView()" aria-label="${this.albums.length} albums. Back to all albums">
         <i data-lucide="folder" class="w-6 h-6 text-[#d4af37]"></i>
         <div>
           <span class="vault-stat-value">${this.albums.length}</span>
           <span class="vault-stat-label">Albums</span>
         </div>
-      </div>
-      <div class="vault-stat">
+      </button>
+      <button type="button" class="vault-stat vault-stat-clickable vault-stat-button" onclick="VaultModule.showAllPhotos()" aria-label="${totalPhotos} photos. Show all photos">
         <i data-lucide="images" class="w-6 h-6 text-[#d4af37]"></i>
         <div>
           <span class="vault-stat-value">${totalPhotos}</span>
           <span class="vault-stat-label">Photos</span>
         </div>
-      </div>
+      </button>
       ${yearControl}
     `;
 
@@ -2599,6 +2790,7 @@ const VaultModule = {
     };
 
     this.renderAlbumView();
+    document.getElementById('vault-gallery')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   },
 
   /**
