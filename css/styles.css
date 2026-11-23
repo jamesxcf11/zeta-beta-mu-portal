@@ -14408,6 +14408,74 @@ body.dark-theme.landing-page {
   border-color: rgba(146, 112, 12, 0.35);
 }
 
+.vault-tag-row,
+.vault-results-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.vault-tag-chip,
+.vault-active-chip,
+.vault-clear-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 999px;
+  color: #f3d67b;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.vault-tag-chip:hover,
+.vault-active-chip:hover,
+.vault-clear-filters:hover {
+  background: rgba(212, 175, 55, 0.22);
+}
+
+.vault-tag-chip.active {
+  color: #0f281e;
+  background: #c9a048;
+  border-color: #c9a048;
+}
+
+.vault-clear-filters {
+  background: transparent;
+  text-decoration: underline;
+  border-color: transparent;
+}
+
+.vault-results-count {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  margin-right: 0.25rem;
+}
+
+.vault-empty-clear {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.light-theme .vault-tag-chip,
+.light-theme .vault-active-chip,
+.light-theme .vault-clear-filters {
+  color: #785c08;
+  border-color: rgba(146, 112, 12, 0.35);
+}
+
+.light-theme .vault-tag-chip.active {
+  color: #fff;
+  background: #92700c;
+  border-color: #92700c;
+}
+
 .pillar-vault-card {
   position: relative;
   cursor: pointer;

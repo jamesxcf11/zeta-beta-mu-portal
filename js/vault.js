@@ -23,6 +23,8 @@ const VaultModule = {
   lightboxOpen: false,
   searchQuery: '',
   selectedCategory: 'all',
+  selectedTags: [],
+  searchTimer: null,
   selectedYear: 'all',
   sortBy: 'newest',
   yearDropdownOpen: false,
@@ -123,6 +125,13 @@ const VaultModule = {
   },
 
   /**
+   * Remove #hashtags from a caption (legacy rows stored tags there)
+   */
+  stripCaptionTags(caption) {
+    return String(caption || '').replace(/#[a-zA-Z0-9_-]+/g, '').replace(/\s{2,}/g, ' ').trim();
+  },
+
+  /**
    * Format a normalized tag token with a leading #
    */
   formatTag(tag) {
@@ -163,7 +172,7 @@ const VaultModule = {
   async loadVaultItems() {
     const { data, error } = await db
       .from('vault_items')
-      .select('id, album_id, year, title, caption, media_url, thumbnail_url, file_key, thumb_key, category, event_date, location, is_featured, is_public')
+      .select('id, album_id, year, title, caption, tags, media_url, thumbnail_url, file_key, thumb_key, category, event_date, location, is_featured, is_public')
       .eq('approval_status', 'approved')
       .is('deleted_at', null)
       .order('year', { ascending: false })
@@ -195,7 +204,7 @@ const VaultModule = {
         albumMap[albumId] = {
           id: albumId,
           title: item.title,
-          description: item.caption || '',
+          description: this.stripCaptionTags(item.caption),
           date: dateStr,
           location: item.location || 'Unknown',
           coverImage: item.thumbnail_url || item.media_url,
@@ -212,7 +221,7 @@ const VaultModule = {
       albumMap[albumId].photos.push({
         src: item.media_url,
         thumb: item.thumbnail_url || item.media_url,
-        caption: item.caption || '',
+        caption: this.stripCaptionTags(item.caption),
         tags: itemTags,
         fileKey: item.file_key,
         thumbKey: item.thumb_key
@@ -228,7 +237,7 @@ const VaultModule = {
   async loadPendingUploads() {
     const { data, error } = await db
       .from('vault_items')
-      .select('id, album_id, title, category, event_date, location, is_public, created_at, uploaded_by, file_key, thumb_key, media_url, thumbnail_url')
+      .select('id, album_id, title, category, tags, caption, event_date, location, is_public, created_at, uploaded_by, file_key, thumb_key, media_url, thumbnail_url')
       .eq('approval_status', 'pending')
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
@@ -248,6 +257,7 @@ const VaultModule = {
           location: item.location || '',
           visibility: item.is_public ? 'public' : 'private',
           category: this.CATEGORY_MAP[item.category] || 'Other',
+          tags: this.parseTags([...(Array.isArray(item.tags) ? item.tags : []), ...this.extractCaptionTags(item.caption)]),
           fileCount: 1,
           submittedBy: 'Member #' + item.uploaded_by,
           submittedAt: item.created_at,
@@ -263,6 +273,7 @@ const VaultModule = {
       } else {
         albumMap[albumId].fileCount++;
         albumMap[albumId].id = item.id;
+        albumMap[albumId].tags = this.parseTags([...albumMap[albumId].tags, ...(Array.isArray(item.tags) ? item.tags : []), ...this.extractCaptionTags(item.caption)]);
         if (item.file_key) albumMap[albumId].r2Keys.push(item.file_key);
         if (item.thumb_key) albumMap[albumId].r2Keys.push(item.thumb_key);
         albumMap[albumId].photos.push({
@@ -867,12 +878,39 @@ const VaultModule = {
     const counts = {};
     this.albums.forEach(a => { counts[a.category] = (counts[a.category] || 0) + 1; });
 
+    const e = (s) => this.escapeHTML(s);
+    const cats = [...this.CATEGORIES, ...Object.keys(counts).filter(c => !this.CATEGORIES.includes(c))];
     const chips = [
       `<button class="filter-chip ${this.selectedCategory === 'all' ? 'active' : ''}" onclick="VaultModule.filterByCategory('all')">All <span class="chip-count">${this.albums.length}</span></button>`,
-      ...this.CATEGORIES.map(cat =>
-        `<button class="filter-chip ${this.selectedCategory === cat ? 'active' : ''}" onclick="VaultModule.filterByCategory('${cat.replace(/'/g, "\\'")}')">${cat} <span class="chip-count">${counts[cat] || 0}</span></button>`
+      ...cats.map(cat =>
+        `<button class="filter-chip ${this.selectedCategory === cat ? 'active' : ''}" onclick="VaultModule.filterByCategory('${e(cat).replace(/&#039;/g, "\\'")}')">${e(cat)} <span class="chip-count">${counts[cat] || 0}</span></button>`
       )
     ].join('');
+
+    const tagCounts = {};
+    this.albums.forEach(a => (a.tags || []).forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; }));
+    const popular = Object.keys(tagCounts)
+      .sort((a, b) => tagCounts[b] - tagCounts[a] || a.localeCompare(b))
+      .slice(0, 12);
+    for (const t of this.selectedTags) if (!popular.includes(t)) popular.unshift(t);
+    const tagRow = popular.length
+      ? `<div class="vault-tag-row" id="vault-tag-row">${popular.map(t =>
+          `<button class="vault-tag-chip ${this.selectedTags.includes(t) ? 'active' : ''}" data-tag="${e(t)}" onclick="VaultModule.filterByTag('${e(t)}', event)">${e(this.formatTag(t))}${tagCounts[t] ? ` <span class="chip-count">${tagCounts[t]}</span>` : ''}</button>`
+        ).join('')}</div>`
+      : '';
+
+    const filtered = this.getFilteredAlbums();
+    const active = [];
+    if (this.searchQuery.trim()) active.push({ label: `"${this.searchQuery.trim()}"`, fn: 'clearSearch()' });
+    if (this.selectedCategory !== 'all') active.push({ label: this.selectedCategory, fn: "filterByCategory('all')" });
+    if (this.selectedYear !== 'all') active.push({ label: this.selectedYear, fn: "filterByYear('all')" });
+    this.selectedTags.forEach(t => active.push({ label: this.formatTag(t), fn: `filterByTag('${e(t)}')` }));
+    const activeBar = `
+      <div class="vault-results-bar" id="vault-results-bar">
+        <span class="vault-results-count" id="vault-results-count">${filtered.length} album${filtered.length === 1 ? '' : 's'}</span>
+        ${active.map(a => `<button class="vault-active-chip" onclick="VaultModule.${a.fn}">${e(a.label)} <i data-lucide="x" class="w-3 h-3"></i></button>`).join('')}
+        ${active.length ? `<button class="vault-clear-filters" id="vault-clear-filters" onclick="VaultModule.clearAllFilters()">Clear all</button>` : ''}
+      </div>`;
 
     container.innerHTML = `
       <div class="vault-filter-chips">${chips}</div>
@@ -884,27 +922,108 @@ const VaultModule = {
           <option value="photos" ${this.sortBy === 'photos' ? 'selected' : ''}>Most photos</option>
         </select>
       </div>
+      ${tagRow}
+      ${activeBar}
     `;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Albums matching the current year/category/tag/search filters, sorted
+   */
+  getFilteredAlbums() {
+    let list = this.albums;
+
+    if (this.selectedYear !== 'all') {
+      list = list.filter(a => ((a.date.match(/(\d{4})/) || [])[1]) === String(this.selectedYear));
+    }
+    if (this.selectedCategory !== 'all') {
+      list = list.filter(a => a.category.toLowerCase() === this.selectedCategory.toLowerCase());
+    }
+    if (this.selectedTags.length) {
+      list = list.filter(a => this.selectedTags.every(t => (a.tags || []).includes(t)));
+    }
+
+    const terms = this.searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+    if (terms.length) {
+      list = list.filter(a => terms.every(term => {
+        if (term.startsWith('#')) {
+          const tag = term.replace(/^#+/, '');
+          return !tag || (a.tags || []).some(t => t.includes(tag));
+        }
+        return a.title.toLowerCase().includes(term) ||
+          a.description.toLowerCase().includes(term) ||
+          a.location.toLowerCase().includes(term) ||
+          a.category.toLowerCase().includes(term) ||
+          a.date.toLowerCase().includes(term) ||
+          (a.tags || []).some(t => t.includes(term)) ||
+          a.photos.some(p => (p.caption || '').toLowerCase().includes(term));
+      }));
+    }
+
+    return [...list].sort((a, b) => {
+      if (this.sortBy === 'oldest') return this.albumTime(a) - this.albumTime(b);
+      if (this.sortBy === 'photos') return b.photos.length - a.photos.length;
+      return this.albumTime(b) - this.albumTime(a);
+    });
+  },
+
+  /**
+   * Re-render everything that depends on filters. If an album is open,
+   * leave it so the filtered results are actually visible.
+   */
+  applyFilters() {
+    if (this.currentAlbum) {
+      this.currentAlbum = null;
+      this.closeLightbox();
+    }
+    this.renderFilters();
+    this.renderStats();
+    this.renderAlbumGrid();
   },
 
   filterByCategory(category) {
     this.selectedCategory = category;
-    this.renderFilters();
-    this.renderAlbumGrid();
+    this.applyFilters();
   },
 
   filterByTag(tag, event) {
     if (event) event.stopPropagation();
-    const formatted = this.formatTag(tag);
-    this.searchQuery = formatted;
-    const searchInput = document.getElementById('vault-search');
-    if (searchInput) searchInput.value = formatted;
-    this.renderAlbumGrid();
+    const clean = this.parseTags([tag])[0];
+    if (!clean) return;
+    const i = this.selectedTags.indexOf(clean);
+    if (i === -1) this.selectedTags.push(clean); else this.selectedTags.splice(i, 1);
+    this.applyFilters();
+    const grid = document.getElementById('vault-filters');
+    if (grid && event) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
+
+  onSearchInput(value) {
+    this.searchQuery = value;
+    clearTimeout(this.searchTimer);
+    this.searchTimer = setTimeout(() => this.applyFilters(), 200);
+  },
+
+  clearSearch() {
+    this.searchQuery = '';
+    const input = document.getElementById('vault-search');
+    if (input) input.value = '';
+    this.applyFilters();
+  },
+
+  clearAllFilters() {
+    this.selectedCategory = 'all';
+    this.selectedYear = 'all';
+    this.selectedTags = [];
+    this.searchQuery = '';
+    const input = document.getElementById('vault-search');
+    if (input) input.value = '';
+    this.applyFilters();
   },
 
   setSort(value) {
     this.sortBy = value;
-    this.renderAlbumGrid();
+    this.applyFilters();
   },
 
   /**
@@ -922,42 +1041,9 @@ const VaultModule = {
       if (filters) filters.style.display = '';
     }
 
-    let filteredAlbums = this.albums;
-
-    // Apply year filter
-    if (this.selectedYear !== 'all') {
-      filteredAlbums = filteredAlbums.filter(album => 
-        album.date.includes(this.selectedYear)
-      );
-    }
-
-    // Apply category filter
-    if (this.selectedCategory !== 'all') {
-      filteredAlbums = filteredAlbums.filter(album => 
-        album.category.toLowerCase() === this.selectedCategory.toLowerCase()
-      );
-    }
-
-    // Apply search filter (title, description, location, category, captions, tags)
-    if (this.searchQuery) {
-      const query = this.searchQuery.toLowerCase();
-      const cleanTagQuery = query.replace(/^#+/, '');
-      filteredAlbums = filteredAlbums.filter(album =>
-        album.title.toLowerCase().includes(query) ||
-        album.description.toLowerCase().includes(query) ||
-        album.location.toLowerCase().includes(query) ||
-        album.category.toLowerCase().includes(query) ||
-        (album.tags || []).some(t => t.toLowerCase().includes(cleanTagQuery)) ||
-        album.photos.some(p => (p.caption || '').toLowerCase().includes(query))
-      );
-    }
-
-    // Apply sort
-    filteredAlbums = [...filteredAlbums].sort((a, b) => {
-      if (this.sortBy === 'oldest') return this.albumTime(a) - this.albumTime(b);
-      if (this.sortBy === 'photos') return b.photos.length - a.photos.length;
-      return this.albumTime(b) - this.albumTime(a);
-    });
+    const filteredAlbums = this.getFilteredAlbums();
+    const resultCount = document.getElementById('vault-results-count');
+    if (resultCount) resultCount.textContent = `${filteredAlbums.length} album${filteredAlbums.length === 1 ? '' : 's'}`;
 
     if (filteredAlbums.length === 0) {
       if (this.albums.length === 0) {
@@ -968,21 +1054,13 @@ const VaultModule = {
           'Upload Photos',
           "VaultModule.openUploadModal()"
         );
-      } else if (this.selectedCategory !== 'all') {
-        gallery.innerHTML = this.renderEmptyState(
-          'folder-search',
-          'No Albums in This Category',
-          `No albums found in "${this.selectedCategory}". Try a different category or upload a new photo.`,
-          'Upload Photos',
-          "VaultModule.openUploadModal()"
-        );
       } else {
         gallery.innerHTML = this.renderEmptyState(
-          'image-off',
+          'folder-search',
           'No Albums Found',
-          'Try adjusting your filters or search query.',
+          'No albums match your search or filters. Try different keywords or clear the filters.',
           null, null
-        );
+        ) + `<div class="vault-empty-clear"><button class="btn btn-glass btn-sm" onclick="VaultModule.clearAllFilters()">Clear all filters</button></div>`;
       }
       if (typeof lucide !== 'undefined') lucide.createIcons();
       return;
@@ -1175,7 +1253,6 @@ const VaultModule = {
     const locationValue = locationInput?.value.trim() || '';
     const tagsInput = document.getElementById('upload-tags');
     const tags = this.parseTags(tagsInput?.value || '');
-    const captionWithTags = tags.map(t => this.formatTag(t)).join(' ');
 
     // Show upload progress
     this.uploadInProgress = true;
@@ -1209,7 +1286,8 @@ const VaultModule = {
             album_id: albumId,
             year: year,
             title: albumName,
-            caption: captionWithTags,
+            caption: '',
+            tags,
             media_url: full.publicUrl,
             thumbnail_url: thumb ? thumb.publicUrl : full.publicUrl,
             file_key: full.fileKey,
@@ -1264,7 +1342,8 @@ const VaultModule = {
           album_id: albumId,
           year: year,
           title: albumName,
-          caption: captionWithTags,
+          caption: '',
+          tags,
           media_url: '',
           thumbnail_url: '',
           item_type: 'photo',
@@ -1343,6 +1422,7 @@ const VaultModule = {
           <div class="vault-approval-info">
             <strong>${e(item.albumName)} (${item.fileCount} file${item.fileCount === 1 ? '' : 's'})</strong>
             <span>Submitted by ${e(item.submittedBy)} &bull; ${e(item.category)}${item.date ? ' &bull; ' + e(item.date) : ''}${item.location ? ' &bull; ' + e(item.location) : ''}</span>
+            ${item.tags && item.tags.length ? `<div class="album-tags">${item.tags.map(t => `<span class="vault-tag-badge">${e(this.formatTag(t))}</span>`).join('')}</div>` : ''}
           </div>
           <div class="vault-approval-controls">
             ${hasPhotos ? `<button class="btn btn-glass btn-sm" onclick="VaultModule.previewPendingUpload('${e(item.id)}')"><i data-lucide="eye" class="w-4 h-4"></i> View</button>` : ''}
@@ -1634,8 +1714,7 @@ const VaultModule = {
     this.closePendingPreview();
     this.renderPendingApprovals();
     await this.loadVaultItems();
-    this.renderFilters();
-    this.renderAlbumGrid();
+    this.applyFilters();
     this.renderWeeklyHighlights();
     this.renderStats();
     this.showToast(`"${item.albumName}" approved and published to the Vault`);
@@ -1774,7 +1853,7 @@ const VaultModule = {
       <nav class="vault-breadcrumb">
         <a href="#" onclick="VaultModule.closeAlbum(); return false;">Vault</a>
         <span class="vault-breadcrumb-sep">/</span>
-        <a href="#" onclick="VaultModule.filterByCategory('${e(this.currentAlbum.category)}'); VaultModule.closeAlbum(); return false;">${e(this.currentAlbum.category)}</a>
+        <a href="#" onclick="VaultModule.filterByCategory('${e(this.currentAlbum.category)}'); return false;">${e(this.currentAlbum.category)}</a>
         <span class="vault-breadcrumb-sep">/</span>
         <span class="vault-breadcrumb-current">${e(this.currentAlbum.title)}</span>
       </nav>
@@ -1790,6 +1869,10 @@ const VaultModule = {
           ${this.currentAlbum.location ? `<span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>` : ''}
           <span><i data-lucide="images" class="w-4 h-4"></i> ${this.currentAlbum.photos.length} photos</span>
         </div>
+        ${this.currentAlbum.tags && this.currentAlbum.tags.length ? `
+          <div class="album-tags" onclick="event.stopPropagation()">
+            ${this.currentAlbum.tags.map(t => `<span class="vault-tag-badge" onclick="VaultModule.filterByTag('${e(t)}', event)">${e(this.formatTag(t))}</span>`).join('')}
+          </div>` : ''}
       </div>
 
       <div class="album-grid-container">
@@ -1929,6 +2012,10 @@ const VaultModule = {
             <span class="vault-lightbox-counter">${this.currentPhotoIndex + 1} / ${this.currentAlbum.photos.length}</span>
           </div>
           <p class="vault-lightbox-caption">${e(photo.caption)}</p>
+          ${(photo.tags && photo.tags.length ? photo.tags : (this.currentAlbum.tags || [])).length ? `
+            <div class="album-tags">
+              ${(photo.tags && photo.tags.length ? photo.tags : this.currentAlbum.tags).map(t => `<span class="vault-tag-badge" onclick="VaultModule.filterByTag('${e(t)}', event)">${e(this.formatTag(t))}</span>`).join('')}
+            </div>` : ''}
           <div class="vault-lightbox-meta">
             <span><i data-lucide="calendar" class="w-4 h-4"></i> ${e(this.currentAlbum.date)}</span>
             <span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>
@@ -2014,7 +2101,7 @@ const VaultModule = {
   showAllPhotos() {
     // Collect all photos from all albums
     const allPhotos = [];
-    this.albums.forEach(album => {
+    this.getFilteredAlbums().forEach(album => {
       album.photos.forEach(photo => {
         allPhotos.push({
           ...photo,
@@ -2063,6 +2150,7 @@ const VaultModule = {
       category: 'Archive',
       categoryIcon: 'images',
       categoryColor: '#d4af37',
+      tags: [],
       photos: allPhotos
     };
 
@@ -2082,9 +2170,7 @@ const VaultModule = {
       dropdown.style.display = 'none';
     }
 
-    // Re-render stats and albums
-    this.renderStats();
-    this.renderAlbumGrid();
+    this.applyFilters();
   },
 
   /**
@@ -2105,9 +2191,10 @@ const VaultModule = {
   setupEventListeners() {
     const searchInput = document.getElementById('vault-search');
     if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        this.searchQuery = e.target.value;
-        this.renderAlbumGrid();
+      searchInput.addEventListener('input', (e) => this.onSearchInput(e.target.value));
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { clearTimeout(this.searchTimer); this.applyFilters(); }
+        if (e.key === 'Escape') this.clearSearch();
       });
     }
 

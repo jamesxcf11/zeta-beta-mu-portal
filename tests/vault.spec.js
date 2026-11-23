@@ -41,6 +41,39 @@ test.describe('Vault (vault.html)', () => {
     await expect(page.locator('.vault-empty-state')).toBeAttached();
   });
 
+  test('tags, search and filters work together, including from inside an album', async ({ page }) => {
+    await page.evaluate(() => {
+      const mk = (id, title, category, date, tags) => ({
+        id, title, description: '', date, location: 'Manila', coverImage: 'x.jpg',
+        category, categoryIcon: 'folder', categoryColor: '#fff', isPublic: true, tags,
+        photos: [{ src: 'x.jpg', thumb: 'x.jpg', caption: '', tags }]
+      });
+      VaultModule.albums = [
+        mk('a1', 'Gala Night', 'Annual Gala', 'March 3, 2024', ['gala', 'service']),
+        mk('a2', 'Medical Mission', 'Charity Mission', 'June 5, 2023', ['service', 'porac']),
+        mk('a3', 'Review Class', 'Research', 'May 1, 2023', ['scholarship'])
+      ];
+      VaultModule.clearAllFilters();
+    });
+    await expect(page.locator('.album-card')).toHaveCount(3);
+
+    await page.locator('.vault-tag-chip[data-tag="service"]').click();
+    await expect(page.locator('.album-card')).toHaveCount(2);
+    await expect(page.locator('#vault-results-count')).toHaveText('2 albums');
+
+    await page.fill('#vault-search', '#porac');
+    await expect(page.locator('.album-card')).toHaveCount(1);
+
+    await page.click('#vault-clear-filters');
+    await expect(page.locator('.album-card')).toHaveCount(3);
+
+    await page.locator('.album-card', { hasText: 'Review Class' }).click();
+    await expect(page.locator('.album-hero-card')).toBeVisible();
+    await page.locator('.album-hero-card .vault-tag-badge', { hasText: '#scholarship' }).click();
+    await expect(page.locator('.album-hero-card')).toHaveCount(0);
+    await expect(page.locator('.album-card')).toHaveCount(1);
+  });
+
   test('upload modal: submit button is disabled when no files are staged', async ({ page }) => {
     await page.click('button:has-text("Upload Photos")');
     await expect(page.locator('#vault-upload-modal')).not.toHaveClass(/hidden/);
