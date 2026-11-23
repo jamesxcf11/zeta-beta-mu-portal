@@ -125,6 +125,39 @@ const VaultModule = {
   },
 
   /**
+   * True for empty values and placeholder garbage like "none" / "null" / "n/a"
+   */
+  isBadValue(v) {
+    return !v || /^(none|null|undefined|n\/a)$/i.test(String(v).trim());
+  },
+
+  displayTitle(title) {
+    return this.isBadValue(title) ? 'Untitled album' : String(title).trim();
+  },
+
+  cleanLocation(loc) {
+    return this.isBadValue(loc) || /^unknown$/i.test(String(loc).trim()) ? '' : String(loc).trim();
+  },
+
+  /**
+   * Album title markup; muted when the stored title is missing/garbage
+   */
+  titleHtml(album) {
+    const t = this.escapeHTML(album.title);
+    return album.untitled ? `<span class="vault-untitled">${t}</span>` : t;
+  },
+
+  /**
+   * Officer/admin session (UI gate; data access is enforced by RLS)
+   */
+  isOfficer() {
+    try {
+      const s = JSON.parse(localStorage.getItem('zbm-session') || 'null');
+      return !!s && (s.role === 'admin' || s.role === 'officer');
+    } catch (e) { return false; }
+  },
+
+  /**
    * Remove #hashtags from a caption (legacy rows stored tags there)
    */
   stripCaptionTags(caption) {
@@ -154,7 +187,7 @@ const VaultModule = {
     this.applyRoleGating();
     if (this.hasSupabase()) {
       await this.loadVaultItems();
-      await this.loadPendingUploads();
+      if (this.isOfficer()) await this.loadPendingUploads();
     }
     this.renderFilters();
     this.populateUploadCategories();
@@ -207,15 +240,18 @@ const VaultModule = {
           : String(item.year);
         albumMap[albumId] = {
           id: albumId,
-          title: item.title,
+          title: this.displayTitle(item.title),
+          rawTitle: item.title,
+          untitled: this.isBadValue(item.title),
           description: this.stripCaptionTags(item.caption),
           date: dateStr,
-          location: item.location || 'Unknown',
+          location: this.cleanLocation(item.location),
           coverImage: item.thumbnail_url || item.media_url,
           category: displayCategory,
           categoryIcon: meta.icon,
           categoryColor: meta.color,
           isPublic: item.is_public,
+          eventDate: item.event_date || '',
           tags: itemTags,
           photos: []
         };
@@ -259,7 +295,7 @@ const VaultModule = {
         albumMap[albumId] = {
           id: item.id,
           albumId,
-          albumName: item.title,
+          albumName: this.displayTitle(item.title),
           date: item.event_date || '',
           location: item.location || '',
           visibility: item.is_public ? 'public' : 'private',
@@ -522,6 +558,50 @@ const VaultModule = {
     if (step2Dot) step2Dot.disabled = this.stagedFiles.length === 0 || this.uploadInProgress;
   },
 
+  setFieldError(inputId, message) {
+    const input = document.getElementById(inputId);
+    const err = document.getElementById(`${inputId}-error`);
+    if (err) err.textContent = message || '';
+    if (input) {
+      input.classList.toggle('has-error', !!message);
+      input.setAttribute('aria-invalid', message ? 'true' : 'false');
+    }
+  },
+
+  /**
+   * Validate album name + event date. Shows inline errors and returns the cleaned values.
+   */
+  validateUploadForm() {
+    const existing = this.albumMode === 'existing';
+    const dateValue = document.getElementById('upload-date')?.value || '';
+    let albumName = '';
+    let existingAlbumId = '';
+    let nameError = '';
+    let nameField = 'upload-album-name';
+
+    if (existing) {
+      nameField = 'upload-existing-album';
+      existingAlbumId = document.getElementById('upload-existing-album')?.value || '';
+      const album = this.albums.find(a => a.id === existingAlbumId);
+      albumName = album ? (album.rawTitle || album.title) : '';
+      if (!existingAlbumId) nameError = 'Select an album to add to.';
+      else if (this.isBadValue(albumName)) nameError = 'That album has no valid title. Ask an officer to fix it first.';
+    } else {
+      albumName = (document.getElementById('upload-album-name')?.value || '').trim();
+      if (!albumName) nameError = 'Album name is required.';
+      else if (this.isBadValue(albumName)) nameError = 'Enter a real album name (not "none", "null" or "n/a").';
+    }
+
+    const dateError = !dateValue ? 'Event date is required.' : '';
+    this.setFieldError('upload-album-name', existing ? '' : nameError);
+    this.setFieldError('upload-existing-album', existing ? nameError : '');
+    this.setFieldError('upload-date', dateError);
+
+    const firstBad = nameError ? nameField : (dateError ? 'upload-date' : null);
+    if (firstBad) document.getElementById(firstBad)?.focus();
+    return { ok: !nameError && !dateError, albumName, existingAlbumId, dateValue };
+  },
+
   /**
    * Switch to step 2 (review) — validates form and renders review card
    */
@@ -533,22 +613,9 @@ const VaultModule = {
     const visibilitySelect = document.getElementById('upload-visibility');
     const categorySelect = document.getElementById('upload-category');
 
-    let albumName, existingAlbumId;
-    if (this.albumMode === 'existing') {
-      existingAlbumId = existingSelect?.value || '';
-      if (!existingAlbumId) {
-        this.showToast('Please select an existing album to add to');
-        return;
-      }
-      const album = this.albums.find(a => a.id === existingAlbumId);
-      albumName = album ? album.title : '';
-    } else {
-      albumName = nameInput?.value.trim();
-      if (!albumName) {
-        this.showToast('Please enter an album/event name');
-        return;
-      }
-    }
+    const v = this.validateUploadForm();
+    if (!v.ok) return;
+    const { albumName, existingAlbumId } = v;
 
     if (this.stagedFiles.length === 0) {
       this.showToast('Please select at least one image to upload');
@@ -735,24 +802,6 @@ const VaultModule = {
     const container = document.getElementById('vault-highlights');
     if (!container) return;
 
-    if (this.albums.length === 0) {
-      container.innerHTML = `
-        <div class="vault-highlights-header">
-          <h3 class="vault-highlights-title">
-            <i data-lucide="sparkles" class="w-5 h-5"></i>
-            Weekly Highlights
-          </h3>
-          <span class="vault-highlights-note">Top photos this week, ranked by reactions &amp; comments</span>
-        </div>
-        <div class="vault-empty-state vault-highlights-empty">
-          <i data-lucide="sparkles" class="w-12 h-12 text-[#d4af37] opacity-40"></i>
-          <p class="text-sm opacity-70 mt-3">No highlights yet this week — be the first to upload and react to a photo.</p>
-        </div>
-      `;
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-      return;
-    }
-
     const e = (s) => this.escapeHTML(s);
     const allPhotos = [];
     this.albums.forEach(album => {
@@ -767,11 +816,23 @@ const VaultModule = {
       });
     });
 
-    allPhotos.sort((a, b) => (b.likes + b.comments) - (a.likes + a.comments));
-    const top = allPhotos.slice(0, 4);
+    // Only photos with at least one reaction or comment qualify
+    const top = allPhotos
+      .filter(p => p.likes + p.comments >= 1)
+      .sort((a, b) => (b.likes + b.comments) - (a.likes + a.comments))
+      .slice(0, 4);
 
     if (top.length === 0) {
-      container.innerHTML = '';
+      container.innerHTML = `
+        <div class="vault-highlights-header">
+          <h3 class="vault-highlights-title">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+            Weekly Highlights
+          </h3>
+        </div>
+        <p class="vault-highlights-empty-text">No highlights yet this week.</p>
+      `;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
       return;
     }
 
@@ -890,7 +951,7 @@ const VaultModule = {
     const chips = [
       `<button class="filter-chip ${this.selectedCategory === 'all' ? 'active' : ''}" onclick="VaultModule.filterByCategory('all')">All <span class="chip-count">${this.albums.length}</span></button>`,
       ...cats.map(cat =>
-        `<button class="filter-chip ${this.selectedCategory === cat ? 'active' : ''}" onclick="VaultModule.filterByCategory('${e(cat).replace(/&#039;/g, "\\'")}')">${e(cat)} <span class="chip-count">${counts[cat] || 0}</span></button>`
+        `<button class="filter-chip ${this.selectedCategory === cat ? 'active' : ''} ${counts[cat] ? '' : 'is-empty'}" onclick="VaultModule.filterByCategory('${e(cat).replace(/&#039;/g, "\\'")}')">${e(cat)} <span class="chip-count">${counts[cat] || 0}</span></button>`
       )
     ].join('');
 
@@ -922,6 +983,7 @@ const VaultModule = {
     container.innerHTML = `
       <div class="vault-filter-chips">${chips}</div>
       <div class="vault-sort">
+        ${this.albums.length ? `<button class="btn btn-glass btn-sm vault-view-all" onclick="VaultModule.showAllPhotos()"><i data-lucide="images" class="w-4 h-4"></i> View all photos</button>` : ''}
         <label for="vault-sort-select" class="vault-sort-label">Sort</label>
         <select id="vault-sort-select" class="glass-input vault-sort-select" onchange="VaultModule.setSort(this.value)">
           <option value="newest" ${this.sortBy === 'newest' ? 'selected' : ''}>Newest first</option>
@@ -1081,14 +1143,17 @@ const VaultModule = {
       const visBadge = isPublic
         ? `<span class="album-visibility album-visibility-public"><i data-lucide="globe" class="w-3 h-3"></i> Public</span>`
         : `<span class="album-visibility album-visibility-private"><i data-lucide="lock" class="w-3 h-3"></i> Members</span>`;
-      const officerToggle = this.officerView
-        ? `<button class="album-vis-toggle" onclick="VaultModule.toggleAlbumVisibility('${e(album.id)}', event)" title="Officer: toggle public viewing">
-             <i data-lucide="${isPublic ? 'eye' : 'eye-off'}" class="w-3 h-3"></i>
-             ${isPublic ? 'Set Private' : 'Make Public'}
+      const officerToggle = this.officerView && this.isOfficer()
+        ? `<button class="vault-vis-switch ${isPublic ? 'is-on' : ''}" role="switch" aria-checked="${isPublic}" aria-label="Album visibility: ${isPublic ? 'Public' : 'Members only'}. Activate to change." onclick="VaultModule.toggleAlbumVisibility('${e(album.id)}', event)" title="Officer: change who can view this album">
+             <span class="vault-vis-track"><span class="vault-vis-thumb"></span></span>
+             <span class="vault-vis-text">${isPublic ? 'Public' : 'Members only'}</span>
            </button>`
         : '';
+      const editBtn = this.officerView && this.isOfficer()
+        ? `<button class="vault-edit-btn" onclick="VaultModule.openEditAlbum('${e(album.id)}', event)" aria-label="Edit details of ${e(album.title)}"><i data-lucide="pencil" class="w-3 h-3"></i> Edit</button>`
+        : '';
       return `
-      <div class="album-card glass-card" onclick="VaultModule.openAlbum('${e(album.id)}')">
+      <div class="album-card glass-card" tabindex="0" aria-label="Open album ${e(album.title)}" onclick="VaultModule.openAlbum('${e(album.id)}')" onkeydown="if (event.target === this && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); VaultModule.openAlbum('${e(album.id)}'); }">
         <div class="album-cover">
           <img src="${e(this.thumb(album.coverImage))}" alt="${e(album.title)}" class="album-cover-image" loading="lazy" decoding="async">
           <div class="album-cover-badges">${visBadge}</div>
@@ -1104,15 +1169,19 @@ const VaultModule = {
             <i data-lucide="${e(album.categoryIcon)}" class="w-4 h-4"></i>
             <span>${e(album.category)}</span>
           </div>
-          <h3 class="album-title">${e(album.title)}</h3>
+          <h3 class="album-title">${this.titleHtml(album)}</h3>
           <div class="album-meta">
             <span class="album-date">
               <i data-lucide="calendar" class="w-3 h-3"></i>
               ${e(album.date)}
             </span>
-            <span class="album-location">
+            ${album.location ? `<span class="album-location">
               <i data-lucide="map-pin" class="w-3 h-3"></i>
               ${e(album.location)}
+            </span>` : ''}
+            <span class="album-count">
+              <i data-lucide="images" class="w-3 h-3"></i>
+              ${album.photos.length} photo${album.photos.length === 1 ? '' : 's'}
             </span>
           </div>
           ${album.tags && album.tags.length > 0 ? `
@@ -1123,6 +1192,7 @@ const VaultModule = {
           <div class="album-engagement">
             <span><i data-lucide="heart" class="w-3 h-3"></i> ${likes}</span>
             <span><i data-lucide="message-circle" class="w-3 h-3"></i> ${comments}</span>
+            ${editBtn}
             ${officerToggle}
           </div>
         </div>
@@ -1139,12 +1209,192 @@ const VaultModule = {
    * Toggle officer view (shows per-album public/private controls) - UI mock
    */
   toggleOfficerView() {
+    if (!this.isOfficer()) return;
     this.officerView = !this.officerView;
     const btn = document.getElementById('officer-view-btn');
     if (btn) btn.classList.toggle('active', this.officerView);
     const panel = document.getElementById('officer-approval-panel');
     if (panel) panel.style.display = this.officerView ? 'block' : 'none';
     this.renderAlbumGrid();
+  },
+
+  /**
+   * Accessible confirm dialog (focus trap, Esc to cancel). Resolves true/false.
+   */
+  confirmDialog({ title, message, confirmLabel = 'Confirm' }) {
+    return new Promise(resolve => {
+      const prev = document.activeElement;
+      const e = (s) => this.escapeHTML(s);
+      const modal = document.createElement('div');
+      modal.className = 'vault-modal vault-confirm';
+      modal.setAttribute('role', 'alertdialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-label', title);
+      modal.innerHTML = `
+        <div class="vault-modal-backdrop" data-act="cancel"></div>
+        <div class="vault-modal-card glass-heavy vault-confirm-card">
+          <h3 class="vault-modal-title">${e(title)}</h3>
+          <p class="vault-modal-sub">${e(message)}</p>
+          <div class="vault-modal-actions">
+            <button class="btn btn-glass btn-sm" data-act="cancel">Cancel</button>
+            <button class="btn btn-gold btn-sm btn-gold-filled" data-act="ok">${e(confirmLabel)}</button>
+          </div>
+        </div>`;
+      const done = (val) => {
+        modal.remove();
+        if (prev && prev.focus) prev.focus();
+        resolve(val);
+      };
+      modal.addEventListener('click', (ev) => {
+        const act = ev.target.closest('[data-act]')?.dataset.act;
+        if (act) done(act === 'ok');
+      });
+      modal.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') { ev.stopPropagation(); done(false); }
+        if (ev.key === 'Tab') {
+          const f = modal.querySelectorAll('button[data-act]');
+          const first = f[0], last = f[f.length - 1];
+          if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+          else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+        }
+      });
+      document.body.appendChild(modal);
+      modal.querySelector('[data-act="cancel"].btn').focus();
+    });
+  },
+
+  /**
+   * Officer-only: edit an album's title, date, location, category and tags
+   * (applied to every photo in the album).
+   */
+  openEditAlbum(albumId, event) {
+    if (event) event.stopPropagation();
+    if (!this.isOfficer()) return;
+    const album = this.albums.find(a => a.id === albumId);
+    if (!album) return;
+
+    const prev = document.activeElement;
+    const e = (s) => this.escapeHTML(s);
+    const enumVal = this.CATEGORY_TO_ENUM[album.category] || 'other';
+    const modal = document.createElement('div');
+    modal.className = 'vault-modal vault-confirm vault-edit';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Edit album details');
+    modal.innerHTML = `
+      <div class="vault-modal-backdrop" data-act="cancel"></div>
+      <form class="vault-modal-card glass-heavy vault-edit-card" novalidate>
+        <h3 class="vault-modal-title"><i data-lucide="pencil" class="w-5 h-5"></i> Edit album details</h3>
+        <p class="vault-modal-sub">Changes apply to all ${album.photos.length} photo${album.photos.length === 1 ? '' : 's'} in this album.</p>
+        <div class="form-group">
+          <label class="form-label" for="edit-title">Album / Event Name <span class="form-required" aria-hidden="true">*</span></label>
+          <input id="edit-title" class="glass-input" type="text" value="${album.untitled ? '' : e(album.rawTitle || album.title)}" required aria-required="true" aria-describedby="edit-title-error">
+          <p class="form-error" id="edit-title-error" role="alert"></p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-date">Event Date <span class="form-required" aria-hidden="true">*</span></label>
+          <input id="edit-date" class="glass-input" type="date" value="${e(album.eventDate)}" required aria-required="true" aria-describedby="edit-date-error">
+          <p class="form-error" id="edit-date-error" role="alert"></p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-location">Location</label>
+          <input id="edit-location" class="glass-input" type="text" value="${e(album.location)}">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-category">Category</label>
+          <select id="edit-category" class="glass-input">
+            ${Object.entries(this.CATEGORY_TO_ENUM).map(([label, val]) => `<option value="${val}" ${val === enumVal ? 'selected' : ''}>${e(label)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-tags">Tags / Hashtags</label>
+          <input id="edit-tags" class="glass-input" type="text" value="${e((album.tags || []).map(t => this.formatTag(t)).join(', '))}" placeholder="e.g., #service, #porac">
+        </div>
+        <div class="vault-modal-actions">
+          <button type="button" class="btn btn-glass btn-sm" data-act="cancel">Cancel</button>
+          <button type="submit" class="btn btn-gold btn-sm btn-gold-filled" id="edit-save-btn">Save changes</button>
+        </div>
+      </form>`;
+
+    const close = () => {
+      modal.remove();
+      document.body.style.overflow = '';
+      if (prev && prev.focus && document.body.contains(prev)) prev.focus();
+    };
+    modal.addEventListener('click', (ev) => {
+      if (ev.target.closest('[data-act="cancel"]')) close();
+    });
+    modal.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') { ev.stopPropagation(); close(); return; }
+      if (ev.key !== 'Tab') return;
+      const f = [...modal.querySelectorAll('input, select, button:not([disabled])')].filter(el => el.offsetParent !== null);
+      const first = f[0], last = f[f.length - 1];
+      if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+      else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+    });
+    modal.querySelector('form').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const saved = await this.saveAlbumEdit(album, modal);
+      if (saved) close();
+    });
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    modal.querySelector('#edit-title').focus();
+  },
+
+  async saveAlbumEdit(album, modal) {
+    const val = (id) => modal.querySelector('#' + id).value.trim();
+    const title = val('edit-title');
+    const date = val('edit-date');
+    const titleError = !title ? 'Album name is required.' : (this.isBadValue(title) ? 'Enter a real album name (not "none", "null" or "n/a").' : '');
+    const dateError = date ? '' : 'Event date is required.';
+    this.setFieldError('edit-title', titleError);
+    this.setFieldError('edit-date', dateError);
+    if (titleError || dateError) {
+      modal.querySelector(titleError ? '#edit-title' : '#edit-date').focus();
+      return false;
+    }
+
+    const tags = this.parseTags(val('edit-tags'));
+    const patch = {
+      title,
+      event_date: date,
+      year: parseInt(date.slice(0, 4), 10),
+      location: val('edit-location') || null,
+      category: val('edit-category'),
+      tags
+    };
+
+    const saveBtn = modal.querySelector('#edit-save-btn');
+    saveBtn.disabled = true;
+    if (this.hasSupabase()) {
+      const run = (p) => db.from('vault_items').update(p).eq('album_id', album.id).select('id');
+      let { data, error } = await run(patch);
+      // Databases without migration 004 have no tags column
+      if (error && (error.code === '42703' || error.code === 'PGRST204')) {
+        const { tags: _omit, ...rest } = patch;
+        ({ data, error } = await run(rest));
+      }
+      if (error || (Array.isArray(data) && data.length === 0)) {
+        saveBtn.disabled = false;
+        this.showToast('Could not save changes' + (error ? ': ' + error.message : ' (no permission)'));
+        return false;
+      }
+      await this.loadVaultItems();
+    } else {
+      Object.assign(album, { title: title, rawTitle: title, untitled: false, eventDate: date, location: patch.location || '', tags });
+    }
+
+    const reopen = this.currentAlbum && this.currentAlbum.id === album.id;
+    this.renderFilters();
+    this.renderStats();
+    this.renderAlbumGrid();
+    this.renderWeeklyHighlights();
+    if (reopen) this.openAlbum(album.id);
+    this.showToast('Album details updated');
+    return true;
   },
 
   /**
@@ -1157,7 +1407,17 @@ const VaultModule = {
     const album = this.albums.find(a => a.id === albumId);
     if (!album) return;
 
+    if (!this.isOfficer()) return;
     const newVisibility = !album.isPublic;
+
+    if (newVisibility) {
+      const ok = await this.confirmDialog({
+        title: 'Make this album public?',
+        message: 'This will make this album visible to anyone with the link. Continue?',
+        confirmLabel: 'Make public'
+      });
+      if (!ok) return;
+    }
 
     if (this.hasSupabase()) {
       const { error } = await db.from('vault_items')
@@ -1237,23 +1497,12 @@ const VaultModule = {
     const categorySelect = document.getElementById('upload-category');
     const submitLabel = document.getElementById('vault-submit-label');
 
-    // Determine album name/id based on mode
-    let albumName, existingAlbumId;
-    if (this.albumMode === 'existing') {
-      existingAlbumId = existingSelect?.value || '';
-      if (!existingAlbumId) {
-        this.showToast('Please select an existing album to add to');
-        return;
-      }
-      const album = this.albums.find(a => a.id === existingAlbumId);
-      albumName = album ? album.title : '';
-    } else {
-      albumName = nameInput?.value.trim();
-      if (!albumName) {
-        this.showToast('Please enter an album/event name before submitting');
-        return;
-      }
+    const v = this.validateUploadForm();
+    if (!v.ok) {
+      this.backToStep1();
+      return;
     }
+    const { albumName, existingAlbumId } = v;
 
     if (this.stagedFiles.length === 0) {
       this.showToast('Please select at least one image to upload');
@@ -1420,41 +1669,176 @@ const VaultModule = {
   },
 
   /**
-   * Render the officer approval panel's pending uploads list
+   * Stable key for a pending submission (album_id when present, else row id)
+   */
+  pendingKey(item) {
+    return String(item.albumId || item.id);
+  },
+
+  findPending(key) {
+    return this.pendingUploads.find(p => this.pendingKey(p) === String(key) || String(p.id) === String(key));
+  },
+
+  queueSelected: new Set(),
+  queueRejectKey: null,
+  queueLastFocus: null,
+
+  /**
+   * Render the compact pending-approvals summary bar (officers only)
    */
   renderPendingApprovals() {
-    const list = document.getElementById('pending-approvals-list');
-    if (!list) return;
+    const bar = document.getElementById('pending-approvals-list');
+    if (!bar) return;
+    if (!this.isOfficer()) {
+      bar.innerHTML = '';
+      return;
+    }
 
-    if (this.pendingUploads.length === 0) {
-      list.innerHTML = '<p class="vault-approval-empty">No pending uploads awaiting review.</p>';
-    } else {
-      list.innerHTML = this.pendingUploads.map(item => {
-        const e = (s) => this.escapeHTML(s);
-        const hasPhotos = item.photos && item.photos.length > 0;
-        const firstPhoto = hasPhotos ? item.photos[0] : null;
-        const thumbHtml = firstPhoto && firstPhoto.thumbUrl
-          ? `<img src="${e(firstPhoto.thumbUrl)}" alt="${e(item.albumName)}" class="vault-approval-thumb-img">`
-          : `<i data-lucide="image" class="w-5 h-5"></i>`;
-        return `
-        <div class="vault-approval-item" data-pending-id="${e(item.id)}">
-          <div class="vault-approval-thumb">${thumbHtml}</div>
+    const n = this.pendingUploads.length;
+    bar.innerHTML = `
+      <div class="vault-approval-summary">
+        <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+        <h3>Pending approvals <span class="vault-approval-count">${n}</span></h3>
+      </div>
+      <span class="vault-approval-note">${n === 0 ? 'No pending uploads awaiting review.' : 'Officers review uploads before they appear in the Vault'}</span>
+      <button class="btn btn-gold btn-sm" id="vault-review-queue-btn" onclick="VaultModule.openQueue()" ${n === 0 ? 'disabled' : ''}>Review</button>
+    `;
+
+    const drawer = document.getElementById('vault-queue-drawer');
+    if (drawer && !drawer.classList.contains('hidden')) this.renderQueue();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  /**
+   * Open the approvals queue drawer (right-side panel; full-width sheet on mobile)
+   */
+  openQueue() {
+    if (!this.isOfficer()) return;
+    let drawer = document.getElementById('vault-queue-drawer');
+    if (!drawer) {
+      drawer = document.createElement('div');
+      drawer.id = 'vault-queue-drawer';
+      drawer.className = 'vault-modal vault-drawer hidden';
+      drawer.setAttribute('role', 'dialog');
+      drawer.setAttribute('aria-modal', 'true');
+      drawer.setAttribute('aria-label', 'Pending approvals');
+      drawer.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') { ev.stopPropagation(); this.closeQueue(); return; }
+        if (ev.key !== 'Tab') return;
+        const f = [...drawer.querySelectorAll('button:not([disabled]), input:not([disabled]), textarea, [href], [tabindex]:not([tabindex="-1"])')]
+          .filter(el => el.offsetParent !== null);
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+        else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+      });
+      document.body.appendChild(drawer);
+    }
+    this.queueLastFocus = document.activeElement;
+    this.queueSelected = new Set();
+    this.queueRejectKey = null;
+    this.renderQueue();
+    drawer.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    (drawer.querySelector('.vault-drawer-close') || drawer).focus();
+  },
+
+  closeQueue() {
+    const drawer = document.getElementById('vault-queue-drawer');
+    if (drawer) drawer.classList.add('hidden');
+    document.body.style.overflow = '';
+    this.queueRejectKey = null;
+    if (this.queueLastFocus && this.queueLastFocus.focus) this.queueLastFocus.focus();
+  },
+
+  renderQueue() {
+    const drawer = document.getElementById('vault-queue-drawer');
+    if (!drawer) return;
+    const e = (s) => this.escapeHTML(s);
+    const items = this.pendingUploads;
+    const keys = items.map(p => this.pendingKey(p));
+    this.queueSelected = new Set([...this.queueSelected].filter(k => keys.includes(k)));
+    const sel = this.queueSelected.size;
+    const allChecked = items.length > 0 && sel === items.length;
+
+    const rows = items.map(item => {
+      const key = this.pendingKey(item);
+      const first = item.photos && item.photos[0];
+      const thumb = first && first.thumbUrl
+        ? `<img src="${e(first.thumbUrl)}" alt="" class="vault-approval-thumb-img">`
+        : `<i data-lucide="image" class="w-5 h-5"></i>`;
+      const rejecting = this.queueRejectKey === key;
+      return `
+        <div class="vault-approval-item" data-pending-id="${e(key)}">
+          <label class="vault-queue-check">
+            <input type="checkbox" ${this.queueSelected.has(key) ? 'checked' : ''} onchange="VaultModule.toggleQueueItem('${e(key)}', this.checked)" aria-label="Select ${e(item.albumName)}">
+          </label>
+          <div class="vault-approval-thumb">${thumb}</div>
           <div class="vault-approval-info">
-            <strong>${e(item.albumName)} (${item.fileCount} file${item.fileCount === 1 ? '' : 's'})</strong>
-            <span>Submitted by ${e(item.submittedBy)} &bull; ${e(item.category)}${item.date ? ' &bull; ' + e(item.date) : ''}${item.location ? ' &bull; ' + e(item.location) : ''}</span>
+            <strong>${e(item.albumName)}</strong>
+            <span>${item.fileCount} file${item.fileCount === 1 ? '' : 's'} &bull; ${e(item.submittedBy)} &bull; ${e(item.category)}${item.date ? ' &bull; ' + e(item.date) : ''}</span>
             ${item.tags && item.tags.length ? `<div class="album-tags">${item.tags.map(t => `<span class="vault-tag-badge">${e(this.formatTag(t))}</span>`).join('')}</div>` : ''}
           </div>
           <div class="vault-approval-controls">
-            ${hasPhotos ? `<button class="btn btn-glass btn-sm" onclick="VaultModule.previewPendingUpload('${e(item.id)}')"><i data-lucide="eye" class="w-4 h-4"></i> View</button>` : ''}
-            <button class="btn btn-gold btn-sm" onclick="VaultModule.approvePendingUpload('${e(item.id)}')"><i data-lucide="check" class="w-4 h-4"></i> Approve</button>
-            <button class="btn btn-glass btn-sm" onclick="VaultModule.rejectPendingUpload('${e(item.id)}')"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>
+            ${first ? `<button class="btn btn-glass btn-sm" onclick="VaultModule.previewPendingUpload('${e(key)}')"><i data-lucide="eye" class="w-4 h-4"></i> View</button>` : ''}
+            <button class="btn btn-gold btn-sm btn-gold-filled" onclick="VaultModule.approvePendingUpload('${e(key)}')"><i data-lucide="check" class="w-4 h-4"></i> Approve</button>
+            <button class="btn btn-glass btn-sm vault-btn-danger" onclick="VaultModule.rejectPendingUpload('${e(key)}')"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>
           </div>
-        </div>
-      `;
-      }).join('');
-    }
+          ${rejecting ? `
+            <div class="vault-reject-confirm" role="alertdialog" aria-label="Confirm reject">
+              <p>Reject "${e(item.albumName)}"? The submission will be discarded and its files deleted from storage.</p>
+              <label class="form-label" for="vault-reject-reason">Reason (optional)</label>
+              <textarea id="vault-reject-reason" class="glass-input" rows="2" maxlength="300" placeholder="Shown to the uploader if we add notifications later"></textarea>
+              <div class="vault-reject-actions">
+                <button class="btn btn-glass btn-sm" onclick="VaultModule.cancelReject()">Cancel</button>
+                <button class="btn btn-glass btn-sm vault-btn-danger-filled" onclick="VaultModule.confirmReject('${e(key)}')">Reject submission</button>
+              </div>
+            </div>` : ''}
+        </div>`;
+    }).join('');
 
+    drawer.innerHTML = `
+      <div class="vault-modal-backdrop" onclick="VaultModule.closeQueue()"></div>
+      <div class="vault-modal-card glass-heavy vault-drawer-card">
+        <div class="vault-modal-header">
+          <div>
+            <h3 class="vault-modal-title"><i data-lucide="clipboard-check" class="w-5 h-5"></i> Pending approvals (${items.length})</h3>
+            <p class="vault-modal-sub">Review uploads before they appear in the Vault.</p>
+          </div>
+          <button class="vault-drawer-close vault-modal-close" onclick="VaultModule.closeQueue()" aria-label="Close approvals">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        ${items.length ? `
+          <div class="vault-queue-toolbar">
+            <label class="vault-queue-selectall"><input type="checkbox" ${allChecked ? 'checked' : ''} onchange="VaultModule.toggleQueueAll(this.checked)"> Select all</label>
+            <div class="vault-queue-bulk">
+              <button class="btn btn-gold btn-sm btn-gold-filled" ${sel ? '' : 'disabled'} onclick="VaultModule.approveSelected()">Approve selected (${sel})</button>
+              <button class="btn btn-gold btn-sm" onclick="VaultModule.approveAll()">Approve all</button>
+            </div>
+          </div>
+          <div class="vault-queue-list">${rows}</div>` : '<p class="vault-approval-empty">No pending uploads awaiting review.</p>'}
+      </div>
+    `;
     if (typeof lucide !== 'undefined') lucide.createIcons();
+  },
+
+  toggleQueueItem(key, checked) {
+    if (checked) this.queueSelected.add(String(key)); else this.queueSelected.delete(String(key));
+    this.renderQueue();
+  },
+
+  toggleQueueAll(checked) {
+    this.queueSelected = checked ? new Set(this.pendingUploads.map(p => this.pendingKey(p))) : new Set();
+    this.renderQueue();
+  },
+
+  approveSelected() {
+    return this.approvePendingUploads([...this.queueSelected]);
+  },
+
+  approveAll() {
+    return this.approvePendingUploads(this.pendingUploads.map(p => this.pendingKey(p)));
   },
 
   /**
@@ -1710,58 +2094,87 @@ const VaultModule = {
   },
 
   /**
-   * Approve a pending upload. Sets approval_status to 'approved' in Supabase
-   * so the items become visible in the public gallery.
+   * Approve one pending submission (kept for the preview modal and row button)
    */
-  async approvePendingUpload(id) {
-    const numId = Number(id);
-    const idx = this.pendingUploads.findIndex(p => p.id === numId || p.id === id || p.albumId === id || p.albumId === String(id));
-    if (idx === -1) {
+  approvePendingUpload(id) {
+    return this.approvePendingUploads([id]);
+  },
+
+  /**
+   * Approve several pending submissions in one request. Sets approval_status to
+   * 'approved' in Supabase so the items become visible in the gallery.
+   */
+  async approvePendingUploads(keys) {
+    if (!this.isOfficer()) return;
+    const items = keys.map(k => this.findPending(k)).filter(Boolean);
+    if (items.length === 0) {
       this.showToast('Could not find that pending upload');
       return;
     }
-    const item = this.pendingUploads[idx];
 
-    if (this.hasSupabase() && item.albumId) {
-      const { error, count } = await db.from('vault_items')
+    const albumIds = items.map(i => i.albumId).filter(Boolean);
+    if (this.hasSupabase() && albumIds.length) {
+      const { error } = await db.from('vault_items')
         .update({ approval_status: 'approved' })
-        .eq('album_id', item.albumId)
+        .in('album_id', albumIds)
         .eq('approval_status', 'pending');
       if (error) { this.showToast('Failed to approve upload: ' + error.message); return; }
     }
 
-    this.pendingUploads.splice(idx, 1);
+    this.pendingUploads = this.pendingUploads.filter(p => !items.includes(p));
+    this.queueSelected = new Set();
     this.closePendingPreview();
-    this.renderPendingApprovals();
     await this.loadVaultItems();
+    this.renderPendingApprovals();
     this.applyFilters();
     this.renderWeeklyHighlights();
-    this.renderStats();
-    this.showToast(`"${item.albumName}" approved and published to the Vault`);
+    this.showToast(items.length === 1
+      ? `"${items[0].albumName}" approved and published to the Vault`
+      : `${items.length} submissions approved and published to the Vault`);
   },
 
   /**
-   * Reject a pending upload (destructive — confirms first).
-   * Sets approval_status to 'rejected' in Supabase.
+   * Start the reject flow: shows an in-drawer confirmation with an optional reason.
    */
-  async rejectPendingUpload(id) {
-    const numId = Number(id);
-    const idx = this.pendingUploads.findIndex(p => p.id === numId || p.id === id || p.albumId === id || p.albumId === String(id));
-    if (idx === -1) {
+  rejectPendingUpload(id) {
+    const item = this.findPending(id);
+    if (!item) {
       this.showToast('Could not find that pending upload');
       return;
     }
-    if (!confirm('Reject this upload? The submission will be discarded and files deleted from storage.')) return;
-    const item = this.pendingUploads[idx];
+    this.queueRejectKey = this.pendingKey(item);
+    const drawer = document.getElementById('vault-queue-drawer');
+    if (!drawer || drawer.classList.contains('hidden')) this.openQueue();
+    this.queueRejectKey = this.pendingKey(item);
+    this.renderQueue();
+    document.getElementById('vault-reject-reason')?.focus();
+  },
+
+  cancelReject() {
+    this.queueRejectKey = null;
+    this.renderQueue();
+  },
+
+  /**
+   * Reject a pending upload after confirmation. Sets approval_status to 'rejected'
+   * (with an optional reason) and removes its files from storage.
+   */
+  async confirmReject(key) {
+    if (!this.isOfficer()) return;
+    const item = this.findPending(key);
+    if (!item) return;
+    const reason = (document.getElementById('vault-reject-reason')?.value || '').trim() || null;
 
     if (this.hasSupabase() && item.albumId) {
-      const { error } = await db.from('vault_items')
-        .update({ approval_status: 'rejected' })
+      const run = (patch) => db.from('vault_items')
+        .update(patch)
         .eq('album_id', item.albumId)
         .eq('approval_status', 'pending');
+      let { error } = await run({ approval_status: 'rejected', rejection_reason: reason });
+      // Databases without migration 013 have no rejection_reason column
+      if (error && (error.code === '42703' || error.code === 'PGRST204')) ({ error } = await run({ approval_status: 'rejected' }));
       if (error) { this.showToast('Failed to reject upload'); return; }
 
-      // Clean up R2 objects so rejected media doesn't consume storage
       if (item.r2Keys && item.r2Keys.length > 0 && typeof MediaUpload !== 'undefined' && MediaUpload.isConfigured()) {
         try {
           await MediaUpload.deleteKeys(item.r2Keys);
@@ -1771,7 +2184,9 @@ const VaultModule = {
       }
     }
 
-    this.pendingUploads.splice(idx, 1);
+    this.pendingUploads = this.pendingUploads.filter(p => p !== item);
+    this.queueSelected.delete(String(key));
+    this.queueRejectKey = null;
     this.renderPendingApprovals();
     this.renderStats();
     this.showToast(`"${item.albumName}" rejected`);
@@ -1821,6 +2236,7 @@ const VaultModule = {
     if (locationInput) locationInput.value = '';
     const tagsInput = document.getElementById('upload-tags');
     if (tagsInput) tagsInput.value = '';
+    ['upload-album-name', 'upload-existing-album', 'upload-date'].forEach(id => this.setFieldError(id, ''));
     this.backToStep1();
     this.reviewData = null;
     const modal = document.getElementById('vault-upload-modal');
@@ -1875,15 +2291,16 @@ const VaultModule = {
         <span class="vault-breadcrumb-sep">/</span>
         <a href="#" onclick="VaultModule.filterByCategory('${e(this.currentAlbum.category)}'); return false;">${e(this.currentAlbum.category)}</a>
         <span class="vault-breadcrumb-sep">/</span>
-        <span class="vault-breadcrumb-current">${e(this.currentAlbum.title)}</span>
+        <span class="vault-breadcrumb-current">${this.titleHtml(this.currentAlbum)}</span>
       </nav>
       <div class="album-hero-card album-hero-clickable" onclick="VaultModule.closeAlbum()">
         <div class="album-hero-badge" style="color: ${e(this.currentAlbum.categoryColor)}">
           <i data-lucide="${e(this.currentAlbum.categoryIcon)}" class="w-4 h-4"></i>
           ${e(this.currentAlbum.category)}
         </div>
-        <h1 class="album-hero-title">${e(this.currentAlbum.title)}</h1>
+        <h1 class="album-hero-title">${this.titleHtml(this.currentAlbum)}</h1>
         <p class="album-hero-desc">${e(this.currentAlbum.description)}</p>
+        ${this.isOfficer() && this.currentAlbum.id !== 'all-photos' ? `<button class="btn btn-glass btn-sm vault-hero-edit" onclick="VaultModule.openEditAlbum('${e(this.currentAlbum.id)}', event)"><i data-lucide="pencil" class="w-4 h-4"></i> Edit details</button>` : ''}
         <div class="album-hero-info">
           ${this.currentAlbum.date ? `<span><i data-lucide="calendar" class="w-4 h-4"></i> ${e(this.currentAlbum.date)}</span>` : ''}
           ${this.currentAlbum.location ? `<span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>` : ''}
@@ -1915,7 +2332,7 @@ const VaultModule = {
               <div class="vault-related-card glass-card" onclick="VaultModule.openAlbum('${e(a.id)}')">
                 <img src="${e(this.thumb(a.coverImage))}" alt="${e(a.title)}" loading="lazy" decoding="async">
                 <div class="vault-related-info">
-                  <span class="vault-related-name">${e(a.title)}</span>
+                  <span class="vault-related-name">${this.titleHtml(a)}</span>
                   <span class="vault-related-date">${e(a.date)}</span>
                 </div>
               </div>
@@ -2038,7 +2455,7 @@ const VaultModule = {
             </div>` : ''}
           <div class="vault-lightbox-meta">
             <span><i data-lucide="calendar" class="w-4 h-4"></i> ${e(this.currentAlbum.date)}</span>
-            <span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>
+            ${this.currentAlbum.location ? `<span><i data-lucide="map-pin" class="w-4 h-4"></i> ${e(this.currentAlbum.location)}</span>` : ''}
           </div>
         </div>
       </div>
@@ -2073,41 +2490,48 @@ const VaultModule = {
 
     const totalPhotos = this.albums.reduce((sum, album) => sum + album.photos.length, 0);
 
-    statsContainer.innerHTML = `
-      <div class="vault-stat vault-stat-clickable" onclick="VaultModule.closeAlbum()">
-        <i data-lucide="folder" class="w-6 h-6 text-[#d4af37]"></i>
-        <div>
-          <span class="vault-stat-value">${this.albums.length}</span>
-          <span class="vault-stat-label">Albums</span>
-        </div>
-      </div>
-      <div class="vault-stat vault-stat-clickable" onclick="VaultModule.showAllPhotos()">
-        <i data-lucide="images" class="w-6 h-6 text-[#d4af37]"></i>
-        <div>
-          <span class="vault-stat-value">${totalPhotos}</span>
-          <span class="vault-stat-label">Show All Photos</span>
-        </div>
-      </div>
+    const years = this.availableYears();
+    if (this.selectedYear !== 'all' && !years.includes(String(this.selectedYear))) this.selectedYear = 'all';
+
+    // A year filter is only useful when albums span more than one year
+    const yearControl = years.length > 1 ? `
       <div class="yd-wrapper">
-        <button class="yd-trigger" onclick="VaultModule.toggleYearDropdown(event)">
+        <button class="yd-trigger" onclick="VaultModule.toggleYearDropdown(event)" aria-haspopup="listbox" aria-expanded="${this.yearDropdownOpen}">
           <i data-lucide="calendar" class="w-6 h-6 text-[#d4af37]"></i>
           <div>
-            <span class="vault-stat-value">${this.selectedYear === 'all' ? (() => { const ys = this.availableYears(); return ys.length ? ys[ys.length - 1] + '-' + ys[0] : 'All'; })() : this.selectedYear}</span>
+            <span class="vault-stat-value">${this.selectedYear === 'all' ? 'All years' : this.selectedYear}</span>
             <span class="vault-stat-label">Year Filter</span>
           </div>
           <i data-lucide="chevron-down" class="w-4 h-4 yd-chevron ${this.yearDropdownOpen ? 'yd-chevron-open' : ''}"></i>
         </button>
         <div class="yd-menu ${this.yearDropdownOpen ? 'yd-menu-open' : ''}">
           <button class="yd-item ${this.selectedYear === 'all' ? 'yd-item-active' : ''}" onclick="VaultModule.filterByYear('all');" style="--i:0">
-            <i data-lucide="layers" class="w-4 h-4"></i> All Years
+            <i data-lucide="layers" class="w-4 h-4"></i> All years
           </button>
-          ${this.availableYears().map((year, i) => `
+          ${years.map((year, i) => `
             <button class="yd-item ${this.selectedYear === year ? 'yd-item-active' : ''}" onclick="VaultModule.filterByYear('${year}');" style="--i:${i + 1}">
               <i data-lucide="calendar" class="w-4 h-4"></i> ${year}
             </button>
           `).join('')}
         </div>
+      </div>` : '';
+
+    statsContainer.innerHTML = `
+      <div class="vault-stat">
+        <i data-lucide="folder" class="w-6 h-6 text-[#d4af37]"></i>
+        <div>
+          <span class="vault-stat-value">${this.albums.length}</span>
+          <span class="vault-stat-label">Albums</span>
+        </div>
       </div>
+      <div class="vault-stat">
+        <i data-lucide="images" class="w-6 h-6 text-[#d4af37]"></i>
+        <div>
+          <span class="vault-stat-value">${totalPhotos}</span>
+          <span class="vault-stat-label">Photos</span>
+        </div>
+      </div>
+      ${yearControl}
     `;
 
     if (typeof lucide !== 'undefined') {

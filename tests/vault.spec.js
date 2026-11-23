@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const { mockSupabase, seedSession, seedAdminSession } = require('./fixtures/supabase-mock');
+const { mockSupabase, makeMember, seedSession, seedAdminSession } = require('./fixtures/supabase-mock');
 
 test.describe('Vault (vault.html)', () => {
   test.beforeEach(async ({ page }) => {
@@ -134,6 +134,7 @@ test.describe('Vault (vault.html)', () => {
   test('upload modal: hashtag/tag field is parsed and shown in review step', async ({ page }) => {
     await page.click('button:has-text("Upload Photos")');
     await page.fill('#upload-album-name', 'PLE Board Passers 2026');
+    await page.fill('#upload-date', '2026-03-01');
     await page.fill('#upload-tags', '#scholarship, #ple, revalida');
     await page.setInputFiles('#vault-file-input', {
       name: 'passers.jpg',
@@ -147,6 +148,43 @@ test.describe('Vault (vault.html)', () => {
     await expect(page.locator('#vault-review-content')).toContainText('#revalida');
   });
 
+  test('upload form rejects blank/"none" titles and a missing date', async ({ page }) => {
+    await page.click('button:has-text("Upload Photos")');
+    await page.setInputFiles('#vault-file-input', { name: 'a.jpg', mimeType: 'image/jpeg', buffer: Buffer.from('x') });
+
+    await page.click('#vault-submit-btn');
+    await expect(page.locator('#upload-album-name-error')).toContainText('required');
+    await expect(page.locator('#upload-date-error')).toContainText('required');
+    await expect(page.locator('#vault-upload-step-2')).toBeHidden();
+
+    await page.fill('#upload-album-name', ' None ');
+    await page.fill('#upload-date', '2026-03-01');
+    await page.click('#vault-submit-btn');
+    await expect(page.locator('#upload-album-name-error')).toContainText('real album name');
+    await expect(page.locator('#upload-date-error')).toBeHidden();
+
+    await page.fill('#upload-album-name', 'Real Album');
+    await page.click('#vault-submit-btn');
+    await expect(page.locator('#vault-upload-step-2')).toBeVisible();
+  });
+
+  test('bad stored data renders gracefully; one year hides the year filter', async ({ page }) => {
+    await page.evaluate(() => {
+      VaultModule.albums = [{
+        id: 'b1', title: 'Untitled album', rawTitle: 'none', untitled: true, description: '', date: 'January 12, 2026',
+        location: '', coverImage: 'x.jpg', category: 'Charity Mission', categoryIcon: 'heart', categoryColor: '#fff',
+        isPublic: false, tags: [], photos: [{ src: 'x.jpg', thumb: 'x.jpg', caption: '' }]
+      }];
+      VaultModule.clearAllFilters();
+    });
+    await expect(page.locator('.album-title .vault-untitled')).toHaveText('Untitled album');
+    await expect(page.locator('.album-location')).toHaveCount(0);
+    await expect(page.locator('.yd-wrapper')).toHaveCount(0);
+    await expect(page.locator('#vault-stats')).toContainText('Photos');
+    await expect(page.locator('#vault-stats')).not.toContainText('Show All');
+    await expect(page.locator('#vault-highlights')).toContainText('No highlights yet this week');
+  });
+
   test('member-only session: officer View button is hidden (role gating)', async ({ page }) => {
     // applyRoleGating() in vault.js sets display:none on #officer-view-btn for non-officer sessions.
     const btn = page.locator('#officer-view-btn');
@@ -154,9 +192,122 @@ test.describe('Vault (vault.html)', () => {
   });
 });
 
+const pendingRow = (id, album, title) => ({
+  id, album_id: album, title, category: 'charity_mission', event_date: '2026-01-12', location: 'QC',
+  is_public: false, created_at: '2026-01-13T00:00:00Z', uploaded_by: 1,
+  media_url: 'https://media.zetabetamu.com/a.webp', thumbnail_url: 'https://media.zetabetamu.com/a.webp',
+  approval_status: 'pending', tags: ['service']
+});
+
+async function openOfficerVault(page, pending = []) {
+  await mockSupabase(page, { member: makeMember({ role: 'admin' }) });
+  await page.route('**/rest/v1/vault_items**', async (route) => {
+    const req = route.request();
+    if (req.method() === 'GET' && req.url().includes('approval_status=eq.pending')) {
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(pending) });
+    }
+    if (req.method() === 'PATCH') {
+      await page.evaluate((b) => { (window.__patches = window.__patches || []).push(b); }, { url: req.url(), body: req.postDataJSON() });
+      return route.fulfill({ status: 200, contentType: 'application/json', body: '[{"id":1}]' });
+    }
+    return route.fallback();
+  });
+  await seedAdminSession(page);
+  await page.goto('/vault.html');
+  await page.evaluate(() => {
+    const overlay = document.getElementById('mobile-overlay');
+    if (overlay) { overlay.classList.remove('overlay-active'); overlay.style.pointerEvents = 'none'; }
+    const dev = document.getElementById('dev-inspector-panel');
+    if (dev) { dev.style.display = 'none'; dev.style.pointerEvents = 'none'; }
+  });
+  await page.click('#officer-view-btn');
+}
+
 test.describe('Vault - officer/admin session', () => {
+  test('pending queue: compact bar, drawer, bulk approve, reject confirm', async ({ page }) => {
+    const rows = [pendingRow(1, 'alb-a', 'Gala 2025'), pendingRow(2, 'alb-b', 'Mission 2025'), pendingRow(3, 'alb-c', 'Induction 2025')];
+    await openOfficerVault(page, rows);
+
+    await expect(page.locator('.vault-approval-count')).toHaveText('3');
+    await expect(page.locator('.vault-approval-item')).toHaveCount(0);
+    await page.click('#vault-review-queue-btn');
+    const drawer = page.locator('#vault-queue-drawer');
+    await expect(drawer).toBeVisible();
+    await expect(drawer.locator('.vault-approval-item')).toHaveCount(3);
+
+    // Esc closes the drawer
+    await page.keyboard.press('Escape');
+    await expect(drawer).toBeHidden();
+
+    // Reject requires confirmation
+    await page.click('#vault-review-queue-btn');
+    await drawer.locator('.vault-approval-item').first().getByRole('button', { name: 'Reject' }).click();
+    await expect(drawer.locator('.vault-reject-confirm')).toBeVisible();
+    await page.fill('#vault-reject-reason', 'duplicate');
+    await drawer.getByRole('button', { name: 'Reject submission' }).click();
+    await expect(drawer.locator('.vault-approval-item')).toHaveCount(2);
+    const patches = await page.evaluate(() => window.__patches);
+    expect(patches[0].body).toMatchObject({ approval_status: 'rejected', rejection_reason: 'duplicate' });
+
+    // Bulk approve
+    await drawer.getByLabel('Select all').check().catch(() => {});
+    await drawer.locator('.vault-queue-selectall input').check();
+    await drawer.getByRole('button', { name: /Approve selected \(2\)/ }).click();
+    await expect(page.locator('.vault-approval-count')).toHaveText('0');
+    const all = await page.evaluate(() => window.__patches);
+    expect(all.at(-1).body).toEqual({ approval_status: 'approved' });
+    expect(all.at(-1).url).toContain('album_id=in.');
+  });
+
+  test('making an album public needs confirmation', async ({ page }) => {
+    await openOfficerVault(page);
+    const sw = () => page.locator('.vault-vis-switch').first();
+    // Fixture album starts public; going private needs no confirm
+    await expect(sw()).toHaveAttribute('aria-checked', 'true');
+    await sw().click();
+    await expect(sw()).toHaveAttribute('aria-checked', 'false');
+    await expect(page.locator('.vault-confirm')).toHaveCount(0);
+
+    // Going public asks first; Esc cancels
+    await sw().click();
+    await expect(page.locator('.vault-confirm')).toContainText('visible to anyone with the link');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.vault-confirm')).toHaveCount(0);
+    await expect(sw()).toHaveAttribute('aria-checked', 'false');
+
+    await sw().click();
+    await page.locator('.vault-confirm [data-act="ok"]').click();
+    await expect(sw()).toHaveAttribute('aria-checked', 'true');
+  });
+
+  test('officer can edit album title, date and location; bad values are rejected', async ({ page }) => {
+    await openOfficerVault(page);
+    await page.locator('.album-card .vault-edit-btn').first().click();
+    const dlg = page.locator('.vault-edit');
+    await expect(dlg).toBeVisible();
+
+    await page.fill('#edit-title', 'none');
+    await page.fill('#edit-date', '');
+    await dlg.getByRole('button', { name: 'Save changes' }).click();
+    await expect(page.locator('#edit-title-error')).toContainText('real album name');
+    await expect(page.locator('#edit-date-error')).toContainText('required');
+    await expect(page.evaluate(() => window.__patches)).resolves.toBeUndefined();
+
+    await page.fill('#edit-title', 'Medical Mission 2025');
+    await page.fill('#edit-date', '2025-12-15');
+    await page.fill('#edit-location', 'Porac, Pampanga');
+    await page.fill('#edit-tags', '#service, porac');
+    await dlg.getByRole('button', { name: 'Save changes' }).click();
+    await expect(dlg).toHaveCount(0);
+    const patches = await page.evaluate(() => window.__patches);
+    expect(patches[0].body).toMatchObject({
+      title: 'Medical Mission 2025', event_date: '2025-12-15', year: 2025, location: 'Porac, Pampanga', tags: ['service', 'porac']
+    });
+    expect(patches[0].url).toContain('album_id=eq.test-album-2025');
+  });
+
   test('officer view shows pending approvals panel', async ({ page }) => {
-    await mockSupabase(page);
+    await mockSupabase(page, { member: makeMember({ role: 'admin' }) });
     await seedAdminSession(page);
     await page.goto('/vault.html');
     await page.evaluate(() => {

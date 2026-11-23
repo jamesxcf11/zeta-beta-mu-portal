@@ -155,6 +155,12 @@
         </p>
       </div>
 
+      <!-- Privacy note -->
+      <p class="vault-privacy-note" id="vault-privacy-note">
+        <i data-lucide="lock" class="w-4 h-4"></i>
+        <span>Private by default. Only selected officers can make an album public. Comments support text, emoji, GIFs, and video.</span>
+      </p>
+
       <!-- Vault Stats -->
       <div id="vault-stats" class="vault-stats-clean">
         <!-- Stats rendered dynamically -->
@@ -186,12 +192,8 @@
 
       <!-- Officer Approval Panel (shown when Officer View is on) -->
       <div id="officer-approval-panel" class="vault-approval-panel glass-card" style="display:none;">
-        <div class="vault-approval-header">
-          <h3><i data-lucide="clipboard-check" class="w-5 h-5"></i> Pending Approvals</h3>
-          <span class="vault-approval-note">Officers review uploads before they appear in the Vault</span>
-        </div>
-        <div id="pending-approvals-list">
-          <!-- Pending uploads rendered dynamically by VaultModule.renderPendingApprovals() -->
+        <div class="vault-approval-bar" id="pending-approvals-list">
+          <!-- Compact summary rendered by VaultModule.renderPendingApprovals(); queue opens in a drawer -->
         </div>
       </div>
 
@@ -200,10 +202,6 @@
         <!-- Albums rendered dynamically -->
       </div>
 
-      <p class="landing-muted-text text-sm mt-6 text-center">
-        <i data-lucide="shield-check" class="w-4 h-4 inline-block mr-1 align-middle"></i>
-        Private by default. Only selected officers can toggle albums or individual photos for public viewing. Comments support text, emoji, GIFs, and video.
-      </p>
     </div>
   </section>
 
@@ -295,18 +293,20 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="form-group" id="upload-album-new-group">
-            <label class="form-label" for="upload-album-name">Album / Event Name</label>
-            <input id="upload-album-name" type="text" class="glass-input" placeholder="e.g., Medical Mission 2025">
+            <label class="form-label" for="upload-album-name">Album / Event Name <span class="form-required" aria-hidden="true">*</span></label>
+            <input id="upload-album-name" type="text" class="glass-input" placeholder="e.g., Medical Mission 2025" required aria-required="true" aria-describedby="upload-album-name-error">
+            <p class="form-error" id="upload-album-name-error" role="alert"></p>
           </div>
           <div class="form-group" id="upload-album-existing-group" style="display:none;">
             <label class="form-label" for="upload-existing-album">Select Existing Album</label>
-            <select id="upload-existing-album" class="glass-input">
+            <select id="upload-existing-album" class="glass-input" aria-describedby="upload-album-name-error">
               <option value="" disabled selected>No albums yet</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label" for="upload-date">Date</label>
-            <input id="upload-date" type="date" class="glass-input">
+            <label class="form-label" for="upload-date">Event Date <span class="form-required" aria-hidden="true">*</span></label>
+            <input id="upload-date" type="date" class="glass-input" required aria-required="true" aria-describedby="upload-date-error">
+            <p class="form-error" id="upload-date-error" role="alert"></p>
           </div>
           <div class="form-group">
             <label class="form-label" for="upload-location">Location</label>
